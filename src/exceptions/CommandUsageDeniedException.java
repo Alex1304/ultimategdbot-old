@@ -1,4 +1,4 @@
-package commands;
+package exceptions;
 
 public class CommandUsageDeniedException extends Exception {
 
