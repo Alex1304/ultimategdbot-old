@@ -2,8 +2,6 @@ package ultimategdbot.app;
 
 import static ultimategdbot.app.AppTools.createClient;
 
-import javax.management.RuntimeErrorException;
-
 import sx.blah.discord.api.IDiscordClient;
 import ultimategdbot.commands.CommandHandler;
 
@@ -34,14 +32,15 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String botToken = AppTools.readFile("bot-token.txt");
-		if (botToken == null)
-			throw new RuntimeException("Couldn't load the bot token. Exiting.");
+		if (args.length != 2)
+			throw new RuntimeException("You must specify the bot token and the superadmin userID!;");
+		
+		String botToken = args[0];
 		
 		try {
-			superadminID = Long.parseLong(AppTools.readFile("superadmin-id.txt"));
+			superadminID = Long.parseLong(args[1]);
 		} catch (NumberFormatException e) {
-			throw new RuntimeException("Couldn't load the superadmin ID. Exiting.");
+			throw new RuntimeException("The given superadmin ID is not valid.");
 		}
 		
 		
