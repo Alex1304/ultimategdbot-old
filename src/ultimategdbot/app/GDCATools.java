@@ -1,4 +1,4 @@
-package app;
+package ultimategdbot.app;
 
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -7,7 +7,7 @@ import sx.blah.discord.util.DiscordException;
 /**
  * Utility class useful for the GDCA implementation of the Discord API
  * 
- * @author alexandre
+ * @author Alex1304
  *
  */
 public class GDCATools {

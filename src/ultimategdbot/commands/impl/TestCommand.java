@@ -1,14 +1,15 @@
-package commands;
+package ultimategdbot.commands.impl;
 
 import java.util.List;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.RequestBuffer;
+import ultimategdbot.commands.Command;
 
 /**
  * Test command
  * 
- * @author alexandre
+ * @author Alex1304
  *
  */
 public class TestCommand implements Command {

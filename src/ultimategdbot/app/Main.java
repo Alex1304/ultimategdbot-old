@@ -1,18 +1,18 @@
-package app;
+package ultimategdbot.app;
 
-import static app.GDCATools.createClient;
+import static ultimategdbot.app.GDCATools.createClient;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import commands.CommandHandler;
 import sx.blah.discord.api.IDiscordClient;
+import ultimategdbot.commands.CommandHandler;
 
 /**
  * Main class of the program Contains everything required for the bot to work
  * 
- * @author alexandre
+ * @author Alex1304
  *
  */
 public class Main {

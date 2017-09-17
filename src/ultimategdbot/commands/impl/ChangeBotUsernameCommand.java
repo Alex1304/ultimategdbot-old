@@ -1,19 +1,22 @@
-package commands;
+package ultimategdbot.commands.impl;
 
 import java.util.List;
 
-import app.Main;
-import exceptions.CommandUsageDeniedException;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.RequestBuffer;
+import ultimategdbot.app.Main;
+import ultimategdbot.commands.SuperadminCommand;
 
-public class ChangeBotUsernameCommand implements Command {
+/**
+ * Command to change the bot's usernamme
+ * 
+ * @author Alex1304
+ *
+ */
+public class ChangeBotUsernameCommand extends SuperadminCommand {
 
 	@Override
-	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandUsageDeniedException {
-		if (event.getAuthor().getLongID() != 272872694473687041L)
-			throw new CommandUsageDeniedException();
-		
+	public void runSuperadminCommand(MessageReceivedEvent event, List<String> args) {
 		String newName = "";
 		for (String arg : args)
 			newName += (arg + " ");

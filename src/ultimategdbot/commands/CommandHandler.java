@@ -1,6 +1,6 @@
-package commands;
+package ultimategdbot.commands;
 
-import static app.Main.CMD_PREFIX;
+import static ultimategdbot.app.Main.CMD_PREFIX;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,16 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import exceptions.CommandUsageDeniedException;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RequestBuffer;
+import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
+import ultimategdbot.commands.impl.TestCommand;
+import ultimategdbot.exceptions.CommandUsageDeniedException;
 
 /**
  * Bot commands are handled here, using the Discord API based on events
  * 
- * @author alexandre
+ * @author Alex1304
  *
  */
 public class CommandHandler {
@@ -39,8 +41,8 @@ public class CommandHandler {
 	 * Loads the command map so they are recognized by the handler
 	 */
 	private void loadCommandMap() {
-		// Admin commands
-		commandMap.put("changename", new ChangeBotUsernameCommand());
+		// Superadmin commands
+		commandMap.put("changebotusername", new ChangeBotUsernameCommand());
 		
 		// Public commands
 		commandMap.put("test", new TestCommand());

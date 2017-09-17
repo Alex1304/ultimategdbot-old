@@ -1,14 +1,14 @@
-package commands;
+package ultimategdbot.commands;
 
 import java.util.List;
 
-import exceptions.CommandUsageDeniedException;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import ultimategdbot.exceptions.CommandUsageDeniedException;
 
 /**
  * Bot commands must implement this interface to work
  * 
- * @author alexandre
+ * @author Alex1304
  *
  */
 public interface Command {
