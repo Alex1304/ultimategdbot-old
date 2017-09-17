@@ -1,8 +1,11 @@
 # ultimategdbot
 Geometry Dash related tools for Discord
 
-# Implemented featured
-* None yet :(
+# Bot status
+This bot is at the very beginning of its development so you can't invite it to your server yet. Stay tuned...
+
+# Implemented features
+* Simple command handling system
 
 # Upcoming Features
 * Level requests management system for Discord servers
