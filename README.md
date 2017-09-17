@@ -20,6 +20,6 @@ You are free to suggest any feature for the bot, as long as it's related to Geom
 * Fork the project and create a new branch
 * Create a new bot user using the Discord Developers website
 * Make your bot join one of your servers that you're going to use for your tests
-* To run the bot, you must add two environment vars: BOT\_TOKEN which is the authentication token required for the bot to login, and SUPERADMIN\_ID which is your Discord userID (for superadmin-only commands)
+* To run the bot, you must specify two arguments : the first one is the bot authentication token, and the second one is your Discord user ID (for Superadmin-only commands)
 * When you're done, deploy the project on GitHub and open a pull request :)
 

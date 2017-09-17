@@ -32,10 +32,13 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String botToken = System.getenv().get("BOT_TOKEN");
+		if (args.length != 2)
+			throw new RuntimeException("You must specify the bot token and the superadmin userID!");
+		
+		String botToken = args[0];
 		
 		try {
-			superadminID = Long.parseLong(System.getenv().get("SUPERADMIN_ID"));
+			superadminID = Long.parseLong(args[1]);
 		} catch (NumberFormatException e) {
 			throw new RuntimeException("The given superadmin ID is not valid.");
 		}
