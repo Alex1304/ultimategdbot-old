@@ -78,7 +78,7 @@ public class CommandHandler {
 
 		// Extract the "command" part of the first arg out by just ditching the
 		// first character
-		String commandStr = argArray[0].substring(CMD_PREFIX.length());
+		String commandStr = argArray[0].substring(CMD_PREFIX.length()).toLowerCase();
 
 		// Load the rest of the args in the array into a List for safer access
 		List<String> argsList = new ArrayList<>(Arrays.asList(argArray));
@@ -88,7 +88,7 @@ public class CommandHandler {
 			try {
 				commandMap.get(commandStr).runCommand(event, argsList);
 			} catch (CommandUsageDeniedException e) {
-				System.err.println("[" + new Date().toString() + "]" + "The user " + event.getAuthor().getName() + "#"
+				System.out.println("[" + new Date().toString() + "]" + " The user " + event.getAuthor().getName() + "#"
 						+ event.getAuthor().getDiscriminator() + " has been denied from using the command " + commandStr);
 			} catch (DiscordException e) {
 				RequestBuffer.request(() -> {
