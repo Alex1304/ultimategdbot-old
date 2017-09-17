@@ -12,6 +12,7 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RequestBuffer;
+import ultimategdbot.app.AppTools;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.TestCommand;
 import ultimategdbot.exceptions.CommandUsageDeniedException;
@@ -89,13 +90,9 @@ public class CommandHandler {
 			try {
 				commandMap.get(commandStr).runCommand(event, argsList);
 			} catch (CommandUsageDeniedException e) {
-				RequestBuffer.request(() -> {
-		    		event.getChannel().sendMessage(":negative_squared_cross_mark: " + e.getDenialReason());
-		        });
+				AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getDenialReason());
 			} catch (DiscordException e) {
-				RequestBuffer.request(() -> {
-		    		event.getChannel().sendMessage(":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");
-		        });
+				AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");
 				e.printStackTrace();
 			} 
 		}

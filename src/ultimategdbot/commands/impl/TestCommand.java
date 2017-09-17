@@ -3,7 +3,7 @@ package ultimategdbot.commands.impl;
 import java.util.List;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.util.RequestBuffer;
+import ultimategdbot.app.AppTools;
 import ultimategdbot.commands.Command;
 
 /**
@@ -16,9 +16,7 @@ public class TestCommand implements Command {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) {
-        RequestBuffer.request(() -> {
-    		event.getChannel().sendMessage("Hello World!");
-        });
+        AppTools.sendMessage(event.getChannel(), "Hello World!");
 	}
 
 }

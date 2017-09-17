@@ -6,7 +6,9 @@ import java.io.IOException;
 
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.RequestBuffer;
 
 /**
  * Utility class useful for the GDCA implementation of the Discord API
@@ -68,5 +70,11 @@ public class AppTools {
 		}
 
 		return str;
+	}
+	
+	public static void sendMessage(IChannel channel, String message) {
+		RequestBuffer.request(() -> {
+    		channel.sendMessage(message);
+        });
 	}
 }
