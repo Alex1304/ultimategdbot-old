@@ -4,7 +4,6 @@ import static ultimategdbot.app.Main.CMD_PREFIX;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,8 +89,9 @@ public class CommandHandler {
 			try {
 				commandMap.get(commandStr).runCommand(event, argsList);
 			} catch (CommandUsageDeniedException e) {
-				System.out.println("[" + new Date().toString() + "]" + " The user " + event.getAuthor().getName() + "#"
-						+ event.getAuthor().getDiscriminator() + " has been denied from using the command " + commandStr);
+				RequestBuffer.request(() -> {
+		    		event.getChannel().sendMessage(":negative_squared_cross_mark: " + e.getDenialReason());
+		        });
 			} catch (DiscordException e) {
 				RequestBuffer.request(() -> {
 		    		event.getChannel().sendMessage(":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");
