@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -jar target/ultimategdbot-1.01-ALPHA-jar-with-dependencies.jar $BOT_TOKEN $SUPERADMIN_ID
+worker: java $JAVA_OPTS -jar target/ultimategdbot-1.01-ALPHA-jar-with-dependencies.jar $BOT_TOKEN $SUPERADMIN_ID
