@@ -4,7 +4,7 @@ import java.util.List;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.app.Main;
-import ultimategdbot.exceptions.CommandUsageDeniedException;
+import ultimategdbot.exceptions.CommandFailedException;
 
 /**
  * Commands that are supposed to be used only by the bot owner (Superadmin) will extend this class.
@@ -19,9 +19,9 @@ public abstract class SuperadminCommand implements Command {
 	 * Checks for superadmin privilege
 	 */
 	@Override
-	public final void runCommand(MessageReceivedEvent event, List<String> args) throws CommandUsageDeniedException {
+	public final void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		if (event.getAuthor().getLongID() != Main.superadminID)
-			throw new CommandUsageDeniedException("This command can be used only by the bot developer.");
+			throw new CommandFailedException("This command can be used only by the bot developer.");
 		
 		runSuperadminCommand(event, args);
 	}

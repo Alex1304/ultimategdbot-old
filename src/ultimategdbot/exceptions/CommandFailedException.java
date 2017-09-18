@@ -7,13 +7,13 @@ package ultimategdbot.exceptions;
  * @author Alex1304
  *
  */
-public class CommandUsageDeniedException extends Exception {
+public class CommandFailedException extends Exception {
 
 	private static final long serialVersionUID = -1502808798318227533L;
 	
 	private String denialReason;
 	
-	public CommandUsageDeniedException(String denialReason) {
+	public CommandFailedException(String denialReason) {
 		this.denialReason = denialReason;
 	}
 

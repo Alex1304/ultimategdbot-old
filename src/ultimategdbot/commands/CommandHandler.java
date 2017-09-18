@@ -14,7 +14,7 @@ import sx.blah.discord.util.DiscordException;
 import ultimategdbot.app.AppTools;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.TestCommand;
-import ultimategdbot.exceptions.CommandUsageDeniedException;
+import ultimategdbot.exceptions.CommandFailedException;
 
 /**
  * Bot commands are handled here, using the Discord API based on events
@@ -88,7 +88,7 @@ public class CommandHandler {
 		if (commandMap.containsKey(commandStr)) {
 			try {
 				commandMap.get(commandStr).runCommand(event, argsList);
-			} catch (CommandUsageDeniedException e) {
+			} catch (CommandFailedException e) {
 				AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getDenialReason());
 			} catch (DiscordException e) {
 				AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");

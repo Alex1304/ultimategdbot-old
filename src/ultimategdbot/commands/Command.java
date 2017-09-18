@@ -3,7 +3,7 @@ package ultimategdbot.commands;
 import java.util.List;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import ultimategdbot.exceptions.CommandUsageDeniedException;
+import ultimategdbot.exceptions.CommandFailedException;
 
 /**
  * Bot commands must implement this interface to work
@@ -22,6 +22,6 @@ public interface Command {
 	 * @param args
 	 *            - arguments the user provided with the command
 	 */
-	void runCommand(MessageReceivedEvent event, List<String> args) throws CommandUsageDeniedException;
+	void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException;
 
 }
