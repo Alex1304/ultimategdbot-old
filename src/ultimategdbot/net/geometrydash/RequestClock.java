@@ -6,9 +6,8 @@ public class RequestClock implements Runnable {
 	
 	@Override
 	public void run() {
-		//GDServer gdserv = new GDServer();
 		while (true) {
-			//String awardedLevels = gdserv.fetchNewAwardedLevels();
+			String awardedLevels = GDServer.fetchNewAwardedLevels();
 			// TODO
 			
 			try {

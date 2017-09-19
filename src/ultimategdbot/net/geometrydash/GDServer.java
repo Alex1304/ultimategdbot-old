@@ -11,11 +11,7 @@ public class GDServer {
 
 	private static final String gdservURLPrefix = "http://www.boomlings.com/database/";
 
-	public GDServer() {
-
-	}
-
-	private String sendRequest(String webpage, String urlParams) {
+	public static String sendRequest(String webpage, String urlParams) {
 		try {
 			HttpURLConnection con;
 			con = (HttpURLConnection) new URL(gdservURLPrefix + webpage).openConnection();
@@ -44,9 +40,16 @@ public class GDServer {
 		return null;
 	}
 
-	public String fetchNewAwardedLevels() {
+	public static String fetchNewAwardedLevels() {
 		return sendRequest("getGJLevels21.php",
 				"gameVersion=21&binaryVersion=33&gdw=0&type=11&str=&diff=-&len=-&page=0&total=0"
+				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
+				+ "&secret=Wmfd2893gb7");
+	}
+	
+	public static String fetchLevelByID(String levelID) {
+		return sendRequest("getGJLevels21.php",
+				"gameVersion=21&binaryVersion=33&gdw=0&type=0&str=" + levelID + "&diff=-&len=-&page=0&total=0"
 				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
 				+ "&secret=Wmfd2893gb7");
 	}

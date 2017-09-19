@@ -16,6 +16,20 @@ public class GDLevel {
 	private int downloads;
 	private int likes;
 	
+	public GDLevel(long id, String name, String creator, String description, int stars, boolean featured, boolean epic,
+			int downloads, int likes) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.creator = creator;
+		this.description = description;
+		this.stars = stars;
+		this.featured = featured;
+		this.epic = epic;
+		this.downloads = downloads;
+		this.likes = likes;
+	}
+
 	public GDLevel(String levelData, String creatorData) {
 		String[] splittedLvlData = levelData.split(":");
 		Map<Integer, String> structuredLvlData = new HashMap<>();
@@ -93,8 +107,7 @@ public class GDLevel {
 	}
 	
 	public static void main(String[] args) {
-		GDServer gdserv = new GDServer();
-		String awarded = gdserv.fetchNewAwardedLevels();
+		String awarded = GDServer.fetchNewAwardedLevels();
 		System.out.println(awarded);
 		String[] lvlsCreatorsSongs = awarded.split("#");
 		
