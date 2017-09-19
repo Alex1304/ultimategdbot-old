@@ -1,9 +1,5 @@
 package ultimategdbot.net.geometrydash;
 
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-
 public class GDLevel {
 	
 	private long id;
@@ -28,34 +24,6 @@ public class GDLevel {
 		this.epic = epic;
 		this.downloads = downloads;
 		this.likes = likes;
-	}
-
-	public GDLevel(String levelData, String creatorData) {
-		String[] splittedLvlData = levelData.split(":");
-		Map<Integer, String> structuredLvlData = new HashMap<>();
-		
-		for (int i = 0 ; i < splittedLvlData.length ; i += 2) {
-			structuredLvlData.put(Integer.parseInt(splittedLvlData[i]), splittedLvlData[i+1]);
-		}
-		
-		this.id = Long.parseLong(structuredLvlData.get(1));
-		this.name = structuredLvlData.get(2);
-		this.description = new String(Base64.getUrlDecoder().decode(structuredLvlData.get(3)));
-		this.stars = Integer.parseInt(structuredLvlData.get(39));
-		
-		String[] creators = creatorData.split("\\|");
-		String creatorID = structuredLvlData.get(6);
-		int i = 0;
-		while (this.creator == null && i < creators.length) {
-			if (creators[i].split(":")[0].equals(creatorID))
-				this.creator = creators[i].split(":")[1];
-			i++;
-		}
-		
-		this.featured = !structuredLvlData.get(19).equals("0");
-		this.epic = structuredLvlData.get(42).equals("1");
-		this.downloads = Integer.parseInt(structuredLvlData.get(10));
-		this.likes = Integer.parseInt(structuredLvlData.get(14));
 	}
 
 	public long getId() {
@@ -94,29 +62,102 @@ public class GDLevel {
 		return likes;
 	}
 
-	public void displayInfo() {
-		System.out.println("Level ID: " + getId());
-		System.out.println("Name: " + getName());
-		System.out.println("Description: " + getDescription());
-		System.out.println("Creator: " + getCreator());
-		System.out.println("Stars: " + getStars());
-		System.out.println("Featured? " + isFeatured());
-		System.out.println("Epic? " + isEpic());
-		System.out.println("Downloads: " + getDownloads());
-		System.out.println("Likes: " + getLikes());
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((creator == null) ? 0 : creator.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + downloads;
+		result = prime * result + (epic ? 1231 : 1237);
+		result = prime * result + (featured ? 1231 : 1237);
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + likes;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + stars;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GDLevel other = (GDLevel) obj;
+		if (creator == null) {
+			if (other.creator != null)
+				return false;
+		} else if (!creator.equals(other.creator))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (downloads != other.downloads)
+			return false;
+		if (epic != other.epic)
+			return false;
+		if (featured != other.featured)
+			return false;
+		if (id != other.id)
+			return false;
+		if (likes != other.likes)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (stars != other.stars)
+			return false;
+		return true;
 	}
 	
-	public static void main(String[] args) {
-		String awarded = GDServer.fetchNewAwardedLevels();
-		System.out.println(awarded);
-		String[] lvlsCreatorsSongs = awarded.split("#");
-		
-		String[] lvls = lvlsCreatorsSongs[0].split("\\|");
-		
-		for (int i = 0 ; i < lvls.length ; i++) {
-			GDLevel lvl = new GDLevel(lvls[i], lvlsCreatorsSongs[1]);
-			lvl.displayInfo();
-			System.out.println();
-		}
+	public boolean hasSameIDThan(GDLevel otherLevel) {
+		return this.id == otherLevel.id;
 	}
+	
+	@Override
+	public String toString() {
+		return ""
+			+ "Level ID: " + getId() + "\n"
+			+ "Name: " + getName() + "\n"
+			+ "Description: " + getDescription() + "\n"
+			+ "Creator: " + getCreator() + "\n"
+			+ "Stars: " + getStars() + "\n"
+			+ "Featured? " + isFeatured() + "\n"
+			+ "Epic? " + isEpic() + "\n"
+			+ "Downloads: " + getDownloads() + "\n"
+			+ "Likes: " + getLikes()
+		;
+	}
+	
+//	public void displayInfo() {
+//		System.out.println("Level ID: " + getId());
+//		System.out.println("Name: " + getName());
+//		System.out.println("Description: " + getDescription());
+//		System.out.println("Creator: " + getCreator());
+//		System.out.println("Stars: " + getStars());
+//		System.out.println("Featured? " + isFeatured());
+//		System.out.println("Epic? " + isEpic());
+//		System.out.println("Downloads: " + getDownloads());
+//		System.out.println("Likes: " + getLikes());
+//		System.out.println();
+//	}
+//	
+//	public static void main(String[] args) {
+//		String awarded = GDServer.fetchNewAwardedLevels();
+//		
+//		try {
+//			for (GDLevel lvl : GDLevelFactory.buildAllGDLevelsSearchResults(awarded)) {
+//				lvl.displayInfo();
+//			}
+//		} catch (RawDataMalformedException e) {
+//			System.err.println("Malformed raw data: " + awarded);
+//		}
+//	}
 }

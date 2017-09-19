@@ -46,6 +46,13 @@ public class GDServer {
 				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
 				+ "&secret=Wmfd2893gb7");
 	}
+
+	public static String fetchMostRecentLevels() {
+		return sendRequest("getGJLevels21.php",
+				"gameVersion=21&binaryVersion=33&gdw=0&type=4&str=&diff=-&len=-&page=0&total=9999"
+				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
+				+ "&secret=Wmfd2893gb7");
+	}
 	
 	public static String fetchLevelByID(String levelID) {
 		return sendRequest("getGJLevels21.php",

@@ -4,6 +4,7 @@ import static ultimategdbot.app.AppTools.createClient;
 
 import sx.blah.discord.api.IDiscordClient;
 import ultimategdbot.commands.CommandHandler;
+import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
 
 /**
  * Main class of the program Contains everything required for the bot to work
@@ -42,6 +43,9 @@ public class Main {
 		} catch (NumberFormatException e) {
 			throw new RuntimeException("The given superadmin ID is not valid.");
 		}
+		
+		// Launching all Runnable class
+		new Thread(new LoopRequestNewAwardedLevels()).start();
 		
 		
 		client = createClient(botToken, false);

@@ -49,7 +49,7 @@ public class GDLevelFactory {
 				structuredLvlInfo.get(2),
 				structuredCreatorsInfo.get(Long.parseLong(structuredLvlInfo.get(6))),
 				new String(Base64.getUrlDecoder().decode(structuredLvlInfo.get(3))),
-				Integer.parseInt(structuredLvlInfo.get(39)),
+				Integer.parseInt(structuredLvlInfo.get(18)),
 				!structuredLvlInfo.get(19).equals("0"),
 				structuredLvlInfo.get(42).equals("1"),
 				Integer.parseInt(structuredLvlInfo.get(10)),
