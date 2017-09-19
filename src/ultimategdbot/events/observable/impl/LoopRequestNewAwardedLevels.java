@@ -26,37 +26,40 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 	public void run() {
 		while (true) {
 			if (Main.client != null && Main.client.isLoggedIn()) {
-				// First, fetch awarded levels from GD servers
-				String awardedLevelsRD = GDServer.fetchNewAwardedLevels();
-				//String awardedLevelsRD = GDServer.fetchMostRecentLevels();
-	
 				try {
-					// Convert the raw data given by the server into GDLevel objects
-					List<GDLevel> awardedLevels = GDLevelFactory.buildAllGDLevelsSearchResults(awardedLevelsRD);
-					List<GDLevel> newAwardedLevels = new ArrayList<>();
-					int i = 0;
-					
-					// If it's the first loop, the last record is set to the last awarded level
-					if (lastLevelRecorded == null)
-						lastLevelRecorded = awardedLevels.get(0);
-	
-					// Add new awarded levels to a list
-					while (i < awardedLevels.size() && !awardedLevels.get(i).hasSameIDThan(lastLevelRecorded)) {
-						newAwardedLevels.add(awardedLevels.get(i));
-						i++;
+					// First, fetch awarded levels from GD servers
+					String awardedLevelsRD = GDServer.fetchNewAwardedLevels();
+					//String awardedLevelsRD = GDServer.fetchMostRecentLevels();
+
+					try {
+						// Convert the raw data given by the server into GDLevel objects
+						List<GDLevel> awardedLevels = GDLevelFactory.buildAllGDLevelsSearchResults(awardedLevelsRD);
+						List<GDLevel> newAwardedLevels = new ArrayList<>();
+						int i = 0;
+
+						// If it's the first loop, the last record is set to the last awarded level
+						if (lastLevelRecorded == null)
+							lastLevelRecorded = awardedLevels.get(0);
+
+						// Add new awarded levels to a list
+						while (i < awardedLevels.size() && !awardedLevels.get(i).hasSameIDThan(lastLevelRecorded)) {
+							newAwardedLevels.add(awardedLevels.get(i));
+							i++;
+						}
+
+						// Send the list of new awarded levels to the observer so it can notify the subscribers
+						if (!newAwardedLevels.isEmpty() && newAwardedLevels.size() < 10)
+							updateObservers(newAwardedLevels.toArray());
+
+					} catch (RawDataMalformedException e) {
+						e.printStackTrace();
 					}
-					
-					// Send the list of new awarded levels to the observer so it can notify the subscribers
-					if (!newAwardedLevels.isEmpty() && newAwardedLevels.size() < 10)
-						updateObservers(newAwardedLevels.toArray());
-	
-				} catch (RawDataMalformedException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			else
 				System.out.println("Client not logged in, trying again in " + REQUEST_COOLDOWN_SECONDS + " seconds...");
-
 			try {
 				Thread.sleep(REQUEST_COOLDOWN_SECONDS * 1000);
 			} catch (InterruptedException e) {
