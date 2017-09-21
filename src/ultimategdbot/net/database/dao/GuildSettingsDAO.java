@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ultimategdbot.net.database.DatabaseConnection;
-import ultimategdbot.net.database.tables.GuildSettings;
+import ultimategdbot.net.database.entities.GuildSettings;
 
 public class GuildSettingsDAO implements DAO<GuildSettings> {
 

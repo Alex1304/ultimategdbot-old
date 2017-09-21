@@ -1,5 +1,11 @@
-package ultimategdbot.net.database.tables;
+package ultimategdbot.net.database.entities;
 
+/**
+ * Contains some information about guilds necessary for the bot to work properly
+ * 
+ * @author Alex1304
+ *
+ */
 public class GuildSettings {
 	
 	private long guildId;

@@ -10,7 +10,7 @@ import ultimategdbot.app.Main;
 import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
 import ultimategdbot.events.observer.Observer;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
-import ultimategdbot.net.database.tables.GuildSettings;
+import ultimategdbot.net.database.entities.GuildSettings;
 
 public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedLevels> {
 

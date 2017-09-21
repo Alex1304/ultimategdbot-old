@@ -9,7 +9,7 @@ import ultimategdbot.app.AppTools;
 import ultimategdbot.commands.Command;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
-import ultimategdbot.net.database.tables.GuildSettings;
+import ultimategdbot.net.database.entities.GuildSettings;
 
 public class GDEventsCommand implements Command {
 

@@ -3,6 +3,11 @@ package ultimategdbot.net.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+/**
+ * This class is used to get an instance of the connection to the database using the Singleton Pattern
+ * @author Alex1304
+ *
+ */
 public class DatabaseConnection {
 	
 	private static Connection conn = createInstance();
