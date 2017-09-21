@@ -25,11 +25,11 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 	@Override
 	public void run() {
 		while (true) {
-			if (Main.client != null && Main.client.isLoggedIn()) {
+			if (Main.client.isReady()) {
 				try {
 					// First, fetch awarded levels from GD servers
-					String awardedLevelsRD = GDServer.fetchNewAwardedLevels();
-					//String awardedLevelsRD = GDServer.fetchMostRecentLevels();
+//					String awardedLevelsRD = GDServer.fetchNewAwardedLevels();
+					String awardedLevelsRD = GDServer.fetchMostRecentLevels();
 
 					try {
 						// Convert the raw data given by the server into GDLevel objects
@@ -59,7 +59,7 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 				}
 			}
 			else
-				System.out.println("Client not logged in, trying again in " + REQUEST_COOLDOWN_SECONDS + " seconds...");
+				System.out.println("Client not ready, trying again in " + REQUEST_COOLDOWN_SECONDS + " seconds...");
 			try {
 				Thread.sleep(REQUEST_COOLDOWN_SECONDS * 1000);
 			} catch (InterruptedException e) {

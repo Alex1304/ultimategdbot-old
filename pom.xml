@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ultimategdbot</groupId>
 	<artifactId>ultimategdbot</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 	<name>ultimategdbot</name>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -67,6 +67,11 @@
 			<artifactId>Discord4J</artifactId>
 			<version>2.9</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		    <version>5.1.6</version>
 		</dependency>
 	</dependencies>
 

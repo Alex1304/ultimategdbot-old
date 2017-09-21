@@ -13,6 +13,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.util.DiscordException;
 import ultimategdbot.app.AppTools;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
+import ultimategdbot.commands.impl.GDEventsCommand;
 import ultimategdbot.commands.impl.TestCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 
@@ -45,6 +46,7 @@ public class CommandHandler {
 		
 		// Public commands
 		commandMap.put("test", new TestCommand());
+		commandMap.put("newawarded", new GDEventsCommand());
 	}
 
 	/**

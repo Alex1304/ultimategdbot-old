@@ -44,12 +44,16 @@ public class Main {
 			throw new RuntimeException("The given superadmin ID is not valid.");
 		}
 		
-		// Launching all Runnable class
+		// Building client
+		client = createClient(botToken, false);
+		
+		// Launching all Runnable processes
 		new Thread(new LoopRequestNewAwardedLevels()).start();
 		
-		
-		client = createClient(botToken, false);
+		// Registering events
 		client.getDispatcher().registerListener(new CommandHandler());
+		
+		// Let's start!
 		client.login();
 	}
 }

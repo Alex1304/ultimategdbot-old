@@ -1,31 +1,30 @@
 package ultimategdbot.events.observer.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import sx.blah.discord.handle.obj.IPrivateChannel;
-import sx.blah.discord.util.RequestBuffer;
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IRole;
+import ultimategdbot.app.AppTools;
 import ultimategdbot.app.Main;
 import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
 import ultimategdbot.events.observer.Observer;
+import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.tables.GuildSettings;
 
 public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedLevels> {
 
 	@Override
 	public void update(Object... args) {
+		List<GuildSettings> gsList = new GuildSettingsDAO().findAll();
 		
-		List<Long> subscribers = new ArrayList<>();
-		subscribers.add(Main.superadminID);
-		subscribers.add(198242185869656064L); // Squall
-		
-		for (long sub : subscribers) {
-			IPrivateChannel pm = Main.client.getOrCreatePMChannel(Main.client.getUserByID(sub));
-			for (Object level : args) {
-				RequestBuffer.request(() -> {
-					pm.sendMessage("NEW RATE!\n```" + level.toString() + "```");
-				});
-			}
+		for (GuildSettings gs : gsList) {
+			IGuild guild = Main.client.getGuildByID(gs.getGuildId());
+			IChannel channelAwardedSub = guild.getChannelByID(gs.getGdeventAwardedSubscriberChannelId());
+			IRole roleAwardedSub = guild.getRoleByID(gs.getGdeventAwardedSubscriberRoleId());
+			for (Object level : args)
+				AppTools.sendMessage(channelAwardedSub, roleAwardedSub.mention() + " NEW RATE!\n```" + level.toString() + "```");
 		}
 	}
-
+//"NEW RATE!\n```" + level.toString() + "```"
 }
