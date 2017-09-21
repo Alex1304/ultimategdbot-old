@@ -46,6 +46,8 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 							newAwardedLevels.add(awardedLevels.get(i));
 							i++;
 						}
+						
+						lastLevelRecorded = GDLevelFactory.buildGDLevelFirstSearchResult(awardedLevelsRD);
 
 						// Send the list of new awarded levels to the observer so it can notify the subscribers
 						if (!newAwardedLevels.isEmpty() && newAwardedLevels.size() < 10)

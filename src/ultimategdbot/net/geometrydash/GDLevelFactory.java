@@ -18,12 +18,12 @@ public class GDLevelFactory {
 	
 	/**
 	 * Reads the rawdata and return an instance of GDLevel corresponding to the requested level.
-	 * When searching for a level using the levelID, only one result can show up.
+	 * Taking the first search result
 	 * 
 	 * @param rawData - urlencoded String of the level info
 	 * @return new instance of GDLevel
 	 */
-	public static GDLevel buildGDLevelSearchedByID(String rawData) throws RawDataMalformedException {
+	public static GDLevel buildGDLevelFirstSearchResult(String rawData) throws RawDataMalformedException {
 		return buildGDLevelSearchedByFilter(rawData, 0);
 	}
 	
