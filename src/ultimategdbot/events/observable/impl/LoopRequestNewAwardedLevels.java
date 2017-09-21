@@ -28,8 +28,8 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 			if (Main.client.isReady()) {
 				try {
 					// First, fetch awarded levels from GD servers
-//					String awardedLevelsRD = GDServer.fetchNewAwardedLevels();
-					String awardedLevelsRD = GDServer.fetchMostRecentLevels();
+					String awardedLevelsRD = GDServer.fetchNewAwardedLevels();
+//					String awardedLevelsRD = GDServer.fetchMostRecentLevels();
 
 					try {
 						// Convert the raw data given by the server into GDLevel objects
