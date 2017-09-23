@@ -16,6 +16,11 @@ public class DatabaseConnection {
 		return conn;
 	}
 	
+	/**
+	 * Returns a unique instance of the database connection. Credentials are read from the
+	 * system environment variables for security reasons
+	 * @return
+	 */
 	private static Connection createInstance() {
 		try {
 			conn = DriverManager.getConnection("jdbc:mysql://mysql-alex1304.alwaysdata.net/alex1304_ultimategdbot",

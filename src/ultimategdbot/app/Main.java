@@ -4,6 +4,7 @@ import static ultimategdbot.app.AppTools.createClient;
 
 import sx.blah.discord.api.IDiscordClient;
 import ultimategdbot.commands.CommandHandler;
+import ultimategdbot.discordevents.DiscordEvents;
 import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
 
 /**
@@ -52,6 +53,7 @@ public class Main {
 		
 		// Registering events
 		client.getDispatcher().registerListener(new CommandHandler());
+		client.getDispatcher().registerListener(new DiscordEvents());
 		
 		// Let's start!
 		client.login();
