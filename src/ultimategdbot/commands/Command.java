@@ -23,5 +23,10 @@ public interface Command {
 	 *            - arguments the user provided with the command
 	 */
 	void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException;
-
+	
+	/**
+	 * Get the command help text
+	 * @return String containing the help text
+	 */
+	String getHelp();
 }

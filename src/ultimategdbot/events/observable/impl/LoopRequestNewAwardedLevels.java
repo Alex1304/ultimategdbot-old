@@ -14,7 +14,7 @@ import ultimategdbot.net.geometrydash.GDServer;
 
 public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopRequestNewAwardedLevels> {
 
-	private static final int REQUEST_COOLDOWN_SECONDS = 10;
+	private static final int REQUEST_COOLDOWN_SECONDS = 20;
 	private GDLevel lastLevelRecorded;
 	private List<Observer<LoopRequestNewAwardedLevels>> obsList = new ArrayList<>();
 	

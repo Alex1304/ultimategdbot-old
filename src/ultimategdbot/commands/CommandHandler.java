@@ -14,7 +14,9 @@ import sx.blah.discord.util.DiscordException;
 import ultimategdbot.app.AppTools;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
-import ultimategdbot.commands.impl.TestCommand;
+import ultimategdbot.commands.impl.HelpCommand;
+import ultimategdbot.commands.impl.PingCommand;
+import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 
 /**
@@ -26,27 +28,33 @@ import ultimategdbot.exceptions.CommandFailedException;
 public class CommandHandler {
 
 	/**
-	 * Map that associates text commands to their actions.
+	 * Maps that associates text commands to their actions.
 	 */
-	private Map<String, Command> commandMap = new HashMap<>();
+	public static Map<String, Command> commandMap = new HashMap<>();
+	public static Map<String, Command> superadminCommandMap = new HashMap<>();
+	public static Map<String, Command> adminCommandMap = new HashMap<>();
 
 	/**
 	 * Constructor
 	 */
 	public CommandHandler() {
-		loadCommandMap();
+		loadCommandMaps();
 	}
 
 	/**
 	 * Loads the command map so they are recognized by the handler
 	 */
-	private void loadCommandMap() {
+	private void loadCommandMaps() {
 		// Superadmin commands
-		commandMap.put("changebotusername", new ChangeBotUsernameCommand());
+		superadminCommandMap.put("changebotusername", new ChangeBotUsernameCommand());
+		
+		// Admin commands
+		adminCommandMap.put("setup", new SetupCommand());
 		
 		// Public commands
-		commandMap.put("test", new TestCommand());
-		commandMap.put("newawarded", new GDEventsCommand());
+		commandMap.put("ping", new PingCommand());
+		commandMap.put("gdevents", new GDEventsCommand());
+		commandMap.put("help", new HelpCommand());
 	}
 
 	/**
@@ -87,15 +95,18 @@ public class CommandHandler {
 		List<String> argsList = new ArrayList<>(Arrays.asList(argArray));
 		argsList.remove(0); // Remove the command
 
-		if (commandMap.containsKey(commandStr)) {
-			try {
+		try {
+			if (superadminCommandMap.containsKey(commandStr))
+				superadminCommandMap.get(commandStr).runCommand(event, argsList);
+			else if (adminCommandMap.containsKey(commandStr))
+				adminCommandMap.get(commandStr).runCommand(event, argsList);
+			else if (commandMap.containsKey(commandStr))
 				commandMap.get(commandStr).runCommand(event, argsList);
-			} catch (CommandFailedException e) {
-				AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getDenialReason());
-			} catch (DiscordException e) {
-				AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");
-				e.printStackTrace();
-			} 
+		} catch (CommandFailedException e) {
+			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getDenialReason());
+		} catch (DiscordException e) {
+			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");
+			System.err.println(e.getErrorMessage());
 		}
 	}
 }

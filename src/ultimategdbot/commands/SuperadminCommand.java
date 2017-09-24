@@ -31,5 +31,5 @@ public abstract class SuperadminCommand implements Command {
 	 * @param event
 	 * @param args
 	 */
-	public abstract void runSuperadminCommand(MessageReceivedEvent event, List<String> args);
+	public abstract void runSuperadminCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException;
 }

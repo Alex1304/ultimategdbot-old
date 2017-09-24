@@ -9,17 +9,17 @@ package ultimategdbot.net.database.entities;
 public class GuildSettings {
 	
 	private long guildId;
-	private long gdeventAwardedSubscriberRoleId;
-	private long gdeventAwardedSubscriberChannelId;
+	private long gdeventSubscriberRoleId;
+	private long gdeventSubscriberChannelId;
 	
 	public GuildSettings() {}
 	
-	public GuildSettings(long guildId, long gdeventAwardedSubscriberRoleId,
-			long gdeventAwardedSubscriberChannelId) {
+	public GuildSettings(long guildId, long gdeventSubscriberRoleId,
+			long gdeventSubscriberChannelId) {
 		super();
 		this.guildId = guildId;
-		this.gdeventAwardedSubscriberRoleId = gdeventAwardedSubscriberRoleId;
-		this.gdeventAwardedSubscriberChannelId = gdeventAwardedSubscriberChannelId;
+		this.gdeventSubscriberRoleId = gdeventSubscriberRoleId;
+		this.gdeventSubscriberChannelId = gdeventSubscriberChannelId;
 	}
 
 	public long getGuildId() {
@@ -30,20 +30,20 @@ public class GuildSettings {
 		this.guildId = guildId;
 	}
 
-	public long getGdeventAwardedSubscriberRoleId() {
-		return gdeventAwardedSubscriberRoleId;
+	public long getGdeventSubscriberRoleId() {
+		return gdeventSubscriberRoleId;
 	}
 
-	public void setGdeventAwardedSubscriberRoleId(long gdeventAwardedSubscriberRoleId) {
-		this.gdeventAwardedSubscriberRoleId = gdeventAwardedSubscriberRoleId;
+	public void setGdeventSubscriberRoleId(long gdeventSubscriberRoleId) {
+		this.gdeventSubscriberRoleId = gdeventSubscriberRoleId;
 	}
 
-	public long getGdeventAwardedSubscriberChannelId() {
-		return gdeventAwardedSubscriberChannelId;
+	public long getGdeventSubscriberChannelId() {
+		return gdeventSubscriberChannelId;
 	}
 
-	public void setGdeventAwardedSubscriberChannelId(long gdeventAwardedSubscriberChannelId) {
-		this.gdeventAwardedSubscriberChannelId = gdeventAwardedSubscriberChannelId;
+	public void setGdeventSubscriberChannelId(long gdeventSubscriberChannelId) {
+		this.gdeventSubscriberChannelId = gdeventSubscriberChannelId;
 	}
 	
 }

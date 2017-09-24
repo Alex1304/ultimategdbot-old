@@ -20,10 +20,19 @@ public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedL
 		
 		for (GuildSettings gs : gsList) {
 			IGuild guild = Main.client.getGuildByID(gs.getGuildId());
-			IChannel channelAwardedSub = guild.getChannelByID(gs.getGdeventAwardedSubscriberChannelId());
-			IRole roleAwardedSub = guild.getRoleByID(gs.getGdeventAwardedSubscriberRoleId());
-			for (Object level : args)
-				AppTools.sendMessage(channelAwardedSub, roleAwardedSub.mention() + " NEW RATE!\n```" + level.toString() + "```");
+			IChannel channelGDEventSub = guild.getChannelByID(gs.getGdeventSubscriberChannelId());
+			IRole roleGEventSub = guild.getRoleByID(gs.getGdeventSubscriberRoleId());
+			for (Object level : args) {
+				if (roleGEventSub != null && channelGDEventSub != null)
+					AppTools.sendMessage(channelGDEventSub, roleGEventSub.mention() +
+							" A new level has just been rated on Geometry Dash!!!\n```" + level.toString() + "```");
+				else
+					if (guild != null)
+						System.err.println("Unable to send notification message upon new GD event in guild " + guild.getName()
+							+ ": Channel or/and Role info are not correctly provided");
+					else
+						new GuildSettingsDAO().delete(gs);
+			}
 		}
 	}
 //"NEW RATE!\n```" + level.toString() + "```"

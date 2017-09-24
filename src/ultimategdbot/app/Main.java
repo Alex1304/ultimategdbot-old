@@ -2,7 +2,11 @@ package ultimategdbot.app;
 
 import static ultimategdbot.app.AppTools.createClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.obj.IUser;
 import ultimategdbot.commands.CommandHandler;
 import ultimategdbot.discordevents.DiscordEvents;
 import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
@@ -26,6 +30,10 @@ public class Main {
 	public static IDiscordClient client;
 	
 	public static long superadminID;
+	
+	public static IUser superadmin;
+	
+	private static List<Thread> threadList = new ArrayList<>();
 
 	/**
 	 * Starts the program Creates the client, registers events and then logs in
@@ -48,8 +56,8 @@ public class Main {
 		// Building client
 		client = createClient(botToken, false);
 		
-		// Launching all Runnable processes
-		new Thread(new LoopRequestNewAwardedLevels()).start();
+		
+		startThreads();
 		
 		// Registering events
 		client.getDispatcher().registerListener(new CommandHandler());
@@ -57,5 +65,31 @@ public class Main {
 		
 		// Let's start!
 		client.login();
+	}
+	
+	private static void startThreads() {
+		// Registering threads
+		threadList.add(new Thread(new LoopRequestNewAwardedLevels()));
+		threadList.add(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (!client.isReady()) {
+					try {
+						Thread.sleep(800);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				superadmin = client.fetchUser(superadminID);
+				if (superadmin == null)
+					throw new RuntimeException("The superadmin user with ID " + superadminID + " could not be found.");
+				System.out.println("Superadmin user succesfully fetched!");
+			}
+		}));
+		
+		// Start all
+		for (Thread t : threadList)
+			t.start();
 	}
 }

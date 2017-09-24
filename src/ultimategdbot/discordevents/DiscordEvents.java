@@ -24,11 +24,6 @@ public class DiscordEvents {
 			gs = new GuildSettings(event.getGuild().getLongID(), 0, 0);
 			sendWelcomeMessage(event.getGuild());
 			gsdao.insert(gs);
-			System.out.println("New guild: " + event.getGuild().getName());
-		} else {
-//			if (gs.getGdeventAwardedSubscriberChannelId() == 0)
-//				gsdao.delete(gs);
-			System.out.println("Existing guild: " + event.getGuild().getName());
 		}
 	}
 
@@ -42,9 +37,7 @@ public class DiscordEvents {
 
 	/**
 	 * When the bot joins a new guild, it will send a "Thanks for the invite"
-	 * message which contains instructions for the admins to setup the bot. Will
-	 * try to send the welcome message to all of the guilds in
-	 * guildsPendingForWelcomeMessage
+	 * message which contains instructions for the admins to setup the bot.
 	 */
 	public void sendWelcomeMessage(IGuild guild) {
 		// First channel which the bot can send messages in
@@ -80,9 +73,9 @@ public class DiscordEvents {
 			String SAName = superadmin.getName() + "#" + superadmin.getDiscriminator();
 			AppTools.sendMessage(channel,
 					"Hello! Thanks for inviting me :smile:\n" + "My name is UltimateGDBot and I've been developped by "
-							+ SAName + "!"
+							+ SAName + "!\n"
 							+ "I got tons of useful commands for Geometry Dash players, type `g!help` for"
-							+ "more info." + "If you are an Administrator of this server, run the command `g!setup`"
+							+ "more info.\n" + "If you are an Administrator of this server, run the command `g!setup`"
 							+ " to gain access to the entirety of my features!");
 		}
 	}

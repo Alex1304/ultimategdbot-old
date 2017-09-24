@@ -17,8 +17,8 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
 					"INSERT INTO guild_settings VALUES (?, ?, ?)");
 			ps.setLong(1, obj.getGuildId());
-			ps.setLong(2, obj.getGdeventAwardedSubscriberRoleId());
-			ps.setLong(3, obj.getGdeventAwardedSubscriberChannelId());
+			ps.setLong(2, obj.getGdeventSubscriberRoleId());
+			ps.setLong(3, obj.getGdeventSubscriberChannelId());
 			ps.execute();
 			
 		} catch (SQLException e) {
@@ -31,9 +31,9 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
 					"UPDATE guild_settings SET gdevent_awarded_subscriber_roleid = ?"
-					+ " AND gdevent_awarded_subscriber_channelid = ? WHERE guild_id = ?");
-			ps.setLong(1, obj.getGdeventAwardedSubscriberRoleId());
-			ps.setLong(2, obj.getGdeventAwardedSubscriberChannelId());
+					+ ", gdevent_awarded_subscriber_channelid = ? WHERE guild_id = ?");
+			ps.setLong(1, obj.getGdeventSubscriberRoleId());
+			ps.setLong(2, obj.getGdeventSubscriberChannelId());
 			ps.setLong(3, obj.getGuildId());
 			ps.executeUpdate();
 			

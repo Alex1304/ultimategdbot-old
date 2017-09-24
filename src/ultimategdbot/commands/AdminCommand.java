@@ -25,6 +25,14 @@ public abstract class AdminCommand implements Command {
 		
 		if (!authorPerms.contains(Permissions.ADMINISTRATOR))
 			throw new CommandFailedException("You need the Administrator permission to execute this command.");
+		
+		runAdminCommand(event, args);
 	}
-
+	
+	/**
+	 * This is called in the regular runCommand() method, so no need to check for superadmin privilege
+	 * @param event
+	 * @param args
+	 */
+	public abstract void runAdminCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException;
 }
