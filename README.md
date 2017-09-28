@@ -2,24 +2,30 @@
 Geometry Dash related tools for Discord
 
 # Bot status
-This bot is at the very beginning of its development so you can't invite it to your server yet. Stay tuned...
+The bot is online with 95% average uptime!
 
 # Implemented features
 * Simple command handling system
+* Get notified when a new level gets rated on Geometry Dash!
 
 # Upcoming Features
 * Level requests management system for Discord servers
 * Server leaderboards
-* Notification system on new uploaded/rated levels
 * Megacollabs management tools
 * Profile stats and level info
 * More in the future...
 
 # Contribute
-You are free to suggest any feature for the bot, as long as it's related to Geometry Dash. You can also contribute directly to the project by following those simple steps:
+You are free to suggest any feature for the bot, as long as it's related to Geometry Dash. You can also contribute directly to the project by following those steps:
 * Fork the project and create a new branch
 * Create a new bot user using the Discord Developers website
 * Make your bot join one of your servers that you're going to use for your tests
-* To run the bot, you must specify two arguments : the first one is the bot authentication token, and the second one is your Discord user ID (for Superadmin-only commands)
-* When you're done, deploy the project on GitHub and open a pull request :)
+* To run the bot, you must specify two arguments : the first one is the bot authentication token, and the second one is your own Discord user ID (for Superadmin-only commands)
+* Add the environment variables DB\_USERNAME and DB\_PASSWORD to your system so the bot can connect to your own test database. Don't forget to run the database_structure.sql located in the docs folder in order to create the tables on your side!
+* When you're done, deploy the project on GitHub and open a pull request by providing as much details as possible about your changes :)
 
+# Contact me
+Twitter: @gd_alex1304
+Discord: Alex1304#9704
+Geometry Dash IGN: Alex1304
+Email: mirandaa1304@gmail.com
