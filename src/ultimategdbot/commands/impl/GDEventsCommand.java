@@ -1,17 +1,19 @@
 package ultimategdbot.commands.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.util.DiscordException;
-import ultimategdbot.app.AppTools;
+import sx.blah.discord.util.MissingPermissionsException;
 import ultimategdbot.commands.Command;
+import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
+import ultimategdbot.util.AppTools;
 
-public class GDEventsCommand implements Command {
+public class GDEventsCommand extends CoreCommand {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
@@ -49,7 +51,7 @@ public class GDEventsCommand implements Command {
 					throw new CommandFailedException("Correct usage:\n`g!gdevents [subscribe|unsubscribe]`");
 			}
 
-		} catch (DiscordException e) {
+		} catch (MissingPermissionsException e) {
 			AppTools.sendMessage(event.getChannel(),
 					"Oops, I don't seem to have the permission to assign roles to members...");
 		}
@@ -61,6 +63,12 @@ public class GDEventsCommand implements Command {
 				+ " (RobTop rating new levels, a member of this server gets his level rated, etc), I"
 				+ " will send a notification in the server by pinging a role. Use this command to"
 				+ " assign/remove this role by yourself!";
+	}
+
+	@Override
+	protected Map<String, Command> initSubCommandMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

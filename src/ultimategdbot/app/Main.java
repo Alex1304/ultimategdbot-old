@@ -1,15 +1,17 @@
 package ultimategdbot.app;
 
-import static ultimategdbot.app.AppTools.createClient;
+import static ultimategdbot.util.AppTools.createClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IUser;
-import ultimategdbot.commands.CommandHandler;
+import ultimategdbot.commands.DiscordCommandHandler;
 import ultimategdbot.discordevents.DiscordEvents;
 import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
+import ultimategdbot.events.observer.impl.NewAwardedLevelsObserver;
+import ultimategdbot.net.geometrydash.GDLevel;
 
 /**
  * Main class of the program Contains everything required for the bot to work
@@ -60,7 +62,7 @@ public class Main {
 		startThreads();
 		
 		// Registering events
-		client.getDispatcher().registerListener(new CommandHandler());
+		client.getDispatcher().registerListener(new DiscordCommandHandler());
 		client.getDispatcher().registerListener(new DiscordEvents());
 		
 		// Let's start!
@@ -70,7 +72,7 @@ public class Main {
 	private static void startThreads() {
 		// Registering threads
 		threadList.add(new Thread(new LoopRequestNewAwardedLevels()));
-		threadList.add(new Thread(new Runnable() {
+		threadList.add(new Thread(new Runnable() { // Fetches the IUser instance for superadminID when client is ready
 			@Override
 			public void run() {
 				while (!client.isReady()) {
@@ -85,6 +87,7 @@ public class Main {
 				if (superadmin == null)
 					throw new RuntimeException("The superadmin user with ID " + superadminID + " could not be found.");
 				System.out.println("Superadmin user succesfully fetched!");
+				NewAwardedLevelsObserver.sendEmbedForLevel(new GDLevel(35491276, "My level", "Alex1304", "Awesome level made in 420 minutes. Hope you like :)", 7, false, false, 500, 200));
 			}
 		}));
 		

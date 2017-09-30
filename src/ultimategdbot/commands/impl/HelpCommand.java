@@ -1,29 +1,31 @@
 package ultimategdbot.commands.impl;
 import java.util.List;
+import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import ultimategdbot.app.AppTools;
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
-import ultimategdbot.commands.CommandHandler;
+import ultimategdbot.commands.DiscordCommandHandler;
+import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
+import ultimategdbot.util.AppTools;
 
-public class HelpCommand implements Command {
+public class HelpCommand extends CoreCommand {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		String helpMsg = "**__General Commands:__**\n";
-		for (Command comm : CommandHandler.commandMap.values())
+		for (CoreCommand comm : DiscordCommandHandler.commandMap.values())
 			helpMsg += comm.getHelp();
 		
 		helpMsg += "\n\n__**Administrator commands** (you need the Administrator permission in this server to run them):__\n";
-		for (Command comm : CommandHandler.adminCommandMap.values())
+		for (CoreCommand comm : DiscordCommandHandler.adminCommandMap.values())
 			helpMsg += comm.getHelp();
 		
 		if (event.getAuthor().equals(Main.superadmin)) {
 			helpMsg += "\n\n__**Superadmin commands** (only the big boss "
 					+ Main.superadmin.getName() + "#" + Main.superadmin.getDiscriminator() + " can run them :smirk:):__\n";
-			for (Command comm : CommandHandler.superadminCommandMap.values())
+			for (CoreCommand comm : DiscordCommandHandler.superadminCommandMap.values())
 				helpMsg += comm.getHelp();
 		}
 		
@@ -33,6 +35,12 @@ public class HelpCommand implements Command {
 	@Override
 	public String getHelp() {
 		return "`g!help` - Displays this message\n";
+	}
+
+	@Override
+	protected Map<String, Command> initSubCommandMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

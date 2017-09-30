@@ -12,7 +12,9 @@ import ultimategdbot.exceptions.CommandFailedException;
  * @author Alex1304
  *
  */
-public abstract class SuperadminCommand implements Command {
+public abstract class SuperadminCoreCommand extends CoreCommand {
+	
+	
 
 	/**
 	 * {@inheritDoc}

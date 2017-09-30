@@ -1,5 +1,7 @@
 package ultimategdbot.exceptions;
 
+import ultimategdbot.commands.CoreCommand;
+
 /**
  * Exception thrown when someone is triggering a command which he is not allowed to use
  * (for example a random user trying to execute a superadmin-only command)
@@ -11,18 +13,22 @@ public class CommandFailedException extends Exception {
 
 	private static final long serialVersionUID = -1502808798318227533L;
 	
-	private String denialReason;
+	private String failureReason;
 	
-	public CommandFailedException(String denialReason) {
-		this.denialReason = denialReason;
+	public CommandFailedException(CoreCommand cmd) {
+		this.failureReason = "Incorrect usage!\n " + cmd.getHelp();
+	}
+	
+	public CommandFailedException(String failureReason) {
+		this.failureReason = failureReason;
 	}
 
-	public String getDenialReason() {
-		return denialReason;
+	public String getFailureReason() {
+		return failureReason;
 	}
 
-	public void setDenialReason(String denialReason) {
-		this.denialReason = denialReason;
+	public void setFailureReason(String failureReason) {
+		this.failureReason = failureReason;
 	}
 	
 }

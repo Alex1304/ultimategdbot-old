@@ -11,13 +11,13 @@ import java.util.Map;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.DiscordException;
-import ultimategdbot.app.AppTools;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
 import ultimategdbot.commands.impl.HelpCommand;
 import ultimategdbot.commands.impl.PingCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
+import ultimategdbot.util.AppTools;
 
 /**
  * Bot commands are handled here, using the Discord API based on events
@@ -25,19 +25,19 @@ import ultimategdbot.exceptions.CommandFailedException;
  * @author Alex1304
  *
  */
-public class CommandHandler {
+public class DiscordCommandHandler {
 
 	/**
 	 * Maps that associates text commands to their actions.
 	 */
-	public static Map<String, Command> commandMap = new HashMap<>();
-	public static Map<String, Command> superadminCommandMap = new HashMap<>();
-	public static Map<String, Command> adminCommandMap = new HashMap<>();
+	public static Map<String, CoreCommand> commandMap = new HashMap<>();
+	public static Map<String, CoreCommand> superadminCommandMap = new HashMap<>();
+	public static Map<String, CoreCommand> adminCommandMap = new HashMap<>();
 
 	/**
 	 * Constructor
 	 */
-	public CommandHandler() {
+	public DiscordCommandHandler() {
 		loadCommandMaps();
 	}
 
@@ -103,10 +103,21 @@ public class CommandHandler {
 			else if (commandMap.containsKey(commandStr))
 				commandMap.get(commandStr).runCommand(event, argsList);
 		} catch (CommandFailedException e) {
-			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getDenialReason());
+			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getFailureReason());
 		} catch (DiscordException e) {
 			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");
 			System.err.println(e.getErrorMessage());
+		} catch (Exception e) {
+			AppTools.sendDebugPMToSuperadmin(
+					"An internal error occured in the command handler. See logs for more details\n"
+							+ "Context info:\n"
+							+ "```\n"
+							+ "Guild: " + event.getGuild().getName() + " (" + event.getGuild().getLongID() + ")\n"
+							+ "Channel: #" + event.getChannel().getName() + "\n"
+							+ "Author: " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + "\n"
+							+ "Full message: " + event.getMessage().getContent() + "\n"
+							+ "```\n");
+			e.printStackTrace();
 		}
 	}
 }

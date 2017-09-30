@@ -3,10 +3,12 @@ package ultimategdbot.commands.impl;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.List;
+import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import ultimategdbot.app.AppTools;
 import ultimategdbot.commands.Command;
+import ultimategdbot.commands.CoreCommand;
+import ultimategdbot.util.AppTools;
 
 /**
  * Ping command
@@ -14,7 +16,7 @@ import ultimategdbot.commands.Command;
  * @author Alex1304
  *
  */
-public class PingCommand implements Command {
+public class PingCommand extends CoreCommand {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) {
@@ -27,6 +29,11 @@ public class PingCommand implements Command {
 	@Override
 	public String getHelp() {
 		return "`g!ping` - Gives the bot response time in milliseconds\n";
+	}
+
+	@Override
+	public Map<String, Command> initSubCommandMap() {
+		return null;
 	}
 
 }

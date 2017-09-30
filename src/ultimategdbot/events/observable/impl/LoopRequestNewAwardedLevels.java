@@ -11,6 +11,7 @@ import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDLevelFactory;
 import ultimategdbot.net.geometrydash.GDServer;
+import ultimategdbot.util.AppTools;
 
 public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopRequestNewAwardedLevels> {
 
@@ -65,7 +66,9 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 			try {
 				Thread.sleep(REQUEST_COOLDOWN_SECONDS * 1000);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				AppTools.sendDebugPMToSuperadmin(
+						"An error occured when trying to fetch Awarded levels from GD Servers: " + e.getLocalizedMessage());
+				System.err.println(e.getLocalizedMessage());
 			}
 		}
 	}
