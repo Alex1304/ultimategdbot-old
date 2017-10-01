@@ -10,8 +10,6 @@ import sx.blah.discord.handle.obj.IUser;
 import ultimategdbot.commands.DiscordCommandHandler;
 import ultimategdbot.discordevents.DiscordEvents;
 import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
-import ultimategdbot.events.observer.impl.NewAwardedLevelsObserver;
-import ultimategdbot.net.geometrydash.GDLevel;
 
 /**
  * Main class of the program Contains everything required for the bot to work
@@ -87,7 +85,6 @@ public class Main {
 				if (superadmin == null)
 					throw new RuntimeException("The superadmin user with ID " + superadminID + " could not be found.");
 				System.out.println("Superadmin user succesfully fetched!");
-				NewAwardedLevelsObserver.sendEmbedForLevel(new GDLevel(35491276, "My level", "Alex1304", "Awesome level made in 420 minutes. Hope you like :)", 7, false, false, 500, 200));
 			}
 		}));
 		

@@ -6,8 +6,10 @@ import java.io.IOException;
 
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.DiscordException;
@@ -81,10 +83,26 @@ public class AppTools {
 	 * @param channel
 	 * @param message
 	 */
-	public static void sendMessage(IChannel channel, String message) {
+	public static IMessage sendMessage(IChannel channel, String message) {
 		RequestBuffer.request(() -> {
-			channel.sendMessage(message);
+			return channel.sendMessage(message);
 		});
+		
+		return null;
+	}
+
+	/**
+	 * Sends a message in Discord to the specified channel using a RequestBuffer
+	 * 
+	 * @param channel
+	 * @param message
+	 */
+	public static IMessage sendMessage(IChannel channel, String message, EmbedObject embed) {
+		RequestBuffer.request(() -> {
+			return channel.sendMessage(message, embed);
+		});
+		
+		return null;
 	}
 
 	/**
@@ -184,6 +202,10 @@ public class AppTools {
 		return guild.getRoleByID(roleID);
 	}
 	
+	/**
+	 * Sends a PM to the superadmin for debugging
+	 * @param msg
+	 */
 	public static void sendDebugPMToSuperadmin(String msg) {
 		sendMessage(Main.superadmin.getOrCreatePMChannel(), msg);
 	}

@@ -17,6 +17,20 @@ import ultimategdbot.exceptions.RawDataMalformedException;
 public class GDLevelFactory {
 	
 	/**
+	 * Associates the integer value in the raw data with the corresponding difficulty
+	 */
+	private static Map<Integer, Difficulty> difficultyByValue = new HashMap<>();
+	
+	static {
+		difficultyByValue.put(0, Difficulty.NA);
+		difficultyByValue.put(10, Difficulty.EASY);
+		difficultyByValue.put(20, Difficulty.NORMAL);
+		difficultyByValue.put(30, Difficulty.HARD);
+		difficultyByValue.put(40, Difficulty.HARDER);
+		difficultyByValue.put(50, Difficulty.INSANE);
+	}
+	
+	/**
 	 * Reads the rawdata and return an instance of GDLevel corresponding to the requested level.
 	 * Taking the first search result
 	 * 
@@ -43,17 +57,26 @@ public class GDLevelFactory {
 		Map<Integer, String> structuredLvlInfo = structureLevelInfo(cutOneLevel(cutLevelInfoPart(rawData), index));
 		Map<Long, String> structuredCreatorsInfo = structureCreatorsInfo(cutCreatorInfoPart(rawData));
 		
+		// Determines the difficulty of the level
+		Difficulty lvlDiff = difficultyByValue.get(Integer.parseInt(structuredLvlInfo.get(9)));
+		if (structuredLvlInfo.get(25).equals("1"))
+			lvlDiff = Difficulty.AUTO;
+		if (structuredLvlInfo.get(17).equals("1"))
+			lvlDiff = Difficulty.DEMON;
+		
 		try {
 			return new GDLevel(
 				Long.parseLong(structuredLvlInfo.get(1)),
 				structuredLvlInfo.get(2),
 				structuredCreatorsInfo.get(Long.parseLong(structuredLvlInfo.get(6))),
 				new String(Base64.getUrlDecoder().decode(structuredLvlInfo.get(3))),
+				lvlDiff,
 				Integer.parseInt(structuredLvlInfo.get(18)),
 				!structuredLvlInfo.get(19).equals("0"),
 				structuredLvlInfo.get(42).equals("1"),
 				Integer.parseInt(structuredLvlInfo.get(10)),
-				Integer.parseInt(structuredLvlInfo.get(14))
+				Integer.parseInt(structuredLvlInfo.get(14)),
+				Length.values()[Integer.parseInt(structuredLvlInfo.get(15))]
 			);
 		} catch (NullPointerException|IllegalArgumentException e) {
 			throw new RawDataMalformedException();

@@ -6,24 +6,28 @@ public class GDLevel {
 	private String name;
 	private String creator;
 	private String description;
+	private Difficulty difficulty;
 	private int stars;
 	private boolean featured;
 	private boolean epic;
 	private int downloads;
 	private int likes;
+	private Length length;
 	
-	public GDLevel(long id, String name, String creator, String description, int stars, boolean featured, boolean epic,
-			int downloads, int likes) {
+	public GDLevel(long id, String name, String creator, String description, Difficulty difficulty, int stars, boolean featured, boolean epic,
+			int downloads, int likes, Length length) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.creator = creator;
 		this.description = description;
+		this.difficulty = difficulty;
 		this.stars = stars;
 		this.featured = featured;
 		this.epic = epic;
 		this.downloads = downloads;
 		this.likes = likes;
+		this.length = length;
 	}
 
 	public long getId() {
@@ -40,6 +44,10 @@ public class GDLevel {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public Difficulty getDifficulty() {
+		return difficulty;
 	}
 
 	public int getStars() {
@@ -61,6 +69,10 @@ public class GDLevel {
 	public int getLikes() {
 		return likes;
 	}
+	
+	public Length getLength() {
+		return length;
+	}
 
 	@Override
 	public int hashCode() {
@@ -68,6 +80,7 @@ public class GDLevel {
 		int result = 1;
 		result = prime * result + ((creator == null) ? 0 : creator.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((difficulty == null) ? 0 : difficulty.hashCode());
 		result = prime * result + downloads;
 		result = prime * result + (epic ? 1231 : 1237);
 		result = prime * result + (featured ? 1231 : 1237);
@@ -96,6 +109,8 @@ public class GDLevel {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
+			return false;
+		if (difficulty != other.difficulty)
 			return false;
 		if (downloads != other.downloads)
 			return false;
