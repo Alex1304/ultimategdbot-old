@@ -11,33 +11,30 @@ import sx.blah.discord.handle.obj.IRole;
 import ultimategdbot.commands.AdminCoreCommand;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.impl.subcommands.SetupEditSubCommand;
+import ultimategdbot.commands.impl.subcommands.SetupResetSubCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.GuildSettingsAsObject;
+import ultimategdbot.util.Settings;
 
 public class SetupCommand extends AdminCoreCommand {
 	
-	private Map<String, String> settings = new HashMap<>();
+	private Map<Settings, String> settings = new HashMap<>();
 	private GuildSettingsDAO gsdao = new GuildSettingsDAO();
 	private GuildSettingsAsObject gso;
 
 	@Override
 	public void runAdminCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		this.gso = new GuildSettingsAsObject(gsdao.find(event.getGuild().getLongID()));
-		
-		if (gso.isNull())
-			throw new CommandFailedException("This guild couldn't be found in the database.");
+		this.gso = new GuildSettingsAsObject(gsdao.findOrCreate(event.getGuild().getLongID()));
 		
 		// Whether the user typed the command with or without args
 		if (args.size() == 0) {
 			refreshSettingsMap(gso);
 			AppTools.sendMessage(event.getChannel(), settingsMapAsString());
 		} else {
-			if (args.size() < 3)
+			if (!triggerSubCommand(args.get(0), event, args.subList(1, args.size())))
 				throw new CommandFailedException(this);
-			
-			triggerSubCommand(args.get(0), event, args.subList(1, args.size()));
 		}
 	}
 	
@@ -52,8 +49,8 @@ public class SetupCommand extends AdminCoreCommand {
 		IChannel gdeventsChannel = gso.getGdEventsAnnouncementChannel();
 		
 		// Adding them to the map after converting them as String
-		settings.put("gdevents_subscriber_role", gdeventsSubRole == null ? "Undefined" : gdeventsSubRole.getName());
-		settings.put("gdevents_announcements_channel", gdeventsChannel == null ? "Undefined" : gdeventsChannel.getName());
+		settings.put(Settings.GDEVENTS_SUBSCRIBER_ROLE, gdeventsSubRole == null ? "Undefined" : gdeventsSubRole.getName());
+		settings.put(Settings.GDEVENTS_ANNOUNCEMENTS_CHANNEL, gdeventsChannel == null ? "Undefined" : gdeventsChannel.getName());
 	}
 	
 	/**
@@ -63,8 +60,8 @@ public class SetupCommand extends AdminCoreCommand {
 	private String settingsMapAsString() {
 		String message = "**Bot settings for this server:**\n";
 		message += "```\n";
-		for (Entry<String, String> entry : settings.entrySet())
-			message += entry.getKey() + " : " + entry.getValue() + "\n";
+		for (Entry<Settings, String> entry : settings.entrySet())
+			message += entry.getKey().toString() + " : " + entry.getValue() + "\n";
 		message += "```\n";
 		message += "To edit a setting, use `g!setup edit <setting_name> <new_value>`\n";
 		message += "To reset a setting to its default value, use `g!setup reset <setting_name>`\n";
@@ -74,17 +71,18 @@ public class SetupCommand extends AdminCoreCommand {
 	
 	@Override
 	public String getHelp() {
-		return "`g!setup [edit <setting_name> <new_value>]` - View and edit the bot settings for this server";
+		return "`g!setup [edit <setting_name> <new_value>|reset (<setting_name>]` - View and edit the bot settings for this server\n";
 	}
 
 	@Override
 	protected Map<String, Command> initSubCommandMap() {
 		Map<String, Command> subCommandMap = new HashMap<>();
 		subCommandMap.put("edit", new SetupEditSubCommand(this));
+		subCommandMap.put("reset", new SetupResetSubCommand(this));
 		return subCommandMap;
 	}
 
-	public Map<String, String> getSettings() {
+	public Map<Settings, String> getSettings() {
 		return settings;
 	}
 

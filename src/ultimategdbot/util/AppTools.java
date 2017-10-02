@@ -190,7 +190,7 @@ public class AppTools {
 			roleID = Long.parseLong(str);
 		} catch (NumberFormatException e) {
 			try {
-				roleID = Long.parseLong(str.substring(2, str.length() -1));
+				roleID = Long.parseLong(str.substring(3, str.length() -1));
 			} catch (NumberFormatException e2) {
 				try {
 					roleID = guild.getRolesByName(str).get(0).getLongID();

@@ -13,7 +13,9 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.util.DiscordException;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
+import ultimategdbot.commands.impl.GuildListCommand;
 import ultimategdbot.commands.impl.HelpCommand;
+import ultimategdbot.commands.impl.InviteCommand;
 import ultimategdbot.commands.impl.PingCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
@@ -47,6 +49,7 @@ public class DiscordCommandHandler {
 	private void loadCommandMaps() {
 		// Superadmin commands
 		superadminCommandMap.put("changebotusername", new ChangeBotUsernameCommand());
+		superadminCommandMap.put("guildlist", new GuildListCommand());
 		
 		// Admin commands
 		adminCommandMap.put("setup", new SetupCommand());
@@ -55,6 +58,7 @@ public class DiscordCommandHandler {
 		commandMap.put("ping", new PingCommand());
 		commandMap.put("gdevents", new GDEventsCommand());
 		commandMap.put("help", new HelpCommand());
+		commandMap.put("invite", new InviteCommand());
 	}
 
 	/**

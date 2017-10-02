@@ -38,7 +38,8 @@ public interface Command {
 	 * @param cmdName - The name of the command to trigger
 	 * @param event - the Discord event info provided by the parent core command
 	 * @param args - arguments to give to the subcommand
+	 * @return false if the command could not be found, true otherwise
 	 */
-	void triggerSubCommand(String cmdName, MessageReceivedEvent event, List<String> args) throws CommandFailedException;
+	boolean triggerSubCommand(String cmdName, MessageReceivedEvent event, List<String> args) throws CommandFailedException;
 
 }

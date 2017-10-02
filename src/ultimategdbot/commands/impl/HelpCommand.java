@@ -18,12 +18,12 @@ public class HelpCommand extends CoreCommand {
 		for (CoreCommand comm : DiscordCommandHandler.commandMap.values())
 			helpMsg += comm.getHelp();
 		
-		helpMsg += "\n\n__**Administrator commands** (you need the Administrator permission in this server to run them):__\n";
+		helpMsg += "\n__**Administrator commands** (you need the Administrator permission in this server to run them):__\n";
 		for (CoreCommand comm : DiscordCommandHandler.adminCommandMap.values())
 			helpMsg += comm.getHelp();
 		
 		if (event.getAuthor().equals(Main.superadmin)) {
-			helpMsg += "\n\n__**Superadmin commands** (only the big boss "
+			helpMsg += "\n__**Superadmin commands** (only the big boss "
 					+ Main.superadmin.getName() + "#" + Main.superadmin.getDiscriminator() + " can run them :smirk:):__\n";
 			for (CoreCommand comm : DiscordCommandHandler.superadminCommandMap.values())
 				helpMsg += comm.getHelp();

@@ -33,7 +33,7 @@ public class ChangeBotUsernameCommand extends SuperadminCoreCommand {
 
 	@Override
 	public String getHelp() {
-		return "`g!changebotusername <new_name>` - Changes the bot username";
+		return "`g!changebotusername <new_name>` - Changes the bot username\n";
 	}
 
 	@Override

@@ -29,6 +29,9 @@ public class Main {
 	 */
 	public static IDiscordClient client;
 	
+	public static final long CLIENT_ID = 358598636436979713L;
+	public static final long CLIENT_TEST_ID = 359406519227383818L;
+	
 	public static long superadminID;
 	
 	public static IUser superadmin;
@@ -68,18 +71,16 @@ public class Main {
 	}
 	
 	private static void startThreads() {
-		// Registering threads
-		threadList.add(new Thread(new LoopRequestNewAwardedLevels()));
+		// Registering threads that are NOT supposed to run in test environment
+		if (!System.getenv().containsKey("UGDB_TEST_ENV")) {
+			threadList.add(new Thread(new LoopRequestNewAwardedLevels()));
+		}
+		
+		// Registering other threads
 		threadList.add(new Thread(new Runnable() { // Fetches the IUser instance for superadminID when client is ready
 			@Override
 			public void run() {
-				while (!client.isReady()) {
-					try {
-						Thread.sleep(800);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+				while (!client.isReady()) {}
 				
 				superadmin = client.fetchUser(superadminID);
 				if (superadmin == null)

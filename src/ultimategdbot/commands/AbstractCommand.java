@@ -27,9 +27,13 @@ public abstract class AbstractCommand implements Command {
 	}
 	
 	@Override
-	public void triggerSubCommand(String cmdName, MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		if (subCommandMap.containsKey(cmdName))
-				subCommandMap.get(cmdName).runCommand(event, args);
+	public boolean triggerSubCommand(String cmdName, MessageReceivedEvent event, List<String> args) throws CommandFailedException {
+		if (subCommandMap.containsKey(cmdName)) {
+			subCommandMap.get(cmdName).runCommand(event, args);
+			return true;
+		}
+		else
+			return false;
 	}
 
 }

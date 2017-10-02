@@ -14,15 +14,15 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.GuildSettingsAsObject;
 import ultimategdbot.util.Settings;
 
-public class SetupEditSubCommand extends SubCommand<SetupCommand> {
-	
-	public SetupEditSubCommand(SetupCommand parentCommand) {
+public class SetupResetSubCommand extends SubCommand<SetupCommand> {
+
+	public SetupResetSubCommand(SetupCommand parentCommand) {
 		super(parentCommand);
 	}
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		if (args.size() != 2)
+		if (args.size() != 1)
 			throw new CommandFailedException(this.getParentCommand());
 		
 		GuildSettingsDAO gsdao = this.getParentCommand().getGsdao();
@@ -33,14 +33,14 @@ public class SetupEditSubCommand extends SubCommand<SetupCommand> {
 				+ "Type `g!setup` without arguments to see the available settings.\n ");
 
 		gsdao.update(gso.getGuildSettingsDBEntity());
-		AppTools.sendMessage(event.getChannel(), ":white_check_mark: Settings updated!");
+		AppTools.sendMessage(event.getChannel(), ":white_check_mark: The setting `" + args.get(0) + "` has been reset!");
 	}
 
 	@Override
 	protected Map<String, Command> initSubCommandMap() {
 		Map<String, Command> subcommands = new HashMap<>();
-		subcommands.put(Settings.GDEVENTS_SUBSCRIBER_ROLE.toString(), new EditGDEventsSubscriberRoleSubCommand(this));
-		subcommands.put(Settings.GDEVENTS_ANNOUNCEMENTS_CHANNEL.toString(), new EditGDEventsAnnouncementsChannelSubCommand(this));
+		subcommands.put(Settings.GDEVENTS_SUBSCRIBER_ROLE.toString(), new ResetGDEventsSubscriberRoleSubCommand(this));
+		subcommands.put(Settings.GDEVENTS_ANNOUNCEMENTS_CHANNEL.toString(), new ResetGDEventsAnnouncementsChannelSubCommand(this));
 		return subcommands;
 	}
 

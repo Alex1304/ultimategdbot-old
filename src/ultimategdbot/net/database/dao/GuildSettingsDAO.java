@@ -89,4 +89,14 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 		
 		return gsList;
 	}
+	
+	public GuildSettings findOrCreate(long id) {
+		GuildSettings gs = find(id);
+		if (gs == null) {
+			gs = new GuildSettings(id, 0, 0);
+			insert(gs);
+		}
+		
+		return gs;
+	}
 }
