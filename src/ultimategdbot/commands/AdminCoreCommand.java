@@ -23,7 +23,7 @@ public abstract class AdminCoreCommand extends CoreCommand {
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		if (event.getAuthor().getLongID() != Main.superadminID &&
-				PermissionUtils.hasPermissions(event.getChannel(), event.getAuthor(), Permissions.ADMINISTRATOR))
+				!PermissionUtils.hasPermissions(event.getChannel(), event.getAuthor(), Permissions.ADMINISTRATOR))
 			throw new CommandFailedException("You need the Administrator permission to execute this command.");
 		
 		runAdminCommand(event, args);
