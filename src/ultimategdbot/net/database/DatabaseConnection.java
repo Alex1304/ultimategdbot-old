@@ -2,6 +2,7 @@ package ultimategdbot.net.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -21,8 +22,15 @@ public class DatabaseConnection {
 
 	public static Connection getInstance() {
 		long currDate = new Date().getTime();
+		boolean closed;
+		
+		try {
+			closed = conn.isClosed();
+		} catch (SQLException e) {
+			closed = true;
+		}
 
-		if (currDate - dateLastInstance >= 44_363_000)
+		if (closed || currDate - dateLastInstance >= 44_000_000)
 			conn = createInstance();
 
 		return conn;

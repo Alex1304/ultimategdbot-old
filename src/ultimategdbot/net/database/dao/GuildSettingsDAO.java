@@ -46,7 +46,7 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 	public void delete(GuildSettings obj) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
-					"DELETE FROM guild_settings  WHERE guild_id = ?");
+					"DELETE FROM guild_settings WHERE guild_id = ?");
 			ps.setLong(1, obj.getGuildId());
 			ps.execute();
 			
