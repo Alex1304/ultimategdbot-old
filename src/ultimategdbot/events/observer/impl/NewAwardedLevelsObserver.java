@@ -1,5 +1,6 @@
 package ultimategdbot.events.observer.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
@@ -22,7 +23,7 @@ import ultimategdbot.util.GDUtils;
 
 public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedLevels> {
 
-	private IMessage messageOfLastRecordedLevel;
+	private List<IMessage> messageOfLastRecordedLevelForEachGuild = new ArrayList<>();
 
 	@Override
 	public void update(GDEvent event) {
@@ -34,17 +35,17 @@ public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedL
 	}
 	
 	public void updateEmbedForLastRecordedLevel(LastAwardedStateChangedGDEvent event) {
-		if (messageOfLastRecordedLevel == null)
-			return;
-		
 		GDLevel level = event.getLevel();
-		RequestBuffer.request(() -> {
-			messageOfLastRecordedLevel.edit(messageOfLastRecordedLevel.getContent(), newAwardedLevelEmbed(level));
-		});
+		
+		for (IMessage message : messageOfLastRecordedLevelForEachGuild)
+			RequestBuffer.request(() -> {
+				message.edit(message.getContent(), newAwardedLevelEmbed(level));
+			});
 	}
 
 	public void notifyNewRatesToAllSubscribers(NewAwardedGDEvent event) {
 		List<GuildSettings> gsList = new GuildSettingsDAO().findAll();
+		messageOfLastRecordedLevelForEachGuild.clear();
 
 		for (GuildSettings gs : gsList) {
 			IGuild guild = Main.client.getGuildByID(gs.getGuildId());
@@ -52,13 +53,15 @@ public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedL
 			if (guild != null) {
 				IChannel channelGDEventSub = guild.getChannelByID(gs.getGdeventSubscriberChannelId());
 				IRole roleGDEventSub = guild.getRoleByID(gs.getGdeventSubscriberRoleId());
+				IMessage lastMessage = null;
 				for (GDLevel level : event.getNewAwardedLevels()) {
 					if (channelGDEventSub != null)
-						messageOfLastRecordedLevel = AppTools.sendMessage(channelGDEventSub,
+						lastMessage = AppTools.sendMessage(channelGDEventSub,
 								(roleGDEventSub != null ? roleGDEventSub.mention() + " " : "")
 										+ "A new level has just been rated on Geometry Dash!!!",
 								newAwardedLevelEmbed(level));
 				}
+				messageOfLastRecordedLevelForEachGuild.add(lastMessage);
 			} else {
 				System.err.println("[INFO] Guild deleted");
 				new GuildSettingsDAO().delete(gs);
