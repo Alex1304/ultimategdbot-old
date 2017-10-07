@@ -3,6 +3,7 @@ package ultimategdbot.util;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -87,7 +88,7 @@ public class AppTools {
 		RequestBuffer.request(() -> {
 			return channel.sendMessage(message);
 		});
-		
+
 		return null;
 	}
 
@@ -101,7 +102,7 @@ public class AppTools {
 		RequestBuffer.request(() -> {
 			return channel.sendMessage(message, embed);
 		});
-		
+
 		return null;
 	}
 
@@ -151,22 +152,26 @@ public class AppTools {
 		}
 		return botCommandsChannel != null ? botCommandsChannel : generalChannel != null ? generalChannel : firstChannel;
 	}
-	
+
 	/**
 	 * Gets the channel of a guild by the given String.
-	 * @param str - The desired channel to look for. It can either be the name, the ID or the mention of it.
-	 * @param guild - The guild in which the desired channel is supposed to be
+	 * 
+	 * @param str
+	 *            - The desired channel to look for. It can either be the name,
+	 *            the ID or the mention of it.
+	 * @param guild
+	 *            - The guild in which the desired channel is supposed to be
 	 * @return The desired channel, or null if the channel could not be found
 	 */
 	public static IChannel stringToChannel(String str, IGuild guild) {
 		long channelID;
-		
+
 		try {
 			channelID = Long.parseLong(str);
 		} catch (NumberFormatException e) {
 			try {
-				channelID = Long.parseLong(str.substring(2, str.length() -1));
-			} catch (NumberFormatException|IndexOutOfBoundsException e2) {
+				channelID = Long.parseLong(str.substring(2, str.length() - 1));
+			} catch (NumberFormatException | IndexOutOfBoundsException e2) {
 				try {
 					channelID = guild.getChannelsByName(str).get(0).getLongID();
 				} catch (IndexOutOfBoundsException e3) {
@@ -176,21 +181,25 @@ public class AppTools {
 		}
 		return guild.getChannelByID(channelID);
 	}
-	
+
 	/**
 	 * Gets the role of a guild by the given String.
-	 * @param str - The desired role to look for. It can either be the name, the ID or the mention of it.
-	 * @param guild - The guild in which the desired role is supposed to be
+	 * 
+	 * @param str
+	 *            - The desired role to look for. It can either be the name, the
+	 *            ID or the mention of it.
+	 * @param guild
+	 *            - The guild in which the desired role is supposed to be
 	 * @return The desired role, or null if the role could not be found
 	 */
 	public static IRole stringToRole(String str, IGuild guild) {
 		long roleID;
-		
+
 		try {
 			roleID = Long.parseLong(str);
 		} catch (NumberFormatException e) {
 			try {
-				roleID = Long.parseLong(str.substring(3, str.length() -1));
+				roleID = Long.parseLong(str.substring(3, str.length() - 1));
 			} catch (NumberFormatException e2) {
 				try {
 					roleID = guild.getRolesByName(str).get(0).getLongID();
@@ -201,9 +210,26 @@ public class AppTools {
 		}
 		return guild.getRoleByID(roleID);
 	}
-	
+
+	/**
+	 * Returns a String which is the concatenation of all the String elements
+	 * from the list, each element seperated by a space.
+	 * 
+	 * @param args
+	 *            - The list to concatenate
+	 * @return the concatenated args
+	 */
+	public static String concatCommandArgs(List<String> args) {
+		String result = "";
+		for(String s : args)
+			result += s + " ";
+		
+		return result.isEmpty() ? result : result.substring(0, result.length() - 1);
+	}
+
 	/**
 	 * Sends a PM to the superadmin for debugging
+	 * 
 	 * @param msg
 	 */
 	public static void sendDebugPMToSuperadmin(String msg) {

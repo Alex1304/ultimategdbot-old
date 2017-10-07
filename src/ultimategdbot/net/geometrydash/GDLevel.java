@@ -73,68 +73,6 @@ public class GDLevel {
 	public Length getLength() {
 		return length;
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((creator == null) ? 0 : creator.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((difficulty == null) ? 0 : difficulty.hashCode());
-		result = prime * result + downloads;
-		result = prime * result + (epic ? 1231 : 1237);
-		result = prime * result + (featured ? 1231 : 1237);
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + likes;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + stars;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		GDLevel other = (GDLevel) obj;
-		if (creator == null) {
-			if (other.creator != null)
-				return false;
-		} else if (!creator.equals(other.creator))
-			return false;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (difficulty != other.difficulty)
-			return false;
-		if (downloads != other.downloads)
-			return false;
-		if (epic != other.epic)
-			return false;
-		if (featured != other.featured)
-			return false;
-		if (id != other.id)
-			return false;
-		if (likes != other.likes)
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (stars != other.stars)
-			return false;
-		return true;
-	}
-	
-	public boolean hasSameIDThan(GDLevel otherLevel) {
-		return this.id == otherLevel.id;
-	}
 	
 	@Override
 	public String toString() {
@@ -149,6 +87,53 @@ public class GDLevel {
 			+ "Downloads: " + getDownloads() + "\n"
 			+ "Likes: " + getLikes()
 		;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GDLevel other = (GDLevel) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+	
+	/**
+	 * The regular equals() definition in this class does
+	 * only compare the level ID. This method does compare
+	 * more fields : stars, difficulty, featured, epic.
+	 * 
+	 * @param obj - the other object to compare to
+	 * @return true if the current object is equal to obj along
+	 * the specified criterias.
+	 */
+	public boolean stateEquals(Object obj) {
+		if (!this.equals(obj))
+			return false;
+		
+		GDLevel other = (GDLevel) obj;
+		if (difficulty != other.difficulty)
+			return false;
+		if (epic != other.epic)
+			return false;
+		if (featured != other.featured)
+			return false;
+		if (stars != other.stars)
+			return false;
+		return true;
 	}
 	
 //	public void displayInfo() {

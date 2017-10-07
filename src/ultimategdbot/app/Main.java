@@ -1,7 +1,5 @@
 package ultimategdbot.app;
 
-import static ultimategdbot.util.AppTools.createClient;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +8,7 @@ import sx.blah.discord.handle.obj.IUser;
 import ultimategdbot.commands.DiscordCommandHandler;
 import ultimategdbot.discordevents.DiscordEvents;
 import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
+import ultimategdbot.util.AppTools;
 
 /**
  * Main class of the program Contains everything required for the bot to work
@@ -57,7 +56,7 @@ public class Main {
 		}
 		
 		// Building client
-		client = createClient(botToken, false);
+		client = AppTools.createClient(botToken, false);
 		
 		
 		startThreads();
@@ -71,12 +70,13 @@ public class Main {
 	}
 	
 	private static void startThreads() {
-		// Registering threads that are NOT supposed to run in test environment
-		if (!System.getenv().containsKey("UGDB_TEST_ENV")) {
-			threadList.add(new Thread(new LoopRequestNewAwardedLevels()));
+		// Registering threads that are ONLY supposed to run in test environment
+		if (isTestEnvironment()) {
+			// Nothing here yet
 		}
 		
 		// Registering other threads
+		threadList.add(new Thread(new LoopRequestNewAwardedLevels()));
 		threadList.add(new Thread(new Runnable() { // Fetches the IUser instance for superadminID when client is ready
 			@Override
 			public void run() {
@@ -92,5 +92,9 @@ public class Main {
 		// Start all
 		for (Thread t : threadList)
 			t.start();
+	}
+	
+	public static boolean isTestEnvironment() {
+		return System.getenv().containsKey("UGDB_TEST_ENV");
 	}
 }

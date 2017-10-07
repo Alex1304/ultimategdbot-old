@@ -22,7 +22,7 @@ public class SetupEditSubCommand extends SubCommand<SetupCommand> {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		if (args.size() != 2)
+		if (args.size() < 2)
 			throw new CommandFailedException(this.getParentCommand());
 		
 		GuildSettingsDAO gsdao = this.getParentCommand().getGsdao();

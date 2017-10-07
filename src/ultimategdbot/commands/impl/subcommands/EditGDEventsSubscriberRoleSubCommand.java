@@ -19,7 +19,7 @@ public class EditGDEventsSubscriberRoleSubCommand extends SubCommand<SetupEditSu
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		GuildSettingsAsObject gso = this.getParentCommand().getParentCommand().getGso();
-		gso.setGdEventsSubscriberRole(AppTools.stringToRole(args.get(0), event.getGuild()));
+		gso.setGdEventsSubscriberRole(AppTools.stringToRole(AppTools.concatCommandArgs(args), event.getGuild()));
 		if (gso.getGdEventsSubscriberRole() == null)
 			throw new CommandFailedException("This role could not be found");
 	}

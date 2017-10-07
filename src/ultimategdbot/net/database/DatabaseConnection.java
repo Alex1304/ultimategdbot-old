@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Date;
 
+import ultimategdbot.app.Main;
+
 /**
  * This class is used to get an instance of the connection to the database using
  * the Singleton Pattern
@@ -47,7 +49,7 @@ public class DatabaseConnection {
 			if (conn != null)
 				conn.close();
 			conn = DriverManager.getConnection(
-					System.getenv().containsKey("UGDB_TEST_ENV") ? LOCAL_DB_HOST : REMOTE_DB_HOST,
+					Main.isTestEnvironment() ? LOCAL_DB_HOST : REMOTE_DB_HOST,
 					System.getenv().get("DB_USERNAME"), System.getenv().get("DB_PASSWORD"));
 			dateLastInstance = new Date().getTime();
 			return conn;

@@ -11,6 +11,7 @@ import sx.blah.discord.handle.obj.IRole;
 import ultimategdbot.commands.AdminCoreCommand;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.impl.subcommands.SetupEditSubCommand;
+import ultimategdbot.commands.impl.subcommands.SetupInfoSubCommand;
 import ultimategdbot.commands.impl.subcommands.SetupResetSubCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
@@ -63,15 +64,16 @@ public class SetupCommand extends AdminCoreCommand {
 		for (Entry<Settings, String> entry : settings.entrySet())
 			message += entry.getKey().toString() + " : " + entry.getValue() + "\n";
 		message += "```\n";
-		message += "To edit a setting, use `g!setup edit <setting_name> <new_value>`\n";
-		message += "To reset a setting to its default value, use `g!setup reset <setting_name>`\n";
+		message += "To get more info about a specific setting, use `g!setup info <setting_name>`\n";
+		message += "To edit a field, use `g!setup edit <setting_name> <new_value>`\n";
+		message += "To reset a field to its default value, use `g!setup reset <setting_name>`\n";
 		
 		return message;
 	}
 	
 	@Override
 	public String getHelp() {
-		return "`g!setup [edit <setting_name> <new_value>|reset (<setting_name>]` - View and edit the bot settings for this server\n";
+		return "`g!setup edit <setting_name> <new_value>`, `g!setup info|reset <setting_name>` - View and edit the bot settings for this server\n";
 	}
 
 	@Override
@@ -79,6 +81,7 @@ public class SetupCommand extends AdminCoreCommand {
 		Map<String, Command> subCommandMap = new HashMap<>();
 		subCommandMap.put("edit", new SetupEditSubCommand(this));
 		subCommandMap.put("reset", new SetupResetSubCommand(this));
+		subCommandMap.put("info", new SetupInfoSubCommand(this));
 		return subCommandMap;
 	}
 
