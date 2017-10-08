@@ -37,10 +37,10 @@ public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedL
 	public void updateEmbedForLastRecordedLevel(LastAwardedStateChangedGDEvent event) {
 		GDLevel level = event.getLevel();
 		
-		for (IMessage message : messageOfLastRecordedLevelForEachGuild)
-			RequestBuffer.request(() -> {
-				message.edit(message.getContent(), newAwardedLevelEmbed(level));
-			});
+		for (IMessage message : messageOfLastRecordedLevelForEachGuild) {
+			if (message != null)
+				RequestBuffer.request(() -> message.edit(message.getContent(), newAwardedLevelEmbed(level)));
+		}
 	}
 
 	public void notifyNewRatesToAllSubscribers(NewAwardedGDEvent event) {

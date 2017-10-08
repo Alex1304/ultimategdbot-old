@@ -24,6 +24,8 @@ import ultimategdbot.app.Main;
  *
  */
 public class AppTools {
+	
+	private static volatile IMessage messageSent = null;
 
 	/**
 	 * Builds the client using the ClientBuilder object
@@ -84,26 +86,31 @@ public class AppTools {
 	 * @param channel
 	 * @param message
 	 */
-	public static IMessage sendMessage(IChannel channel, String message) {
-		RequestBuffer.request(() -> {
-			return channel.sendMessage(message);
-		});
-
-		return null;
+	public static synchronized IMessage sendMessage(IChannel channel, String message) {
+		return sendMessage(channel, message, null);
 	}
 
 	/**
-	 * Sends a message in Discord to the specified channel using a RequestBuffer
+	 * Sends a message in Discord to the specified channel using a RequestBuffer.
+	 * This method supports embeds.
 	 * 
 	 * @param channel
 	 * @param message
+	 * @return the IMessage instance of the message sent, or null if it failed to send the message
+	 * in less than 10 seconds.
 	 */
-	public static IMessage sendMessage(IChannel channel, String message, EmbedObject embed) {
+	public static synchronized IMessage sendMessage(IChannel channel, String message, EmbedObject embed) {
+		messageSent = null;
 		RequestBuffer.request(() -> {
-			return channel.sendMessage(message, embed);
+			messageSent = (embed != null) ? channel.sendMessage(message, embed) : channel.sendMessage(message);
 		});
-
-		return null;
+		
+		long time = System.currentTimeMillis();
+		while (messageSent == null && System.currentTimeMillis() - time < 10000) {}
+		
+		if (messageSent == null)
+			System.err.println("Unable to send message: Timeout.");
+		return messageSent;
 	}
 
 	/**
