@@ -1,5 +1,6 @@
 package ultimategdbot.events.observable.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +68,13 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 					} catch (RawDataMalformedException e) {
 						e.printStackTrace();
 					}
+				} catch (IOException e) {
+					AppTools.sendDebugPMToSuperadmin("Unable to communicate with Geometry Dash servers: `"
+							+ e.getLocalizedMessage() + "`");
 				} catch (Exception e) {
+					AppTools.sendDebugPMToSuperadmin(
+							"An internal error occured when trying to fetch Awarded levels from GD Servers: `"
+									+ e.getLocalizedMessage() + "`");
 					e.printStackTrace();
 				}
 			} else
@@ -75,10 +82,7 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 			try {
 				Thread.sleep(REQUEST_COOLDOWN_SECONDS * 1000);
 			} catch (InterruptedException e) {
-				AppTools.sendDebugPMToSuperadmin(
-						"An error occured when trying to fetch Awarded levels from GD Servers: "
-								+ e.getLocalizedMessage());
-				System.err.println(e.getLocalizedMessage());
+				e.printStackTrace();
 			}
 		}
 	}

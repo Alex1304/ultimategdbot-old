@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ultimategdbot</groupId>
 	<artifactId>ultimategdbot</artifactId>
-	<version>1.3</version>
+	<version>1.4</version>
 	<name>ultimategdbot</name>
 	<build>
 		<sourceDirectory>src</sourceDirectory>

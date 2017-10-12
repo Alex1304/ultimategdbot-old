@@ -16,6 +16,7 @@ import ultimategdbot.commands.impl.GDEventsCommand;
 import ultimategdbot.commands.impl.GuildListCommand;
 import ultimategdbot.commands.impl.HelpCommand;
 import ultimategdbot.commands.impl.InviteCommand;
+import ultimategdbot.commands.impl.LevelCommand;
 import ultimategdbot.commands.impl.PingCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
@@ -59,6 +60,7 @@ public class DiscordCommandHandler {
 		commandMap.put("gdevents", new GDEventsCommand());
 		commandMap.put("help", new HelpCommand());
 		commandMap.put("invite", new InviteCommand());
+		commandMap.put("level", new LevelCommand());
 	}
 
 	/**

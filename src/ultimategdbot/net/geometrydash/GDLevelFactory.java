@@ -53,18 +53,17 @@ public class GDLevelFactory {
 	 * @throws IndexOutOfBoundsException if the index given doesn't point to a search item.
 	 */
 	public static GDLevel buildGDLevelSearchedByFilter(String rawData, int index) throws RawDataMalformedException, IndexOutOfBoundsException {
-		
-		Map<Integer, String> structuredLvlInfo = structureLevelInfo(cutOneLevel(cutLevelInfoPart(rawData), index));
-		Map<Long, String> structuredCreatorsInfo = structureCreatorsInfo(cutCreatorInfoPart(rawData));
-		
-		// Determines the difficulty of the level
-		Difficulty lvlDiff = difficultyByValue.get(Integer.parseInt(structuredLvlInfo.get(9)));
-		if (structuredLvlInfo.get(25).equals("1"))
-			lvlDiff = Difficulty.AUTO;
-		if (structuredLvlInfo.get(17).equals("1"))
-			lvlDiff = Difficulty.DEMON;
-		
 		try {
+			Map<Integer, String> structuredLvlInfo = structureLevelInfo(cutOneLevel(cutLevelInfoPart(rawData), index));
+			Map<Long, String> structuredCreatorsInfo = structureCreatorsInfo(cutCreatorInfoPart(rawData));
+
+			// Determines the difficulty of the level
+			Difficulty lvlDiff = difficultyByValue.get(Integer.parseInt(structuredLvlInfo.get(9)));
+			if (structuredLvlInfo.get(25).equals("1"))
+				lvlDiff = Difficulty.AUTO;
+			if (structuredLvlInfo.get(17).equals("1"))
+				lvlDiff = Difficulty.DEMON;
+		
 			return new GDLevel(
 				Long.parseLong(structuredLvlInfo.get(1)),
 				structuredLvlInfo.get(2),
@@ -72,7 +71,7 @@ public class GDLevelFactory {
 				new String(Base64.getUrlDecoder().decode(structuredLvlInfo.get(3))),
 				lvlDiff,
 				Integer.parseInt(structuredLvlInfo.get(18)),
-				!structuredLvlInfo.get(19).equals("0"),
+				Integer.parseInt(structuredLvlInfo.get(19)),
 				structuredLvlInfo.get(42).equals("1"),
 				Integer.parseInt(structuredLvlInfo.get(10)),
 				Integer.parseInt(structuredLvlInfo.get(14)),

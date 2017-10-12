@@ -39,7 +39,6 @@ public class HelpCommand extends CoreCommand {
 
 	@Override
 	protected Map<String, Command> initSubCommandMap() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

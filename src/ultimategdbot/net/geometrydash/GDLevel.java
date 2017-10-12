@@ -8,13 +8,13 @@ public class GDLevel {
 	private String description;
 	private Difficulty difficulty;
 	private int stars;
-	private boolean featured;
+	private int featured;
 	private boolean epic;
 	private int downloads;
 	private int likes;
 	private Length length;
 	
-	public GDLevel(long id, String name, String creator, String description, Difficulty difficulty, int stars, boolean featured, boolean epic,
+	public GDLevel(long id, String name, String creator, String description, Difficulty difficulty, int stars, int featured, boolean epic,
 			int downloads, int likes, Length length) {
 		super();
 		this.id = id;
@@ -55,6 +55,10 @@ public class GDLevel {
 	}
 
 	public boolean isFeatured() {
+		return featured != 0;
+	}
+	
+	public int getFeatured() {
 		return featured;
 	}
 

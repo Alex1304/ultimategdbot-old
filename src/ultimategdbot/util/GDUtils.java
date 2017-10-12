@@ -93,6 +93,9 @@ public class GDUtils {
 				+ (lvl.getLikes() < 0 ? "<:Dislike:364076032602406912> " : "<:Like:364076087648452610> ") + lvl.getLikes() + "\t\t"
 						+ "<:Length:364077721565003786> " + lvl.getLength().toString().toUpperCase(), false);
 		
+		if (lvl.isFeatured())
+			eb.appendField("Featured", "Score: " + lvl.getFeatured(), false);
+		
 		eb.withFooterText("Level ID: " + lvl.getId());
 		
 		return eb.build();
