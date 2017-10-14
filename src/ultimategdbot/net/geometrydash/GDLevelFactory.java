@@ -21,6 +21,11 @@ public class GDLevelFactory {
 	 */
 	private static Map<Integer, Difficulty> difficultyByValue = new HashMap<>();
 	
+	/**
+	 * Associates the integer value in the raw data with the corresponding Demon difficulty
+	 */
+	private static Map<Integer, DemonDifficulty> demonDifficultyByValue = new HashMap<>();
+	
 	static {
 		difficultyByValue.put(0, Difficulty.NA);
 		difficultyByValue.put(10, Difficulty.EASY);
@@ -28,6 +33,12 @@ public class GDLevelFactory {
 		difficultyByValue.put(30, Difficulty.HARD);
 		difficultyByValue.put(40, Difficulty.HARDER);
 		difficultyByValue.put(50, Difficulty.INSANE);
+		
+		demonDifficultyByValue.put(0, DemonDifficulty.HARD);
+		demonDifficultyByValue.put(3, DemonDifficulty.EASY);
+		demonDifficultyByValue.put(4, DemonDifficulty.MEDIUM);
+		demonDifficultyByValue.put(5, DemonDifficulty.INSANE);
+		demonDifficultyByValue.put(6, DemonDifficulty.EXTREME);
 	}
 	
 	/**
@@ -70,6 +81,7 @@ public class GDLevelFactory {
 				structuredCreatorsInfo.get(Long.parseLong(structuredLvlInfo.get(6))),
 				new String(Base64.getUrlDecoder().decode(structuredLvlInfo.get(3))),
 				lvlDiff,
+				demonDifficultyByValue.get(Integer.parseInt(structuredLvlInfo.get(43))),
 				Integer.parseInt(structuredLvlInfo.get(18)),
 				Integer.parseInt(structuredLvlInfo.get(19)),
 				structuredLvlInfo.get(42).equals("1"),

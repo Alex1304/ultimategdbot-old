@@ -18,6 +18,10 @@ import ultimategdbot.util.AppTools;
  */
 public class PingCommand extends CoreCommand {
 
+	public PingCommand() {
+		super("ping");
+	}
+
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) {
 		long currMillis = LocalDateTime.now().getLong(ChronoField.MILLI_OF_DAY);
@@ -28,7 +32,17 @@ public class PingCommand extends CoreCommand {
 
 	@Override
 	public String getHelp() {
-		return "`g!ping` - Gives the bot response time in milliseconds\n";
+		return "Gives the bot response time in milliseconds";
+	}
+
+	@Override
+	public String[] getSyntax() {
+		return null;
+	}
+
+	@Override
+	public String[] getExamples() {
+		return null;
 	}
 
 	@Override

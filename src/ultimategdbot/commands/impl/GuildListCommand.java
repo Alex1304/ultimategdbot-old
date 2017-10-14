@@ -14,6 +14,10 @@ import ultimategdbot.util.AppTools;
 
 public class GuildListCommand extends SuperadminCoreCommand {
 
+	public GuildListCommand() {
+		super("guildlist");
+	}
+
 	@Override
 	public void runSuperadminCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		String message = "**UltimateGDBot is member of the following servers:**\n";
@@ -31,7 +35,17 @@ public class GuildListCommand extends SuperadminCoreCommand {
 
 	@Override
 	public String getHelp() {
-		return "`g!guildlist` - Displays the list of all the guilds received by the bot\n";
+		return "Displays the list of all the guilds received by the bot";
+	}
+
+	@Override
+	public String[] getSyntax() {
+		return null;
+	}
+
+	@Override
+	public String[] getExamples() {
+		return null;
 	}
 
 	@Override

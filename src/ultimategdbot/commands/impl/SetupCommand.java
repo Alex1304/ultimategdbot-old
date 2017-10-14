@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IRole;
+import ultimategdbot.app.Main;
 import ultimategdbot.commands.AdminCoreCommand;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.impl.subcommands.SetupEditSubCommand;
@@ -21,6 +22,10 @@ import ultimategdbot.util.Settings;
 
 public class SetupCommand extends AdminCoreCommand {
 	
+	public SetupCommand() {
+		super("setup");
+	}
+
 	private Map<Settings, String> settings = new HashMap<>();
 	private GuildSettingsDAO gsdao = new GuildSettingsDAO();
 	private GuildSettingsAsObject gso;
@@ -64,16 +69,17 @@ public class SetupCommand extends AdminCoreCommand {
 		for (Entry<Settings, String> entry : settings.entrySet())
 			message += entry.getKey().toString() + " : " + entry.getValue() + "\n";
 		message += "```\n";
-		message += "To get more info about a specific setting, use `g!setup info <setting_name>`\n";
-		message += "To edit a field, use `g!setup edit <setting_name> <new_value>`\n";
-		message += "To reset a field to its default value, use `g!setup reset <setting_name>`\n";
+		message += "Run `" + Main.CMD_PREFIX + "help setup` for details" + "\n";
 		
 		return message;
 	}
 	
 	@Override
 	public String getHelp() {
-		return "`g!setup edit <setting_name> <new_value>`, `g!setup info|reset <setting_name>` - View and edit the bot settings for this server\n";
+		return "Without arguments, displays the current bot settings for this server.\n"
+				+ "The `edit` keyword allows you to edit a field\n"
+				+ "The `info` keyword displays detailed info on a specific field\n"
+				+ "The `reset` keyword resets a field to its default value";
 	}
 
 	@Override
@@ -95,5 +101,18 @@ public class SetupCommand extends AdminCoreCommand {
 
 	public GuildSettingsAsObject getGso() {
 		return gso;
+	}
+
+	@Override
+	public String[] getSyntax() {
+		String[] res = { "", "edit <setting_name> <new_value>", "info|reset <setting_name>" };
+		return res;
+	}
+
+	@Override
+	public String[] getExamples() {
+		String[] res = { "", "edit " + Settings.values()[0].toString() + " #bot-announcements", 
+				"info " + Settings.values()[1].toString(), "reset " + Settings.values()[0].toString() };
+		return res;
 	}
 }

@@ -12,6 +12,7 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.DiscordException;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
+import ultimategdbot.commands.impl.CompareCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
 import ultimategdbot.commands.impl.GuildListCommand;
 import ultimategdbot.commands.impl.HelpCommand;
@@ -49,18 +50,23 @@ public class DiscordCommandHandler {
 	 */
 	private void loadCommandMaps() {
 		// Superadmin commands
-		superadminCommandMap.put("changebotusername", new ChangeBotUsernameCommand());
-		superadminCommandMap.put("guildlist", new GuildListCommand());
+		registerCommand(superadminCommandMap, new ChangeBotUsernameCommand());
+		registerCommand(superadminCommandMap, new GuildListCommand());
 		
 		// Admin commands
-		adminCommandMap.put("setup", new SetupCommand());
+		registerCommand(adminCommandMap, new SetupCommand());
 		
 		// Public commands
-		commandMap.put("ping", new PingCommand());
-		commandMap.put("gdevents", new GDEventsCommand());
-		commandMap.put("help", new HelpCommand());
-		commandMap.put("invite", new InviteCommand());
-		commandMap.put("level", new LevelCommand());
+		registerCommand(commandMap, new PingCommand());
+		registerCommand(commandMap, new GDEventsCommand());
+		registerCommand(commandMap, new HelpCommand());
+		registerCommand(commandMap, new InviteCommand());
+		registerCommand(commandMap, new LevelCommand());
+		registerCommand(commandMap, new CompareCommand());
+	}
+	
+	private void registerCommand(Map<String, CoreCommand> map, CoreCommand cmd) {
+		map.put(cmd.getName(), cmd);
 	}
 
 	/**

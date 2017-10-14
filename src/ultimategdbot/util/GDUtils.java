@@ -5,6 +5,7 @@ import java.util.Map;
 
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.util.EmbedBuilder;
+import ultimategdbot.net.geometrydash.Difficulty;
 import ultimategdbot.net.geometrydash.GDLevel;
 
 /**
@@ -72,6 +73,32 @@ public class GDUtils {
 		difficultyIconByName.put("10-demon-epic", "https://i.imgur.com/xtrTl4r.png");
 		difficultyIconByName.put("9-insane", "https://i.imgur.com/5VA2qDb.png");
 		difficultyIconByName.put("9-insane-epic", "https://i.imgur.com/qmfey5L.png");
+		
+		// Demon difficulties
+		difficultyIconByName.put("0-demon-medium-epic", "https://i.imgur.com/eEEzM6I.png");
+		difficultyIconByName.put("10-demon-medium-epic", "https://i.imgur.com/ghco42q.png");
+		difficultyIconByName.put("10-demon-insane", "https://i.imgur.com/nLZqoyQ.png");
+		difficultyIconByName.put("0-demon-extreme-epic", "https://i.imgur.com/p250YUh.png");
+		difficultyIconByName.put("0-demon-easy-featured", "https://i.imgur.com/r2WNVw0.png");
+		difficultyIconByName.put("10-demon-easy", "https://i.imgur.com/0zM0VuT.png");
+		difficultyIconByName.put("10-demon-medium", "https://i.imgur.com/lvpPepA.png");
+		difficultyIconByName.put("10-demon-insane-epic", "https://i.imgur.com/2BWY8pO.png");
+		difficultyIconByName.put("10-demon-medium-featured", "https://i.imgur.com/kkAZv5O.png");
+		difficultyIconByName.put("0-demon-extreme-featured", "https://i.imgur.com/4MMF8uE.png");
+		difficultyIconByName.put("0-demon-extreme", "https://i.imgur.com/v74cX5I.png");
+		difficultyIconByName.put("0-demon-medium", "https://i.imgur.com/H3Swqhy.png");
+		difficultyIconByName.put("0-demon-medium-featured", "https://i.imgur.com/IaeyGY4.png");
+		difficultyIconByName.put("0-demon-insane", "https://i.imgur.com/fNC1iFH.png");
+		difficultyIconByName.put("0-demon-easy-epic", "https://i.imgur.com/idesUcS.png");
+		difficultyIconByName.put("10-demon-easy-epic", "https://i.imgur.com/wUGOGJ7.png");
+		difficultyIconByName.put("10-demon-insane-featured", "https://i.imgur.com/RWqIpYL.png");
+		difficultyIconByName.put("10-demon-easy-featured", "https://i.imgur.com/fFq5lbN.png");
+		difficultyIconByName.put("0-demon-insane-featured", "https://i.imgur.com/1MpbSRR.png");
+		difficultyIconByName.put("0-demon-insane-epic", "https://i.imgur.com/ArGfdeh.png");
+		difficultyIconByName.put("10-demon-extreme", "https://i.imgur.com/DEr1HoM.png");
+		difficultyIconByName.put("0-demon-easy", "https://i.imgur.com/45GaxRN.png");
+		difficultyIconByName.put("10-demon-extreme-epic", "https://i.imgur.com/gFndlkZ.png");
+		difficultyIconByName.put("10-demon-extreme-featured", "https://i.imgur.com/xat5en2.png");
 	}
 	
 	/**
@@ -106,6 +133,8 @@ public class GDUtils {
 		
 		difficulty += lvl.getStars() + "-";
 		difficulty += lvl.getDifficulty().toString().toLowerCase();
+		if (lvl.getDifficulty().equals(Difficulty.DEMON))
+			difficulty += "-" + lvl.getDemonDifficulty().toString().toLowerCase();
 		if (lvl.isEpic())
 			difficulty += "-epic";
 		else if (lvl.isFeatured())

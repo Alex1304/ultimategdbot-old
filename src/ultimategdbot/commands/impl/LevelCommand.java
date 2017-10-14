@@ -17,6 +17,10 @@ import ultimategdbot.util.GDUtils;
 
 public class LevelCommand extends CoreCommand {
 
+	public LevelCommand() {
+		super("level");
+	}
+
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		try {
@@ -38,7 +42,19 @@ public class LevelCommand extends CoreCommand {
 
 	@Override
 	public String getHelp() {
-		return "`g!level <name_or_id>` - Searches for any online level available in Geometry Dash\n";
+		return "Searches for any online level available in Geometry Dash";
+	}
+
+	@Override
+	public String[] getSyntax() {
+		String[] res = { "<name_or_id>" };
+		return res;
+	}
+
+	@Override
+	public String[] getExamples() {
+		String[] res = { "36227266", "BloodBath" };
+		return res;
 	}
 
 	@Override

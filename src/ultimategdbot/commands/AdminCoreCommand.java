@@ -5,7 +5,7 @@ import java.util.List;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.PermissionUtils;
-import ultimategdbot.app.Main;
+import ultimategdbot.app.AppParams;
 import ultimategdbot.exceptions.CommandFailedException;
 
 /**
@@ -16,13 +16,17 @@ import ultimategdbot.exceptions.CommandFailedException;
  */
 public abstract class AdminCoreCommand extends CoreCommand {
 	
+	public AdminCoreCommand(String name) {
+		super(name);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * Checks for Admininstrator permission in the guild
 	 */
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		if (event.getAuthor().getLongID() != Main.superadminID &&
+		if (event.getAuthor().getLongID() != AppParams.SUPERADMIN_ID &&
 				!PermissionUtils.hasPermissions(event.getChannel(), event.getAuthor(), Permissions.ADMINISTRATOR))
 			throw new CommandFailedException("You need the Administrator permission to execute this command.");
 		

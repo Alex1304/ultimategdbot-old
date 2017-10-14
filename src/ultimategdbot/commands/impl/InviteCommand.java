@@ -7,6 +7,7 @@ import java.util.Map;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.BotInviteBuilder;
+import ultimategdbot.app.AppParams;
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
@@ -15,11 +16,15 @@ import ultimategdbot.util.AppTools;
 
 public class InviteCommand extends CoreCommand {
 
+	public InviteCommand() {
+		super("invite");
+	}
+
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		BotInviteBuilder bib = new BotInviteBuilder(Main.client);
 		bib.withClientID("" + 
-				(System.getenv().containsKey("UGDB_TEST_ENV") ? Main.CLIENT_TEST_ID : Main.CLIENT_ID));
+				(Main.isTestEnvironment() ? AppParams.CLIENT_TEST_ID : AppParams.CLIENT_ID));
 		
 		bib.withPermissions(EnumSet.of(
 				Permissions.SEND_MESSAGES,
@@ -33,7 +38,17 @@ public class InviteCommand extends CoreCommand {
 
 	@Override
 	public String getHelp() {
-		return "`g!invite` - Gives you the invite link to add me to your server!\n";
+		return "Gives you the invite link to add me to your server!";
+	}
+
+	@Override
+	public String[] getSyntax() {
+		return null;
+	}
+
+	@Override
+	public String[] getExamples() {
+		return null;
 	}
 
 	@Override

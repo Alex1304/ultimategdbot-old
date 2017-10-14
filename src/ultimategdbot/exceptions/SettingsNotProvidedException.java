@@ -1,5 +1,6 @@
 package ultimategdbot.exceptions;
 
+import ultimategdbot.app.Main;
 import ultimategdbot.util.Settings;
 
 public class SettingsNotProvidedException extends CommandFailedException {
@@ -11,8 +12,8 @@ public class SettingsNotProvidedException extends CommandFailedException {
 	}
 	
 	private static String generateFailureMessage(Settings... settings) {
-		String message = "I am not set up to execute this command yet! The following settings"
-				+ " need to be provided by a server administrator using the `g!setup` command"
+		String message = "I am not configured to execute this command yet! The following settings"
+				+ " need to be provided by a server administrator using the `" + Main.CMD_PREFIX + "setup` command"
 				+ ": ";
 		
 		for (int i = 0 ; i < settings.length ; i++)

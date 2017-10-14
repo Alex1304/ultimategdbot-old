@@ -44,7 +44,7 @@ public class DiscordEvents {
 		IChannel channel = AppTools.findDefaultBotChannelForGuild(guild);
 
 		if (channel != null) {
-			IUser superadmin = Main.client.fetchUser(Main.superadminID);
+			IUser superadmin = Main.superadmin;
 			String SAName = superadmin.getName() + "#" + superadmin.getDiscriminator();
 			AppTools.sendMessage(channel,
 					"Hello! Thanks for inviting me :smile:\n" + "My name is UltimateGDBot and I've been developped by "

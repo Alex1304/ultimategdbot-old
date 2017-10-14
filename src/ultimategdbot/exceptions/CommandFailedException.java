@@ -1,5 +1,6 @@
 package ultimategdbot.exceptions;
 
+import ultimategdbot.app.Main;
 import ultimategdbot.commands.CoreCommand;
 
 /**
@@ -16,7 +17,12 @@ public class CommandFailedException extends Exception {
 	private String failureReason;
 	
 	public CommandFailedException(CoreCommand cmd) {
-		this.failureReason = "Incorrect usage!\n " + cmd.getHelp();
+		String syntax = "";
+		for (String s : cmd.getSyntax())
+			syntax += "`"+ Main.CMD_PREFIX + cmd.getName() + (s.isEmpty() ? "" : " ") + s + "`\n";
+		
+		this.failureReason = "Incorrect usage!\n" + syntax + "\n" + "Run `" + Main.CMD_PREFIX + "help "
+			+ cmd.getName() + "` " + "if you have any trouble with this command.";
 	}
 	
 	public CommandFailedException(String failureReason) {

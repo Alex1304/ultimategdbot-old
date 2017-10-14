@@ -17,6 +17,10 @@ import ultimategdbot.util.Settings;
 
 public class GDEventsCommand extends CoreCommand {
 
+	public GDEventsCommand() {
+		super("gdevents");
+	}
+
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		if (args.size() != 1)
@@ -57,10 +61,22 @@ public class GDEventsCommand extends CoreCommand {
 
 	@Override
 	public String getHelp() {
-		return "`g!gdevents [subscribe|unsubscribe]` - When a certain event happens on Geometry Dash"
+		return "When a certain event happens on Geometry Dash"
 				+ " (RobTop rating new levels, etc), I"
 				+ " will send a notification in the server by pinging a role. Use this command to"
-				+ " assign/remove this role by yourself!\n";
+				+ " assign/remove this role by yourself!";
+	}
+
+	@Override
+	public String[] getSyntax() {
+		String[] res = { "subscribe|unsubscribe" };
+		return res;
+	}
+
+	@Override
+	public String[] getExamples() {
+		String[] res = { "subscribe", "unsubscribe" };
+		return res;
 	}
 
 	@Override

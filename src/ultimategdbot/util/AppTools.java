@@ -14,6 +14,7 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.PermissionUtils;
 import sx.blah.discord.util.RequestBuffer;
 import ultimategdbot.app.Main;
 
@@ -38,10 +39,8 @@ public class AppTools {
 	 *         IDiscordClient if created successfully
 	 */
 	public static IDiscordClient createClient(String token, boolean login) {
-		ClientBuilder clientBuilder = new ClientBuilder(); // Creates the
-															// ClientBuilder
-															// instance
-		clientBuilder.withToken(token); // Adds the login info to the builder
+		ClientBuilder clientBuilder = new ClientBuilder();
+		clientBuilder.withToken(token);
 		try {
 			if (login) {
 				return clientBuilder.login();
@@ -101,6 +100,7 @@ public class AppTools {
 	 */
 	public static synchronized IMessage sendMessage(IChannel channel, String message, EmbedObject embed) {
 		messageSent = null;
+		
 		RequestBuffer.request(() -> {
 			messageSent = (embed != null) ? channel.sendMessage(message, embed) : channel.sendMessage(message);
 		});
@@ -110,6 +110,7 @@ public class AppTools {
 		
 		if (messageSent == null)
 			System.err.println("Unable to send message: Timeout.");
+		
 		return messageSent;
 	}
 
@@ -139,16 +140,9 @@ public class AppTools {
 		IChannel botCommandsChannel = null;
 		// Channel named "general"
 		IChannel generalChannel = null;
-		// The bot's highest role in the guild
-		IRole botHighestRole = null;
-		try {
-			botHighestRole = guild.getRolesForUser(Main.client.getOurUser()).get(0);
-		} catch (IndexOutOfBoundsException e) {
-			botHighestRole = guild.getEveryoneRole();
-		}
 
 		for (IChannel channel : guild.getChannels()) {
-			if (channel.getModifiedPermissions(botHighestRole).contains(Permissions.SEND_MESSAGES)) {
+			if (PermissionUtils.hasPermissions(channel, Main.client.getOurUser(), Permissions.SEND_MESSAGES)) {
 				if (botCommandsChannel == null && channel.getName().matches("bot[-_]commands"))
 					botCommandsChannel = channel;
 				else if (generalChannel == null && channel.getName().equals("general"))

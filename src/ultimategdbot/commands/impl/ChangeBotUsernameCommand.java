@@ -17,6 +17,10 @@ import ultimategdbot.util.AppTools;
  */
 public class ChangeBotUsernameCommand extends SuperadminCoreCommand {
 
+	public ChangeBotUsernameCommand() {
+		super("changebotusername");
+	}
+
 	@Override
 	public void runSuperadminCommand(MessageReceivedEvent event, List<String> args) {
 		String newName = "";
@@ -33,7 +37,19 @@ public class ChangeBotUsernameCommand extends SuperadminCoreCommand {
 
 	@Override
 	public String getHelp() {
-		return "`g!changebotusername <new_name>` - Changes the bot username\n";
+		return "Changes the bot username";
+	}
+
+	@Override
+	public String[] getSyntax() {
+		String[] res = { "<new_name>" };
+		return res;
+	}
+
+	@Override
+	public String[] getExamples() {
+		String[] res = { "HyperCoolGDBot" };
+		return res;
 	}
 
 	@Override

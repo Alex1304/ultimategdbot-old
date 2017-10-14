@@ -7,6 +7,7 @@ public class GDLevel {
 	private String creator;
 	private String description;
 	private Difficulty difficulty;
+	private DemonDifficulty demonDifficulty;
 	private int stars;
 	private int featured;
 	private boolean epic;
@@ -14,7 +15,7 @@ public class GDLevel {
 	private int likes;
 	private Length length;
 	
-	public GDLevel(long id, String name, String creator, String description, Difficulty difficulty, int stars, int featured, boolean epic,
+	public GDLevel(long id, String name, String creator, String description, Difficulty difficulty, DemonDifficulty demonDifficulty, int stars, int featured, boolean epic,
 			int downloads, int likes, Length length) {
 		super();
 		this.id = id;
@@ -22,6 +23,7 @@ public class GDLevel {
 		this.creator = creator;
 		this.description = description;
 		this.difficulty = difficulty;
+		this.demonDifficulty = demonDifficulty;
 		this.stars = stars;
 		this.featured = featured;
 		this.epic = epic;
@@ -50,12 +52,16 @@ public class GDLevel {
 		return difficulty;
 	}
 
+	public DemonDifficulty getDemonDifficulty() {
+		return demonDifficulty;
+	}
+
 	public int getStars() {
 		return stars;
 	}
 
 	public boolean isFeatured() {
-		return featured != 0;
+		return featured > 0;
 	}
 	
 	public int getFeatured() {
@@ -80,17 +86,7 @@ public class GDLevel {
 	
 	@Override
 	public String toString() {
-		return ""
-			+ "Level ID: " + getId() + "\n"
-			+ "Name: " + getName() + "\n"
-			+ "Description: " + getDescription() + "\n"
-			+ "Creator: " + getCreator() + "\n"
-			+ "Stars: " + getStars() + "\n"
-			+ "Featured? " + isFeatured() + "\n"
-			+ "Epic? " + isEpic() + "\n"
-			+ "Downloads: " + getDownloads() + "\n"
-			+ "Likes: " + getLikes()
-		;
+		return "**__" + name + "__** by **" + creator + "** (" + id + ")";
 	}
 
 	@Override
