@@ -34,15 +34,15 @@ public class GDUtils {
 		difficultyIconByName.put("8-insane", "https://i.imgur.com/RDVJDaO.png");
 		difficultyIconByName.put("7-harder-epic", "https://i.imgur.com/X3N5sm1.png");
 		difficultyIconByName.put("0-normal-epic", "https://i.imgur.com/VyV8II6.png");
-		difficultyIconByName.put("0-demon-featured", "https://i.imgur.com/lVdup3A.png");
+		difficultyIconByName.put("0-demon-hard-featured", "https://i.imgur.com/lVdup3A.png");
 		difficultyIconByName.put("8-insane-epic", "https://i.imgur.com/N2pjW2W.png");
 		difficultyIconByName.put("3-normal-epic", "https://i.imgur.com/S3PhlDs.png");
 		difficultyIconByName.put("0-normal-featured", "https://i.imgur.com/Q1MYgu4.png");
 		difficultyIconByName.put("2-easy", "https://i.imgur.com/yG1U6RP.png");
 		difficultyIconByName.put("0-hard-featured", "https://i.imgur.com/8DeaxfL.png");
-		difficultyIconByName.put("0-demon-epic", "https://i.imgur.com/xLFubIn.png");
+		difficultyIconByName.put("0-demon-hard-epic", "https://i.imgur.com/xLFubIn.png");
 		difficultyIconByName.put("1-auto", "https://i.imgur.com/Fws2s3b.png");
-		difficultyIconByName.put("0-demon", "https://i.imgur.com/WhrTo7w.png");
+		difficultyIconByName.put("0-demon-hard", "https://i.imgur.com/WhrTo7w.png");
 		difficultyIconByName.put("0-easy", "https://i.imgur.com/kWHZa5d.png");
 		difficultyIconByName.put("2-easy-featured", "https://i.imgur.com/Kyjevk1.png");
 		difficultyIconByName.put("0-insane-featured", "https://i.imgur.com/t8JmuIw.png");
@@ -67,10 +67,10 @@ public class GDUtils {
 		difficultyIconByName.put("0-insane", "https://i.imgur.com/PeOvWuq.png");
 		difficultyIconByName.put("4-hard-featured", "https://i.imgur.com/VW4yufj.png");
 		difficultyIconByName.put("0-auto-epic", "https://i.imgur.com/QuRBnpB.png");
-		difficultyIconByName.put("10-demon", "https://i.imgur.com/jLBD7cO.png");
+		difficultyIconByName.put("10-demon-hard", "https://i.imgur.com/jLBD7cO.png");
 		difficultyIconByName.put("9-insane-featured", "https://i.imgur.com/byhPbgR.png");
-		difficultyIconByName.put("10-demon-featured", "https://i.imgur.com/7deDmTQ.png");
-		difficultyIconByName.put("10-demon-epic", "https://i.imgur.com/xtrTl4r.png");
+		difficultyIconByName.put("10-demon-hard-featured", "https://i.imgur.com/7deDmTQ.png");
+		difficultyIconByName.put("10-demon-hard-epic", "https://i.imgur.com/xtrTl4r.png");
 		difficultyIconByName.put("9-insane", "https://i.imgur.com/5VA2qDb.png");
 		difficultyIconByName.put("9-insane-epic", "https://i.imgur.com/qmfey5L.png");
 		
