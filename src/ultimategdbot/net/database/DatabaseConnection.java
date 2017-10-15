@@ -45,15 +45,8 @@ public class DatabaseConnection {
 	 */
 	private static Connection createInstance() {
 		try {
-			if (conn != null) {
-				try {
-					conn.abort(r -> r.run());
-				} catch (Exception e) {
-					conn.close();
-					AppTools.sendDebugPMToSuperadmin(
-							"The operation `conn.abort(r -> r.run())` didn't work: " + e.getLocalizedMessage());
-				}
-			}
+			if (conn != null) 
+				conn.close();
 			conn = DriverManager.getConnection(Main.isTestEnvironment() ? AppParams.LOCAL_DB_HOST : AppParams.REMOTE_DB_HOST,
 					System.getenv().get("DB_USERNAME"), System.getenv().get("DB_PASSWORD"));
 			dateLastInstance = new Date().getTime();
