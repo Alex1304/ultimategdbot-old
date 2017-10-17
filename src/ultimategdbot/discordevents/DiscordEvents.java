@@ -49,9 +49,10 @@ public class DiscordEvents {
 			AppTools.sendMessage(channel,
 					"Hello! Thanks for inviting me :smile:\n" + "My name is UltimateGDBot and I've been developped by "
 							+ SAName + "!\n"
-							+ "I got tons of useful commands for Geometry Dash players, type `g!help` for "
-							+ "more info.\n" + "If you are an Administrator of this server, run the command `g!setup`"
-							+ " to gain access to the entirety of my features!");
+							+ "I got tons of useful commands for Geometry Dash players, type `"
+							+ Main.CMD_PREFIX + "help` to get a list of them.\n"
+							+ "If you are an Administrator of this server, run the command `"
+							+ Main.CMD_PREFIX + "setup` to make me fully operational on this server!");
 		}
 	}
 }

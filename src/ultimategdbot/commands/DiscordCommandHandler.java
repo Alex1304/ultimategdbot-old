@@ -36,6 +36,7 @@ public class DiscordCommandHandler {
 	 */
 	public static Map<String, CoreCommand> commandMap = new HashMap<>();
 	public static Map<String, CoreCommand> superadminCommandMap = new HashMap<>();
+	public static Map<String, CoreCommand> betaTestersCommandMap = new HashMap<>();
 	public static Map<String, CoreCommand> adminCommandMap = new HashMap<>();
 
 	/**
@@ -52,6 +53,9 @@ public class DiscordCommandHandler {
 		// Superadmin commands
 		registerCommand(superadminCommandMap, new ChangeBotUsernameCommand());
 		registerCommand(superadminCommandMap, new GuildListCommand());
+		
+		// Beta-testers commands
+		registerCommand(betaTestersCommandMap, new RestartCommand());
 		
 		// Admin commands
 		registerCommand(adminCommandMap, new SetupCommand());
@@ -110,6 +114,8 @@ public class DiscordCommandHandler {
 		try {
 			if (superadminCommandMap.containsKey(commandStr))
 				superadminCommandMap.get(commandStr).runCommand(event, argsList);
+			else if (betaTestersCommandMap.containsKey(commandStr))
+				betaTestersCommandMap.get(commandStr).runCommand(event, argsList);
 			else if (adminCommandMap.containsKey(commandStr))
 				adminCommandMap.get(commandStr).runCommand(event, argsList);
 			else if (commandMap.containsKey(commandStr))

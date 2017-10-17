@@ -14,8 +14,6 @@ import ultimategdbot.exceptions.CommandFailedException;
  */
 public abstract class SuperadminCoreCommand extends CoreCommand {
 	
-	
-
 	public SuperadminCoreCommand(String name) {
 		super(name);
 	}

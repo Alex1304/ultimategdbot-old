@@ -11,7 +11,7 @@ public class AppParams {
 	// Bot info
 	public static final long CLIENT_ID = 358598636436979713L;
 	public static final long CLIENT_TEST_ID = 359406519227383818L;
-	public static final String BOT_TOKEN = System.getenv().get("BOT_TOKEN");
+	public static final String BOT_TOKEN = System.getenv().get(Main.isTestEnvironment() ? "TEST_BOT_TOKEN" : "BOT_TOKEN");
 	
 	// Hierarchy info
 	public static final long SUPERADMIN_ID = 272872694473687041L;

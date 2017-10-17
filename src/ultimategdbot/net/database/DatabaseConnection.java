@@ -3,7 +3,6 @@ package ultimategdbot.net.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.util.Date;
 
 import ultimategdbot.app.AppParams;
 import ultimategdbot.app.Main;
@@ -18,10 +17,7 @@ import ultimategdbot.util.AppTools;
  */
 public class DatabaseConnection {
 
-	public static final long DB_CONNECTION_TIMEOUT = 44_000_000;
-
 	private static volatile Connection conn = createInstance();
-	private static long dateLastInstance;
 	
 	/**
 	 * Returns the current connection instance. It first checks if the connection is still operational.
@@ -29,10 +25,10 @@ public class DatabaseConnection {
 	 * @return the current Connection instance to database.
 	 */
 	public static synchronized Connection getInstance() {
-		long currDate = new Date().getTime();
-
-		if (currDate - dateLastInstance >= DB_CONNECTION_TIMEOUT || !isConnectionOK())
+		if (!isConnectionOK()) {
 			conn = createInstance();
+			AppTools.sendDebugPMToSuperadmin(":white_check_mark: A new database connection instance has been successfully created!");
+		}
 
 		return conn;
 	}
@@ -47,9 +43,9 @@ public class DatabaseConnection {
 		try {
 			if (conn != null) 
 				conn.close();
-			conn = DriverManager.getConnection(Main.isTestEnvironment() ? AppParams.LOCAL_DB_HOST : AppParams.REMOTE_DB_HOST,
+			conn = DriverManager.getConnection((Main.isTestEnvironment() ? AppParams.LOCAL_DB_HOST
+					: AppParams.REMOTE_DB_HOST) + "?autoReconnect=true",
 					System.getenv().get("DB_USERNAME"), System.getenv().get("DB_PASSWORD"));
-			dateLastInstance = new Date().getTime();
 			return conn;
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -114,7 +114,7 @@ public class GDLevel {
 	/**
 	 * The regular equals() definition in this class does
 	 * only compare the level ID. This method does compare
-	 * more fields : stars, difficulty, featured, epic.
+	 * more fields : stars, difficulty, featured, epic, etc.
 	 * 
 	 * @param obj - the other object to compare to
 	 * @return true if the current object is equal to obj along
@@ -126,6 +126,8 @@ public class GDLevel {
 		
 		GDLevel other = (GDLevel) obj;
 		if (difficulty != other.difficulty)
+			return false;
+		if (demonDifficulty != other.demonDifficulty)
 			return false;
 		if (epic != other.epic)
 			return false;

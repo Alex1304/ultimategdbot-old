@@ -30,10 +30,11 @@ public class Main {
 	 */
 	public static IDiscordClient client;
 	
-	// Superadmin info
+	// Superadmin and beta testers info
 	public static IUser superadmin;
 	public static IGuild betaTestersGuild;
 	public static IRole betaTestersRole;
+	public static final String BETA_TESTERS_GUILD_INVITE_LINK = "https://discord.gg/VpVdKvg";
 	
 	private static List<Thread> threadList = new ArrayList<>();
 
@@ -50,6 +51,7 @@ public class Main {
 					+ "DB_USERNAME and DB_PASSWORD - Credentials to connect to database.");
 			return;
 		}
+		System.out.println("Test environment? " + isTestEnvironment());
 		// Building client
 		client = AppTools.createClient(AppParams.BOT_TOKEN, false);
 		
