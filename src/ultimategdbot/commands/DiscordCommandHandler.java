@@ -19,6 +19,7 @@ import ultimategdbot.commands.impl.HelpCommand;
 import ultimategdbot.commands.impl.InviteCommand;
 import ultimategdbot.commands.impl.LevelCommand;
 import ultimategdbot.commands.impl.PingCommand;
+import ultimategdbot.commands.impl.RestartCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;

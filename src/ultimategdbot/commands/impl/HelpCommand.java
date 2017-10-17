@@ -23,6 +23,8 @@ public class HelpCommand extends CoreCommand {
 			Map<String, CoreCommand> cmdMap = null;
 			if (DiscordCommandHandler.adminCommandMap.containsKey(cmdName))
 				cmdMap = DiscordCommandHandler.adminCommandMap;
+			else if (DiscordCommandHandler.betaTestersCommandMap.containsKey(cmdName))
+				cmdMap = DiscordCommandHandler.betaTestersCommandMap;
 			else if (DiscordCommandHandler.superadminCommandMap.containsKey(cmdName))
 				cmdMap = DiscordCommandHandler.superadminCommandMap;
 			else if (DiscordCommandHandler.commandMap.containsKey(cmdName))
@@ -69,9 +71,17 @@ public class HelpCommand extends CoreCommand {
 		helpMsg = helpMsg.substring(0, helpMsg.length() - 2);
 		helpMsg += "\n";
 		
+		if (event.getAuthor().equals(Main.superadmin) || event.getAuthor().getRolesForGuild(Main.betaTestersGuild).contains(Main.betaTestersRole)) {
+			helpMsg += "\n__**Beta-testers commands** (you need the Certified Beta Testers role in the official bot server to run them):__\n";
+			for (String comm : DiscordCommandHandler.betaTestersCommandMap.keySet())
+				helpMsg += "`" + Main.CMD_PREFIX + comm + "`, ";
+			helpMsg = helpMsg.substring(0, helpMsg.length() - 2);
+			helpMsg += "\n";
+		}
+		
 		if (event.getAuthor().equals(Main.superadmin)) {
-			helpMsg += "\n__**Superadmin commands** (only the big boss "
-					+ Main.superadmin.getName() + "#" + Main.superadmin.getDiscriminator() + " can run them :smirk:):__\n";
+			helpMsg += "\n__**Superadmin commands** (only the bot developer "
+					+ Main.superadmin.getName() + "#" + Main.superadmin.getDiscriminator() + " can run them):__\n";
 			for (String comm : DiscordCommandHandler.superadminCommandMap.keySet())
 				helpMsg += "`" + Main.CMD_PREFIX + comm + "`, ";
 			helpMsg = helpMsg.substring(0, helpMsg.length() - 2);

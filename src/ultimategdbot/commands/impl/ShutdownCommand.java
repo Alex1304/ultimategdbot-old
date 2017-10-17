@@ -1,9 +1,11 @@
-package ultimategdbot.commands;
+package ultimategdbot.commands.impl;
 
 import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import ultimategdbot.commands.Command;
+import ultimategdbot.commands.SuperadminCoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 

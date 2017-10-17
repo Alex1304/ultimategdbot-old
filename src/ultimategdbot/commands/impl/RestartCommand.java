@@ -1,14 +1,14 @@
-package ultimategdbot.commands;
+package ultimategdbot.commands.impl;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.app.Main;
+import ultimategdbot.commands.BetaTestersCoreCommand;
+import ultimategdbot.commands.Command;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 
@@ -24,7 +24,6 @@ public class RestartCommand extends BetaTestersCoreCommand {
 			throw new CommandFailedException("This command is unsupported due to host restrictions.");
 		
 		try {
-			AppTools.sendMessage(event.getChannel(), "Restarting...");
 			final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 			File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 	
@@ -37,11 +36,13 @@ public class RestartCommand extends BetaTestersCoreCommand {
 			command.add(javaBin);
 			command.add("-jar");
 			command.add(currentJar.getPath());
+			
+			AppTools.sendMessage(event.getChannel(), "Restarting...");
 	
 			final ProcessBuilder builder = new ProcessBuilder(command);
-				builder.start();
+			builder.start();
 			System.exit(0);
-		} catch (URISyntaxException | IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new CommandFailedException("Unable to restart the bot because an internal error occured. Please contact"
 					+ " the developer or report that in the Beta Testers server.");
