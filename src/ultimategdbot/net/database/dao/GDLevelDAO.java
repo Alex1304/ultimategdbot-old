@@ -26,7 +26,7 @@ public class GDLevelDAO implements DAO<GDLevel> {
 			ps.setString(5, obj.getCreator());
 			ps.setString(6, obj.getDescription());
 			ps.setShort(7, (short) obj.getDifficulty().ordinal());
-			ps.setShort(8, (short) obj.getDifficulty().ordinal());
+			ps.setShort(8, (short) obj.getDemonDifficulty().ordinal());
 			ps.setShort(9, obj.getStars());
 			ps.setLong(10, obj.getDownloads());
 			ps.setLong(11, obj.getLikes());
