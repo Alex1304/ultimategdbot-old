@@ -8,15 +8,16 @@ public class GDLevel {
 	private String description;
 	private Difficulty difficulty;
 	private DemonDifficulty demonDifficulty;
-	private int stars;
+	private short stars;
 	private int featured;
 	private boolean epic;
-	private int downloads;
-	private int likes;
+	private long downloads;
+	private long likes;
 	private Length length;
 	
-	public GDLevel(long id, String name, String creator, String description, Difficulty difficulty, DemonDifficulty demonDifficulty, int stars, int featured, boolean epic,
-			int downloads, int likes, Length length) {
+	public GDLevel(long id, String name, String creator, String description, Difficulty difficulty,
+			DemonDifficulty demonDifficulty, short stars, int featured, boolean epic, long downloads,
+			long likes, Length length) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -56,7 +57,7 @@ public class GDLevel {
 		return demonDifficulty;
 	}
 
-	public int getStars() {
+	public short getStars() {
 		return stars;
 	}
 
@@ -72,16 +73,20 @@ public class GDLevel {
 		return epic;
 	}
 	
-	public int getDownloads() {
+	public long getDownloads() {
 		return downloads;
 	}
 
-	public int getLikes() {
+	public long getLikes() {
 		return likes;
 	}
 	
 	public Length getLength() {
 		return length;
+	}
+	
+	public boolean isAwarded() {
+		return stars > 0;
 	}
 	
 	@Override

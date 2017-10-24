@@ -77,6 +77,7 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 		return gs;
 	}
 	
+	@Override
 	public List<GuildSettings> findAll() {
 		List<GuildSettings> gsList = new ArrayList<>();
 

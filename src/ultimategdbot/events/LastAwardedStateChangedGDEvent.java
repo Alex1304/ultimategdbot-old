@@ -8,14 +8,9 @@ import ultimategdbot.net.geometrydash.GDLevel;
  * @author Alex1304
  *
  */
-public class LastAwardedStateChangedGDEvent implements GDEvent {
-	private GDLevel level;
+public class LastAwardedStateChangedGDEvent extends LevelGDEvent {
 
 	public LastAwardedStateChangedGDEvent(GDLevel level) {
-		this.level = level;
-	}
-
-	public GDLevel getLevel() {
-		return level;
+		super(level);
 	}
 }

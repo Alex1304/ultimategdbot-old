@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.10.6
+-- version 4.5.4.1deb2ubuntu2
 -- http://www.phpmyadmin.net
 --
--- Host: mysql-alex1304.alwaysdata.net
--- Generation Time: Sep 28, 2017 at 06:27 PM
--- Server version: 10.1.23-MariaDB
--- PHP Version: 5.6.16
+-- Client :  localhost
+-- Généré le :  Mer 25 Octobre 2017 à 00:17
+-- Version du serveur :  5.7.19-0ubuntu0.16.04.1
+-- Version de PHP :  7.0.22-0ubuntu0.16.04.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,49 +14,61 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `alex1304_ultimategdbot`
+-- Base de données :  `ultimategdbot`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `guild_settings`
+-- Structure de la table `gd_level`
 --
 
-CREATE TABLE IF NOT EXISTS `guild_settings` (
+CREATE TABLE `gd_level` (
+  `insert_date` datetime NOT NULL,
+  `level_id` bigint(20) NOT NULL,
+  `featured` int(11) NOT NULL,
+  `is_epic` tinyint(1) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `creator` varchar(255) DEFAULT NULL,
+  `description` text,
+  `difficulty` smallint(6) NOT NULL,
+  `demon_difficulty` smallint(6) NOT NULL,
+  `stars` smallint(6) NOT NULL,
+  `downloads` bigint(20) NOT NULL,
+  `likes` bigint(20) NOT NULL,
+  `length` smallint(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `guild_settings`
+--
+
+CREATE TABLE `guild_settings` (
   `guild_id` bigint(20) NOT NULL,
   `gdevent_awarded_subscriber_roleid` bigint(20) NOT NULL,
-  `gdevent_awarded_subscriber_channelid` bigint(20) NOT NULL,
-  PRIMARY KEY (`guild_id`)
+  `gdevent_awarded_subscriber_channelid` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `last_seen_awarded_levels`
+-- Index pour les tables exportées
 --
 
-CREATE TABLE IF NOT EXISTS `last_seen_awarded_levels` (
-  `level_id` bigint(20) NOT NULL,
-  `is_featured` tinyint(1) NOT NULL,
-  `is_epic` tinyint(1) NOT NULL,
-  PRIMARY KEY (`level_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
+--
+-- Index pour la table `gd_level`
+--
+ALTER TABLE `gd_level`
+  ADD PRIMARY KEY (`level_id`);
 
 --
--- Table structure for table `user_settings`
+-- Index pour la table `guild_settings`
 --
-
-CREATE TABLE IF NOT EXISTS `user_settings` (
-  `user_id` bigint(20) NOT NULL,
-  `gd_user_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ALTER TABLE `guild_settings`
+  ADD PRIMARY KEY (`guild_id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

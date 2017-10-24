@@ -11,15 +11,9 @@ import ultimategdbot.net.geometrydash.GDLevel;
  * @author Alex1304
  *
  */
-public class NewAwardedGDEvent implements GDEvent {
-	
-	private List<GDLevel> newAwardedLevels;
+public class NewAwardedGDEvent extends LevelListGDEvent {
 
-	public NewAwardedGDEvent(List<GDLevel> newAwardedLevels) {
-		this.newAwardedLevels = newAwardedLevels;
-	}
-
-	public List<GDLevel> getNewAwardedLevels() {
-		return newAwardedLevels;
+	public NewAwardedGDEvent(List<GDLevel> levelList) {
+		super(levelList);
 	}
 }

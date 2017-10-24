@@ -82,11 +82,11 @@ public class GDLevelFactory {
 				new String(Base64.getUrlDecoder().decode(structuredLvlInfo.get(3))),
 				lvlDiff,
 				demonDifficultyByValue.get(Integer.parseInt(structuredLvlInfo.get(43))),
-				Integer.parseInt(structuredLvlInfo.get(18)),
+				Short.parseShort(structuredLvlInfo.get(18)),
 				Integer.parseInt(structuredLvlInfo.get(19)),
 				structuredLvlInfo.get(42).equals("1"),
-				Integer.parseInt(structuredLvlInfo.get(10)),
-				Integer.parseInt(structuredLvlInfo.get(14)),
+				Long.parseLong(structuredLvlInfo.get(10)),
+				Long.parseLong(structuredLvlInfo.get(14)),
 				Length.values()[Integer.parseInt(structuredLvlInfo.get(15))]
 			);
 		} catch (NullPointerException|IllegalArgumentException e) {

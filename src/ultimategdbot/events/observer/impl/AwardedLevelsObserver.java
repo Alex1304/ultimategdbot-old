@@ -8,20 +8,23 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RequestBuffer;
 import ultimategdbot.app.Main;
 import ultimategdbot.events.GDEvent;
+import ultimategdbot.events.LastAwardedDeletedGDEvent;
 import ultimategdbot.events.LastAwardedStateChangedGDEvent;
 import ultimategdbot.events.NewAwardedGDEvent;
 import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
 import ultimategdbot.events.observer.Observer;
+import ultimategdbot.net.database.dao.GDLevelDAO;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.GDUtils;
 
-public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedLevels> {
+public class AwardedLevelsObserver implements Observer<LoopRequestNewAwardedLevels> {
 
 	private List<IMessage> messageOfLastRecordedLevelForEachGuild = new ArrayList<>();
 
@@ -31,19 +34,38 @@ public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedL
 			notifyNewRatesToAllSubscribers((NewAwardedGDEvent) event);
 		if (event instanceof LastAwardedStateChangedGDEvent)
 			updateEmbedForLastRecordedLevel((LastAwardedStateChangedGDEvent) event);
+		if (event instanceof LastAwardedDeletedGDEvent)
+			notifyDeletedRateToAllSubscribers((LastAwardedDeletedGDEvent) event);
 
 	}
 	
+	private void notifyDeletedRateToAllSubscribers(LastAwardedDeletedGDEvent event) {
+		notifySubscribers("A level just got un-rated from Geometry Dash...", event.getLevel(),
+				unratedLevelEmbed(event.getLevel()));
+		new GDLevelDAO().delete(event.getLevel());
+	}
+
 	public void updateEmbedForLastRecordedLevel(LastAwardedStateChangedGDEvent event) {
 		GDLevel level = event.getLevel();
 		
 		for (IMessage message : messageOfLastRecordedLevelForEachGuild) {
 			if (message != null)
-				RequestBuffer.request(() -> message.edit(message.getContent(), newAwardedLevelEmbed(level)));
+				try {
+					RequestBuffer.request(() -> message.edit(message.getContent(), newAwardedLevelEmbed(level)));
+				} catch (DiscordException e) {
+					e.printStackTrace();
+				}
 		}
 	}
 
 	public void notifyNewRatesToAllSubscribers(NewAwardedGDEvent event) {
+		event.getLevelList().forEach(level -> {
+			notifySubscribers("A new level has just been rated on Geometry Dash!!!", level, newAwardedLevelEmbed(level));
+			new GDLevelDAO().insert(level);
+		});
+	}
+	
+	private void notifySubscribers(String message, GDLevel level, EmbedObject levelEmbed) {
 		List<GuildSettings> gsList = new GuildSettingsDAO().findAll();
 		messageOfLastRecordedLevelForEachGuild.clear();
 
@@ -54,13 +76,11 @@ public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedL
 				IChannel channelGDEventSub = guild.getChannelByID(gs.getGdeventSubscriberChannelId());
 				IRole roleGDEventSub = guild.getRoleByID(gs.getGdeventSubscriberRoleId());
 				IMessage lastMessage = null;
-				for (GDLevel level : event.getNewAwardedLevels()) {
-					if (channelGDEventSub != null)
-						lastMessage = AppTools.sendMessage(channelGDEventSub,
-								(roleGDEventSub != null ? roleGDEventSub.mention() + " " : "")
-										+ "A new level has just been rated on Geometry Dash!!!",
-								newAwardedLevelEmbed(level));
-				}
+				if (channelGDEventSub != null)
+					lastMessage = AppTools.sendMessage(channelGDEventSub,
+							(roleGDEventSub != null ? roleGDEventSub.mention() + " " : "")
+									+ message,
+							levelEmbed);
 				messageOfLastRecordedLevelForEachGuild.add(lastMessage);
 			} else {
 				System.err.println("[INFO] Guild deleted");
@@ -71,5 +91,9 @@ public class NewAwardedLevelsObserver implements Observer<LoopRequestNewAwardedL
 	
 	public EmbedObject newAwardedLevelEmbed(GDLevel level) {
 		return GDUtils.buildEmbedForGDLevel("New rated level!", "https://i.imgur.com/asoMj1W.png", level);
+	}
+	
+	public EmbedObject unratedLevelEmbed(GDLevel level) {
+		return GDUtils.buildEmbedForGDLevel("Level unrated...", "https://i.imgur.com/fPECXUz.png", level);
 	}
 }

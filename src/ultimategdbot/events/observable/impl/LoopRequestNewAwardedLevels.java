@@ -6,12 +6,14 @@ import java.util.List;
 
 import ultimategdbot.app.Main;
 import ultimategdbot.events.GDEvent;
+import ultimategdbot.events.LastAwardedDeletedGDEvent;
 import ultimategdbot.events.LastAwardedStateChangedGDEvent;
 import ultimategdbot.events.NewAwardedGDEvent;
 import ultimategdbot.events.observable.Observable;
 import ultimategdbot.events.observer.Observer;
-import ultimategdbot.events.observer.impl.NewAwardedLevelsObserver;
+import ultimategdbot.events.observer.impl.AwardedLevelsObserver;
 import ultimategdbot.exceptions.RawDataMalformedException;
+import ultimategdbot.net.database.dao.GDLevelDAO;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDLevelFactory;
 import ultimategdbot.net.geometrydash.GDServer;
@@ -24,7 +26,7 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 	private List<Observer<LoopRequestNewAwardedLevels>> obsList = new ArrayList<>();
 
 	public LoopRequestNewAwardedLevels() {
-		this.addObserver(new NewAwardedLevelsObserver());
+		this.addObserver(new AwardedLevelsObserver());
 	}
 
 	@Override
@@ -36,6 +38,8 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 					String awardedLevelsRD = !Main.isTestEnvironment() ?
 							GDServer.fetchNewAwardedLevels() : 
 							GDServer.fetchMostRecentLevels();
+							
+					GDLevelDAO gdldao = new GDLevelDAO();
 
 					try {
 						// Convert the raw data given by the server into GDLevel
@@ -43,11 +47,13 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 						List<GDLevel> awardedLevels = GDLevelFactory.buildAllGDLevelsSearchResults(awardedLevelsRD);
 						List<GDLevel> newAwardedLevels = new ArrayList<>();
 						int i = 0;
-
-						// If it's the first loop, the last record is set to the
-						// last awarded level
-						if (lastLevelRecorded == null)
-							lastLevelRecorded = awardedLevels.get(0);
+						
+						if (lastLevelRecorded == null) {
+							lastLevelRecorded = gdldao.findLastAwarded();
+							if (lastLevelRecorded == null)
+								gdldao.insert(awardedLevels.get(0));
+							lastLevelRecorded = gdldao.findLastAwarded();
+						}
 
 						// Add new awarded levels to a list
 						while (i < awardedLevels.size() && !awardedLevels.get(i).equals(lastLevelRecorded)) {
@@ -57,13 +63,14 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 						
 						if (checkForStateChange(awardedLevels.get(0)))
 							updateObservers(new LastAwardedStateChangedGDEvent(awardedLevels.get(0)));
-
-						lastLevelRecorded = GDLevelFactory.buildGDLevelFirstSearchResult(awardedLevelsRD);
-
-						// Send the list of new awarded levels to the observer
-						// so it can notify the subscribers
-						if (!newAwardedLevels.isEmpty() && newAwardedLevels.size() < 10)
+						
+						if (!awardedLevels.contains(lastLevelRecorded) &&
+								!quickLevelSearch(lastLevelRecorded.getId() + "").isAwarded())
+							updateObservers(new LastAwardedDeletedGDEvent(lastLevelRecorded));
+						else if (!newAwardedLevels.isEmpty())
 							updateObservers(new NewAwardedGDEvent(newAwardedLevels));
+						
+						lastLevelRecorded = awardedLevels.get(0);
 
 					} catch (RawDataMalformedException e) {
 						e.printStackTrace();
@@ -102,6 +109,10 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 		if (!lastLevelRecorded.equals(level))
 			return false;
 		return !lastLevelRecorded.stateEquals(level);
+	}
+	
+	private GDLevel quickLevelSearch(String levelNameOrID) throws IOException, RawDataMalformedException {
+		return GDLevelFactory.buildGDLevelFirstSearchResult(GDServer.fetchLevelByNameOrID(levelNameOrID));
 	}
 
 	@Override
