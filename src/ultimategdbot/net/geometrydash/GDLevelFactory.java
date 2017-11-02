@@ -17,6 +17,31 @@ import ultimategdbot.exceptions.RawDataMalformedException;
 public class GDLevelFactory {
 	
 	/**
+	 * Associates the integer value in the raw data with the corresponding difficulty
+	 */
+	private static Map<Integer, Difficulty> difficultyByValue = new HashMap<>();
+	
+	/**
+	 * Associates the integer value in the raw data with the corresponding Demon difficulty
+	 */
+	private static Map<Integer, DemonDifficulty> demonDifficultyByValue = new HashMap<>();
+	
+	static {
+		difficultyByValue.put(0, Difficulty.NA);
+		difficultyByValue.put(10, Difficulty.EASY);
+		difficultyByValue.put(20, Difficulty.NORMAL);
+		difficultyByValue.put(30, Difficulty.HARD);
+		difficultyByValue.put(40, Difficulty.HARDER);
+		difficultyByValue.put(50, Difficulty.INSANE);
+		
+		demonDifficultyByValue.put(0, DemonDifficulty.HARD);
+		demonDifficultyByValue.put(3, DemonDifficulty.EASY);
+		demonDifficultyByValue.put(4, DemonDifficulty.MEDIUM);
+		demonDifficultyByValue.put(5, DemonDifficulty.INSANE);
+		demonDifficultyByValue.put(6, DemonDifficulty.EXTREME);
+	}
+	
+	/**
 	 * Reads the rawdata and return an instance of GDLevel corresponding to the requested level.
 	 * Taking the first search result
 	 * 
@@ -39,21 +64,30 @@ public class GDLevelFactory {
 	 * @throws IndexOutOfBoundsException if the index given doesn't point to a search item.
 	 */
 	public static GDLevel buildGDLevelSearchedByFilter(String rawData, int index) throws RawDataMalformedException, IndexOutOfBoundsException {
-		
-		Map<Integer, String> structuredLvlInfo = structureLevelInfo(cutOneLevel(cutLevelInfoPart(rawData), index));
-		Map<Long, String> structuredCreatorsInfo = structureCreatorsInfo(cutCreatorInfoPart(rawData));
-		
 		try {
+			Map<Integer, String> structuredLvlInfo = structureLevelInfo(cutOneLevel(cutLevelInfoPart(rawData), index));
+			Map<Long, String> structuredCreatorsInfo = structureCreatorsInfo(cutCreatorInfoPart(rawData));
+
+			// Determines the difficulty of the level
+			Difficulty lvlDiff = difficultyByValue.get(Integer.parseInt(structuredLvlInfo.get(9)));
+			if (structuredLvlInfo.get(25).equals("1"))
+				lvlDiff = Difficulty.AUTO;
+			if (structuredLvlInfo.get(17).equals("1"))
+				lvlDiff = Difficulty.DEMON;
+		
 			return new GDLevel(
 				Long.parseLong(structuredLvlInfo.get(1)),
 				structuredLvlInfo.get(2),
 				structuredCreatorsInfo.get(Long.parseLong(structuredLvlInfo.get(6))),
 				new String(Base64.getUrlDecoder().decode(structuredLvlInfo.get(3))),
-				Integer.parseInt(structuredLvlInfo.get(18)),
-				!structuredLvlInfo.get(19).equals("0"),
+				lvlDiff,
+				demonDifficultyByValue.get(Integer.parseInt(structuredLvlInfo.get(43))),
+				Short.parseShort(structuredLvlInfo.get(18)),
+				Integer.parseInt(structuredLvlInfo.get(19)),
 				structuredLvlInfo.get(42).equals("1"),
-				Integer.parseInt(structuredLvlInfo.get(10)),
-				Integer.parseInt(structuredLvlInfo.get(14))
+				Long.parseLong(structuredLvlInfo.get(10)),
+				Long.parseLong(structuredLvlInfo.get(14)),
+				Length.values()[Integer.parseInt(structuredLvlInfo.get(15))]
 			);
 		} catch (NullPointerException|IllegalArgumentException e) {
 			throw new RawDataMalformedException();

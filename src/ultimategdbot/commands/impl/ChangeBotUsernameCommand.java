@@ -1,11 +1,13 @@
 package ultimategdbot.commands.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import ultimategdbot.app.AppTools;
 import ultimategdbot.app.Main;
-import ultimategdbot.commands.SuperadminCommand;
+import ultimategdbot.commands.Command;
+import ultimategdbot.commands.SuperadminCoreCommand;
+import ultimategdbot.util.AppTools;
 
 /**
  * Command to change the bot's usernamme
@@ -13,7 +15,11 @@ import ultimategdbot.commands.SuperadminCommand;
  * @author Alex1304
  *
  */
-public class ChangeBotUsernameCommand extends SuperadminCommand {
+public class ChangeBotUsernameCommand extends SuperadminCoreCommand {
+
+	public ChangeBotUsernameCommand() {
+		super("changebotusername");
+	}
 
 	@Override
 	public void runSuperadminCommand(MessageReceivedEvent event, List<String> args) {
@@ -31,7 +37,24 @@ public class ChangeBotUsernameCommand extends SuperadminCommand {
 
 	@Override
 	public String getHelp() {
-		return "`g!changebotusername <new_name>` - Changes the bot username";
+		return "Changes the bot username";
+	}
+
+	@Override
+	public String[] getSyntax() {
+		String[] res = { "<new_name>" };
+		return res;
+	}
+
+	@Override
+	public String[] getExamples() {
+		String[] res = { "HyperCoolGDBot" };
+		return res;
+	}
+
+	@Override
+	protected Map<String, Command> initSubCommandMap() {
+		return null;
 	}
 
 }

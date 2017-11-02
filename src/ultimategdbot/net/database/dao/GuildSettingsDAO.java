@@ -12,22 +12,23 @@ import ultimategdbot.net.database.entities.GuildSettings;
 public class GuildSettingsDAO implements DAO<GuildSettings> {
 
 	@Override
-	public void insert(GuildSettings obj) {
+	public boolean insert(GuildSettings obj) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
 					"INSERT INTO guild_settings VALUES (?, ?, ?)");
 			ps.setLong(1, obj.getGuildId());
 			ps.setLong(2, obj.getGdeventSubscriberRoleId());
 			ps.setLong(3, obj.getGdeventSubscriberChannelId());
-			ps.execute();
+			return ps.execute();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
-
+	
 	@Override
-	public void update(GuildSettings obj) {
+	public boolean update(GuildSettings obj) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
 					"UPDATE guild_settings SET gdevent_awarded_subscriber_roleid = ?"
@@ -35,23 +36,25 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 			ps.setLong(1, obj.getGdeventSubscriberRoleId());
 			ps.setLong(2, obj.getGdeventSubscriberChannelId());
 			ps.setLong(3, obj.getGuildId());
-			ps.executeUpdate();
+			return ps.execute();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
 	@Override
-	public void delete(GuildSettings obj) {
+	public boolean delete(GuildSettings obj) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
-					"DELETE FROM guild_settings  WHERE guild_id = ?");
+					"DELETE FROM guild_settings WHERE guild_id = ?");
 			ps.setLong(1, obj.getGuildId());
-			ps.execute();
+			return ps.execute();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -60,9 +63,10 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 		GuildSettings gs = null;
 
 		try {
-			ResultSet result = DatabaseConnection.getInstance()
-					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM guild_settings WHERE guild_id = " + id);
+			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
+					"SELECT * FROM guild_settings WHERE guild_id = ?");
+			ps.setLong(1, id);
+			ResultSet result = ps.executeQuery();
 			if (result.first())
 				gs = new GuildSettings(id, result.getLong("gdevent_awarded_subscriber_roleid"),
 						result.getLong("gdevent_awarded_subscriber_channelid"));
@@ -73,6 +77,7 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 		return gs;
 	}
 	
+	@Override
 	public List<GuildSettings> findAll() {
 		List<GuildSettings> gsList = new ArrayList<>();
 
@@ -88,5 +93,15 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 		}
 		
 		return gsList;
+	}
+	
+	public GuildSettings findOrCreate(long id) {
+		GuildSettings gs = find(id);
+		if (gs == null) {
+			gs = new GuildSettings(id, 0, 0);
+			insert(gs);
+		}
+		
+		return gs;
 	}
 }

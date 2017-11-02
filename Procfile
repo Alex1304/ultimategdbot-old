@@ -1,1 +1,1 @@
-worker: java $JAVA_OPTS -jar target/ultimategdbot-1.3-jar-with-dependencies.jar $BOT_TOKEN $SUPERADMIN_ID
+worker: java $JAVA_OPTS -jar target/ultimategdbot-1.5-jar-with-dependencies.jar

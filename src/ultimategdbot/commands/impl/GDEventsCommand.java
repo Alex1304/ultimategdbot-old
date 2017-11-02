@@ -1,31 +1,35 @@
 package ultimategdbot.commands.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.util.DiscordException;
-import ultimategdbot.app.AppTools;
+import sx.blah.discord.util.MissingPermissionsException;
 import ultimategdbot.commands.Command;
+import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
+import ultimategdbot.exceptions.SettingsNotProvidedException;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
+import ultimategdbot.util.AppTools;
+import ultimategdbot.util.Settings;
 
-public class GDEventsCommand implements Command {
+public class GDEventsCommand extends CoreCommand {
+
+	public GDEventsCommand() {
+		super("gdevents");
+	}
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		if (args.size() != 1)
-			throw new CommandFailedException("Correct usage:\n`g!gdevents [subscribe|unsubscribe]`");
+			throw new CommandFailedException(this);
 		
-		GuildSettings gs = new GuildSettingsDAO().find(event.getGuild().getLongID());
-		if (gs == null)
-			throw new CommandFailedException("Database Error");
+		GuildSettings gs = new GuildSettingsDAO().findOrCreate(event.getGuild().getLongID());
 		
-		if (gs.getGdeventSubscriberChannelId() == 0 || gs.getGdeventSubscriberRoleId() == 0)
-			throw new CommandFailedException("I am not set up to execute this command yet! The following settings"
-					+ " need to be provided by a server administrator using the `g!setup` command"
-					+ ": `gdevents_announcements_channel`, `gdevents_subscriber_role`");
+		if (gs.getGdeventSubscriberRoleId() == 0)
+			throw new SettingsNotProvidedException(Settings.GDEVENTS_SUBSCRIBER_ROLE);
 
 		try {
 			IRole roleAwardedSub = event.getGuild().getRoleByID(gs.getGdeventSubscriberRoleId());
@@ -46,21 +50,38 @@ public class GDEventsCommand implements Command {
 						throw new CommandFailedException("You are already unsubscribed to GD events notifications!");
 					break;
 				default:
-					throw new CommandFailedException("Correct usage:\n`g!gdevents [subscribe|unsubscribe]`");
+					throw new CommandFailedException(this);
 			}
 
-		} catch (DiscordException e) {
+		} catch (MissingPermissionsException e) {
 			AppTools.sendMessage(event.getChannel(),
-					"Oops, I don't seem to have the permission to assign roles to members...");
+					"Oops, it seems I don't have the permission to assign this role to members...");
 		}
 	}
 
 	@Override
 	public String getHelp() {
-		return "`g!gdevents [subscribe|unsubscribe]` - When a certain event happens on Geometry Dash"
-				+ " (RobTop rating new levels, a member of this server gets his level rated, etc), I"
+		return "When a certain event happens on Geometry Dash"
+				+ " (RobTop rating new levels, etc), I"
 				+ " will send a notification in the server by pinging a role. Use this command to"
 				+ " assign/remove this role by yourself!";
+	}
+
+	@Override
+	public String[] getSyntax() {
+		String[] res = { "subscribe|unsubscribe" };
+		return res;
+	}
+
+	@Override
+	public String[] getExamples() {
+		String[] res = { "subscribe", "unsubscribe" };
+		return res;
+	}
+
+	@Override
+	protected Map<String, Command> initSubCommandMap() {
+		return null;
 	}
 
 }

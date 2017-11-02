@@ -6,24 +6,31 @@ public class GDLevel {
 	private String name;
 	private String creator;
 	private String description;
-	private int stars;
-	private boolean featured;
+	private Difficulty difficulty;
+	private DemonDifficulty demonDifficulty;
+	private short stars;
+	private int featured;
 	private boolean epic;
-	private int downloads;
-	private int likes;
+	private long downloads;
+	private long likes;
+	private Length length;
 	
-	public GDLevel(long id, String name, String creator, String description, int stars, boolean featured, boolean epic,
-			int downloads, int likes) {
+	public GDLevel(long id, String name, String creator, String description, Difficulty difficulty,
+			DemonDifficulty demonDifficulty, short stars, int featured, boolean epic, long downloads,
+			long likes, Length length) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.creator = creator;
 		this.description = description;
+		this.difficulty = difficulty;
+		this.demonDifficulty = demonDifficulty;
 		this.stars = stars;
 		this.featured = featured;
 		this.epic = epic;
 		this.downloads = downloads;
 		this.likes = likes;
+		this.length = length;
 	}
 
 	public long getId() {
@@ -42,11 +49,23 @@ public class GDLevel {
 		return description;
 	}
 
-	public int getStars() {
+	public Difficulty getDifficulty() {
+		return difficulty;
+	}
+
+	public DemonDifficulty getDemonDifficulty() {
+		return demonDifficulty;
+	}
+
+	public short getStars() {
 		return stars;
 	}
 
 	public boolean isFeatured() {
+		return featured > 0;
+	}
+	
+	public int getFeatured() {
 		return featured;
 	}
 
@@ -54,27 +73,32 @@ public class GDLevel {
 		return epic;
 	}
 	
-	public int getDownloads() {
+	public long getDownloads() {
 		return downloads;
 	}
 
-	public int getLikes() {
+	public long getLikes() {
 		return likes;
+	}
+	
+	public Length getLength() {
+		return length;
+	}
+	
+	public boolean isAwarded() {
+		return stars > 0;
+	}
+	
+	@Override
+	public String toString() {
+		return "**__" + name + "__** by **" + creator + "** (" + id + ")";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((creator == null) ? 0 : creator.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + downloads;
-		result = prime * result + (epic ? 1231 : 1237);
-		result = prime * result + (featured ? 1231 : 1237);
 		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + likes;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + stars;
 		return result;
 	}
 
@@ -87,53 +111,36 @@ public class GDLevel {
 		if (getClass() != obj.getClass())
 			return false;
 		GDLevel other = (GDLevel) obj;
-		if (creator == null) {
-			if (other.creator != null)
-				return false;
-		} else if (!creator.equals(other.creator))
+		if (id != other.id)
 			return false;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
+		return true;
+	}
+	
+	/**
+	 * The regular equals() definition in this class does
+	 * only compare the level ID. This method does compare
+	 * more fields : stars, difficulty, featured, epic, etc.
+	 * 
+	 * @param obj - the other object to compare to
+	 * @return true if the current object is equal to obj along
+	 * the specified criterias.
+	 */
+	public boolean stateEquals(Object obj) {
+		if (!this.equals(obj))
 			return false;
-		if (downloads != other.downloads)
+		
+		GDLevel other = (GDLevel) obj;
+		if (difficulty != other.difficulty)
+			return false;
+		if (demonDifficulty != other.demonDifficulty)
 			return false;
 		if (epic != other.epic)
 			return false;
 		if (featured != other.featured)
 			return false;
-		if (id != other.id)
-			return false;
-		if (likes != other.likes)
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
 		if (stars != other.stars)
 			return false;
 		return true;
-	}
-	
-	public boolean hasSameIDThan(GDLevel otherLevel) {
-		return this.id == otherLevel.id;
-	}
-	
-	@Override
-	public String toString() {
-		return ""
-			+ "Level ID: " + getId() + "\n"
-			+ "Name: " + getName() + "\n"
-			+ "Description: " + getDescription() + "\n"
-			+ "Creator: " + getCreator() + "\n"
-			+ "Stars: " + getStars() + "\n"
-			+ "Featured? " + isFeatured() + "\n"
-			+ "Epic? " + isEpic() + "\n"
-			+ "Downloads: " + getDownloads() + "\n"
-			+ "Likes: " + getLikes()
-		;
 	}
 	
 //	public void displayInfo() {

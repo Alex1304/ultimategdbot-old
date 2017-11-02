@@ -2,45 +2,79 @@ package ultimategdbot.net.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.Date;
+import java.sql.ResultSet;
+
+import ultimategdbot.app.AppParams;
+import ultimategdbot.app.Main;
+import ultimategdbot.util.AppTools;
 
 /**
- * This class is used to get an instance of the connection to the database using the Singleton Pattern
+ * This class is used to get an instance of the connection to the database using
+ * the Singleton Pattern
+ * 
  * @author Alex1304
  *
  */
 public class DatabaseConnection {
-	
-	private static Connection conn = createInstance();
-	private static long dateLastInstance;
-	
-	public static Connection getInstance() {
-		long currDate = new Date().getTime();
-		
-		if (currDate - dateLastInstance >= 44_363_000)
-			conn = createInstance();
-		
-		return conn;
-	}
+
+	private static volatile Connection conn = createInstance();
 	
 	/**
-	 * Returns a unique instance of the database connection. Credentials are read from the
-	 * system environment variables for security reasons
-	 * @return
+	 * Returns the current connection instance. It first checks if the connection is still operational.
+	 * If not, then the connection is reset before returning a new instance.
+	 * @return the current Connection instance to database.
+	 */
+	public static synchronized Connection getInstance() {
+		if (!isConnectionOK()) {
+			conn = createInstance();
+			AppTools.sendDebugPMToSuperadmin(":white_check_mark: A new database connection instance has been successfully created!");
+		}
+
+		return conn;
+	}
+
+	/**
+	 * Returns a unique instance of the database connection. Credentials are
+	 * read from the system environment variables for security reasons
+	 * 
+	 * @return the Connection instance created, or null if instance failed.
 	 */
 	private static Connection createInstance() {
 		try {
-			if (conn != null)
+			if (conn != null) 
 				conn.close();
-			conn = DriverManager.getConnection("jdbc:mysql://mysql-alex1304.alwaysdata.net/alex1304_ultimategdbot",
+			conn = DriverManager.getConnection((Main.isTestEnvironment() ? AppParams.LOCAL_DB_HOST
+					: AppParams.REMOTE_DB_HOST) + "?autoReconnect=true",
 					System.getenv().get("DB_USERNAME"), System.getenv().get("DB_PASSWORD"));
-			dateLastInstance = new Date().getTime();
 			return conn;
 		} catch (Exception e) {
 			e.printStackTrace();
+			AppTools.sendDebugPMToSuperadmin(
+					"Failed to create a connection instance to the database: " + "`" + e.getLocalizedMessage() + "`");
 		}
-		
+
 		return null;
 	}
-	
+
+	/**
+	 * Attempts to make a query to the database using the current connection. If
+	 * any exception is thrown during the process, false is returned.
+	 * 
+	 * @return false if the test query throws any exception or if the current
+	 *         connection is null, true otherwise.
+	 */
+	public static boolean isConnectionOK() {
+		if (conn == null)
+			return false;
+
+		try {
+			conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
+					.executeQuery("SELECT * FROM guild_settings WHERE guild_id = -1");
+		} catch (Exception e) {
+			AppTools.sendDebugPMToSuperadmin("Ping database failed: `" + e.getLocalizedMessage() + "`");
+			return false;
+		}
+
+		return true;
+	}
 }

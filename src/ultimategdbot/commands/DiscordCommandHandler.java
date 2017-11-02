@@ -11,13 +11,18 @@ import java.util.Map;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.DiscordException;
-import ultimategdbot.app.AppTools;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
+import ultimategdbot.commands.impl.CompareCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
+import ultimategdbot.commands.impl.GuildListCommand;
 import ultimategdbot.commands.impl.HelpCommand;
+import ultimategdbot.commands.impl.InviteCommand;
+import ultimategdbot.commands.impl.LevelCommand;
 import ultimategdbot.commands.impl.PingCommand;
+import ultimategdbot.commands.impl.RestartCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
+import ultimategdbot.util.AppTools;
 
 /**
  * Bot commands are handled here, using the Discord API based on events
@@ -25,19 +30,20 @@ import ultimategdbot.exceptions.CommandFailedException;
  * @author Alex1304
  *
  */
-public class CommandHandler {
+public class DiscordCommandHandler {
 
 	/**
 	 * Maps that associates text commands to their actions.
 	 */
-	public static Map<String, Command> commandMap = new HashMap<>();
-	public static Map<String, Command> superadminCommandMap = new HashMap<>();
-	public static Map<String, Command> adminCommandMap = new HashMap<>();
+	public static Map<String, CoreCommand> commandMap = new HashMap<>();
+	public static Map<String, CoreCommand> superadminCommandMap = new HashMap<>();
+	public static Map<String, CoreCommand> betaTestersCommandMap = new HashMap<>();
+	public static Map<String, CoreCommand> adminCommandMap = new HashMap<>();
 
 	/**
 	 * Constructor
 	 */
-	public CommandHandler() {
+	public DiscordCommandHandler() {
 		loadCommandMaps();
 	}
 
@@ -46,15 +52,26 @@ public class CommandHandler {
 	 */
 	private void loadCommandMaps() {
 		// Superadmin commands
-		superadminCommandMap.put("changebotusername", new ChangeBotUsernameCommand());
+		registerCommand(superadminCommandMap, new ChangeBotUsernameCommand());
+		registerCommand(superadminCommandMap, new GuildListCommand());
+		
+		// Beta-testers commands
+		registerCommand(betaTestersCommandMap, new RestartCommand());
 		
 		// Admin commands
-		adminCommandMap.put("setup", new SetupCommand());
+		registerCommand(adminCommandMap, new SetupCommand());
 		
 		// Public commands
-		commandMap.put("ping", new PingCommand());
-		commandMap.put("gdevents", new GDEventsCommand());
-		commandMap.put("help", new HelpCommand());
+		registerCommand(commandMap, new PingCommand());
+		registerCommand(commandMap, new GDEventsCommand());
+		registerCommand(commandMap, new HelpCommand());
+		registerCommand(commandMap, new InviteCommand());
+		registerCommand(commandMap, new LevelCommand());
+		registerCommand(commandMap, new CompareCommand());
+	}
+	
+	private void registerCommand(Map<String, CoreCommand> map, CoreCommand cmd) {
+		map.put(cmd.getName(), cmd);
 	}
 
 	/**
@@ -98,15 +115,28 @@ public class CommandHandler {
 		try {
 			if (superadminCommandMap.containsKey(commandStr))
 				superadminCommandMap.get(commandStr).runCommand(event, argsList);
+			else if (betaTestersCommandMap.containsKey(commandStr))
+				betaTestersCommandMap.get(commandStr).runCommand(event, argsList);
 			else if (adminCommandMap.containsKey(commandStr))
 				adminCommandMap.get(commandStr).runCommand(event, argsList);
 			else if (commandMap.containsKey(commandStr))
 				commandMap.get(commandStr).runCommand(event, argsList);
 		} catch (CommandFailedException e) {
-			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getDenialReason());
+			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getFailureReason());
 		} catch (DiscordException e) {
 			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");
 			System.err.println(e.getErrorMessage());
+		} catch (Exception e) {
+			AppTools.sendDebugPMToSuperadmin(
+					"An internal error occured in the command handler. See logs for more details\n"
+							+ "Context info:\n"
+							+ "```\n"
+							+ "Guild: " + event.getGuild().getName() + " (" + event.getGuild().getLongID() + ")\n"
+							+ "Channel: #" + event.getChannel().getName() + "\n"
+							+ "Author: " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + "\n"
+							+ "Full message: " + event.getMessage().getContent() + "\n"
+							+ "```\n");
+			e.printStackTrace();
 		}
 	}
 }
