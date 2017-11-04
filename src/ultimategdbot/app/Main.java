@@ -46,9 +46,11 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		if (!AppParams.checkEnvVariables()) {
-			System.err.println("You need to define the following system environnement variables for this program to work:\n"
-					+ "BOT_TOKEN - Authentication token of the bot\n"
-					+ "DB_USERNAME and DB_PASSWORD - Credentials to connect to database.");
+			System.err.println("You need to define all of the following system environnement variables for this "
+					+ "program to work:\n"
+					+ "BOT_TOKEN - Authentication token of the bot's Discord account\n"
+					+ "DB_USERNAME and DB_PASSWORD - Credentials to connect to database.\n"
+					+ "GD_ACCOUNT_GJP - The GJP of the Geometry Dash bot account.");
 			return;
 		}
 		System.out.println("Test environment? " + isTestEnvironment());

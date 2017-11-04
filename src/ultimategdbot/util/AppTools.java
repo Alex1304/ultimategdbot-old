@@ -3,7 +3,10 @@ package ultimategdbot.util;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -24,9 +27,9 @@ import ultimategdbot.app.Main;
  * @author Alex1304
  *
  */
-public class AppTools {
+public abstract class AppTools {
 	
-	private static volatile IMessage messageSent = null;
+	private static Map<Long, IMessage> messageQueue = new HashMap<>();
 
 	/**
 	 * Builds the client using the ClientBuilder object
@@ -98,20 +101,19 @@ public class AppTools {
 	 * @return the IMessage instance of the message sent, or null if it failed to send the message
 	 * in less than 10 seconds.
 	 */
-	public static synchronized IMessage sendMessage(IChannel channel, String message, EmbedObject embed) {
-		messageSent = null;
+	public static IMessage sendMessage(IChannel channel, String message, EmbedObject embed) {
+		long currTime = System.currentTimeMillis();
 		
 		RequestBuffer.request(() -> {
-			messageSent = (embed != null) ? channel.sendMessage(message, embed) : channel.sendMessage(message);
+			messageQueue.put(currTime, (embed != null) ? channel.sendMessage(message, embed) : channel.sendMessage(message));
 		});
 		
-		long time = System.currentTimeMillis();
-		while (messageSent == null && System.currentTimeMillis() - time < 10000) {}
+		while (!messageQueue.containsKey(currTime) && System.currentTimeMillis() - currTime < 30000) {}
 		
-		if (messageSent == null)
-			System.err.println("Unable to send message: Timeout.");
+		if (!messageQueue.containsKey(currTime))
+			System.err.println("Unable to send message: Timeout");
 		
-		return messageSent;
+		return messageQueue.remove(currTime);
 	}
 
 	/**
@@ -235,5 +237,18 @@ public class AppTools {
 	 */
 	public static void sendDebugPMToSuperadmin(String msg) {
 		sendMessage(Main.superadmin.getOrCreatePMChannel(), msg);
+	}
+	
+	public static String generateAlphanumericToken(int n) {
+		if (n < 1)
+			return null;
+		
+		final String alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		char[] result = new char[n];
+		
+		for (int i = 0 ; i < result.length ; i++)
+			result[i] = alphabet.charAt(new Random().nextInt(alphabet.length()));
+		
+		return new String(result);
 	}
 }

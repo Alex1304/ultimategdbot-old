@@ -36,4 +36,9 @@ public abstract class AbstractCommand implements Command {
 			return false;
 	}
 
+	public void setSubCommandMap(Map<String, Command> subCommandMap) {
+		if (subCommandMap == null)
+			this.subCommandMap = subCommandMap;
+	}
+
 }

@@ -7,13 +7,14 @@ import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.util.EmbedBuilder;
 import ultimategdbot.net.geometrydash.Difficulty;
 import ultimategdbot.net.geometrydash.GDLevel;
+import ultimategdbot.net.geometrydash.GDUser;
 
 /**
  * Utilitary class for Geometry Dash related stuff in general
  * @author alexandre
  *
  */
-public class GDUtils {
+public abstract class GDUtils {
 	
 	public static Map<String, String> difficultyIconByName = new HashMap<>();
 	
@@ -115,10 +116,10 @@ public class GDUtils {
 		eb.withAuthorIcon(authorIcon);
 		eb.withThumbnail(getDifficultyImageForLevel(lvl));
 	
-		eb.appendField("<:Play:364096635019722764>  __" + lvl.getName() + "__ *by " + lvl.getCreator() + "*", "**Description:** " + lvl.getDescription(), true);
-		eb.appendField("<:Info:364092562040160266>  Stats and info", "<:Downloads:364076905130885122> " + lvl.getDownloads() + "\t\t"
-				+ (lvl.getLikes() < 0 ? "<:Dislike:364076032602406912> " : "<:Like:364076087648452610> ") + lvl.getLikes() + "\t\t"
-						+ "<:Length:364077721565003786> " + lvl.getLength().toString().toUpperCase(), false);
+		eb.appendField(Emoji.PLAY + "  __" + lvl.getName() + "__ by " + lvl.getCreator() + "", "**Description:** " + lvl.getDescription(), true);
+		eb.appendField(Emoji.INFO + "  Stats and info", Emoji.DOWNLOADS + " " + lvl.getDownloads() + "\t\t"
+				+ (lvl.getLikes() < 0 ? Emoji.DISLIKE + " " : Emoji.LIKE + " ") + lvl.getLikes() + "\t\t"
+						+ Emoji.LENGTH + " " + lvl.getLength().toString().toUpperCase(), false);
 		
 		if (lvl.isFeatured())
 			eb.appendField("Featured", "Score: " + lvl.getFeatured(), false);
@@ -143,4 +144,44 @@ public class GDUtils {
 		return difficultyIconByName.get(difficulty);
 	}
 	
+	public static Map<Integer, String> structureRawData(String rawData) {
+		String[] arrayLvlInfo = rawData.split(":");
+		Map<Integer, String> structuredLvlInfo = new HashMap<>();
+		
+		for (int i = 0 ; i < arrayLvlInfo.length ; i += 2) {
+			structuredLvlInfo.put(Integer.parseInt(arrayLvlInfo[i]), arrayLvlInfo[i+1]);
+		}
+		
+		return structuredLvlInfo;
+	}
+	
+	/**
+	 * Builds an embed for the specified Geometry Dash user
+	 * @param authorName - authorName field of the embed
+	 * @param authorIcon - authorIcon field of the embed
+	 * @param user - the user to convert to embed
+	 * @return an EmbedObject representing the embedded user
+	 */
+	public static EmbedObject buildEmbedForGDUser(String authorName, String authorIcon, GDUser user) {
+		EmbedBuilder eb = new EmbedBuilder();
+		
+		eb.withAuthorName(authorName);
+		eb.withAuthorIcon(authorIcon);
+		
+		eb.appendField(":chart_with_upwards_trend:  " + user.getName() + "'s stats", Emoji.STAR + "  " + user.getStars()+ "\t\t"
+			+ Emoji.DIAMOND + "  " + user.getDiamonds() + "\t\t"
+			+ Emoji.USERCOIN + "  " + user.getUserCoins() + "\t\t"
+			+ Emoji.SECRETCOIN + "  " + user.getSecretCoins() + "\t\t"
+			+ Emoji.DEMON + "  " + user.getDemons() + "\t\t"
+			+ Emoji.CREATOR_POINTS + "  " + user.getCreatorPoints() + "\t\t", false);
+		
+		eb.appendField(Emoji.INFO + "  Extra info", Emoji.GLOBAL_RANK + "  **Global Rank:** " + user.getGlobalRank() + "\n"
+				+ Emoji.YOUTUBE + "  **Youtube:** https://www.youtube.com/channel/" + user.getYoutube() + "\n"
+				+ Emoji.TWITCH + "  **Twitch:** [" + user.getTwitch() + "](http://www.twitch.tv/" + user.getTwitch() + ")\n"
+				+ Emoji.TWITTER + "  **Twitter:** [@" + user.getTwitter() + "](http://www.twitter.com/" + user.getTwitter() + ")", false);
+		
+		eb.withFooterText("PlayerID: " + user.getPlayerID() + " | " + "AccountID: " + user.getAccountID());
+		
+		return eb.build();
+	}
 }

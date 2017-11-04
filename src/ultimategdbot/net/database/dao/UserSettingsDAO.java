@@ -7,48 +7,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ultimategdbot.net.database.DatabaseConnection;
+import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.database.entities.UserSettings;
 
 public class UserSettingsDAO implements DAO<UserSettings> {
 
 	@Override
-	public void insert(UserSettings obj) {
+	public boolean insert(UserSettings obj) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
-					"INSERT INTO user_settings VALUES (?, ?)");
+					"INSERT INTO user_settings VALUES (?, ?, ?, ?)");
 			ps.setLong(1, obj.getUserID());
 			ps.setLong(2, obj.getGdUserID());
-			ps.execute();
+			ps.setBoolean(3, obj.isLinkActivated());
+			ps.setString(4, obj.getConfirmationToken());
+			return ps.execute();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
 	@Override
-	public void update(UserSettings obj) {
+	public boolean update(UserSettings obj) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
-					"UPDATE user_settings SET gd_user_id = ? WHERE user_id = ?");
+					"UPDATE user_settings SET gd_user_id = ?, link_activated = ?, confirmation_token = ? WHERE user_id = ?");
 			ps.setLong(1, obj.getGdUserID());
-			ps.setLong(2, obj.getUserID());
-			ps.executeUpdate();
+			ps.setBoolean(2, obj.isLinkActivated());
+			ps.setString(3, obj.getConfirmationToken());
+			ps.setLong(4, obj.getUserID());
+			return ps.execute();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
 	@Override
-	public void delete(UserSettings obj) {
+	public boolean delete(UserSettings obj) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
-					"DELETE FROM user_settings  WHERE user_id = ?");
+					"DELETE FROM user_settings WHERE user_id = ?");
 			ps.setLong(1, obj.getUserID());
-			ps.execute();
+			return ps.execute();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -61,7 +69,10 @@ public class UserSettingsDAO implements DAO<UserSettings> {
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
 					.executeQuery("SELECT * FROM user_settings WHERE user_id = " + id);
 			if (result.first())
-				us = new UserSettings(id, result.getLong("gd_user_id"));
+				us = new UserSettings(id,
+						result.getLong("gd_user_id"),
+						result.getBoolean("link_activated"),
+						result.getString("confirmation_token"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -77,11 +88,23 @@ public class UserSettingsDAO implements DAO<UserSettings> {
 					.createStatement().executeQuery("SELECT * FROM user_settings");
 			while (result.next())
 				usList.add(new UserSettings(result.getLong("user_id"),
-						result.getLong("gd_user_id")));
+						result.getLong("gd_user_id"),
+						result.getBoolean("link_activated"),
+						result.getString("confirmation_token")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
 		return usList;
+	}
+	
+	public UserSettings findOrCreate(long id) {
+		UserSettings us = find(id);
+		if (us == null) {
+			us = new UserSettings(id, -1, false, null);
+			insert(us);
+		}
+		
+		return us;
 	}
 }

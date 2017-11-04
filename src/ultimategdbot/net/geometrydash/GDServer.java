@@ -7,6 +7,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Base64;
+
+import ultimategdbot.app.AppParams;
+import ultimategdbot.exceptions.InvalidCharacterException;
+import ultimategdbot.util.GDMessageBodyEncoder;
 
 /**
  * Connection with Geometry Dash official servers is managed here
@@ -15,9 +20,10 @@ import java.net.URLEncoder;
  * @author Alex1304
  *
  */
-public class GDServer {
+public abstract class GDServer {
 
-	private static final String gdservURLPrefix = "http://www.boomlings.com/database/";
+	private static final String GD_SERVER_URL_PREFIX = "http://www.boomlings.com/database/";
+	private static final String SECRET = "Wmfd2893gb7";
 	
 	/**
 	 * Submits a POST request to the specified page on the GD server and returns the result as a String
@@ -28,15 +34,17 @@ public class GDServer {
 	 */
 	public static String sendRequest(String webpage, String urlParams) throws IOException {
 			HttpURLConnection con;
-			con = (HttpURLConnection) new URL(gdservURLPrefix + webpage).openConnection();
+			con = (HttpURLConnection) new URL(GD_SERVER_URL_PREFIX + webpage).openConnection();
 			con.setRequestMethod("POST");
 			con.setDoOutput(true);
-
+			
 			// Sending the request to the server
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 			wr.writeBytes(urlParams);
 			wr.flush();
 			wr.close();
+			
+			System.out.println(urlParams);
 
 			// Fetching response
 			String result = "";
@@ -58,7 +66,7 @@ public class GDServer {
 		return sendRequest("getGJLevels21.php",
 				"gameVersion=21&binaryVersion=33&gdw=0&type=11&str=&diff=-&len=-&page=0&total=0"
 				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
-				+ "&secret=Wmfd2893gb7");
+				+ "&secret=" + SECRET);
 	}
 	
 	/**
@@ -70,7 +78,7 @@ public class GDServer {
 		return sendRequest("getGJLevels21.php",
 				"gameVersion=21&binaryVersion=33&gdw=0&type=4&str=&diff=-&len=-&page=0&total=9999"
 				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
-				+ "&secret=Wmfd2893gb7");
+				+ "&secret=" + SECRET);
 	}
 	
 	/**
@@ -82,6 +90,26 @@ public class GDServer {
 		return sendRequest("getGJLevels21.php",
 				"gameVersion=21&binaryVersion=33&gdw=0&type=0&str=" + URLEncoder.encode(levelNameOrID, "UTF-8") + "&diff=-&len=-&page=0&total=0"
 				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
-				+ "&secret=Wmfd2893gb7");
+				+ "&secret=" + SECRET);
+	}
+	
+	public static String sendMessageFromBotToGDUser(long recipientAccountID, String subject, String body) throws IOException, InvalidCharacterException {
+		return sendRequest("uploadGJMessage20.php",
+				"gameVersion=21&binaryVersion=33&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp="
+				+ AppParams.GD_ACCOUNT_GJP + "&toAccountID=" + recipientAccountID + "&subject="
+				+ new String(Base64.getUrlEncoder().encode(subject.getBytes())) + "&body="
+				+ GDMessageBodyEncoder.encode(body) + "&secret=" + SECRET);
+	}
+	
+	public static String fetchUserByNameOrID(String userNameOrID) throws IOException {
+		return sendRequest("getGJUsers20.php",
+				"gameVersion=21&binaryVersion=33&gdw=0&type=0&str=" + URLEncoder.encode(userNameOrID, "UTF-8") + "&page=0&total=0"
+				+ "&secret=" + SECRET);
+	}
+	
+	public static String fetchUserProfile(long accountID) throws IOException {
+		return sendRequest("getGJUserInfo20.php",
+				"gameVersion=21&binaryVersion=33&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp=" + AppParams.GD_ACCOUNT_GJP
+				+ "&targetAccountID=" + accountID + "&secret=" + SECRET);
 	}
 }

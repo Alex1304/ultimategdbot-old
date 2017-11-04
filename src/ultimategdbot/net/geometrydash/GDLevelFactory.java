@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import ultimategdbot.exceptions.RawDataMalformedException;
+import ultimategdbot.util.GDUtils;
 
 /**
  * Utility class to convert raw data into GDLevel instances
@@ -14,7 +15,7 @@ import ultimategdbot.exceptions.RawDataMalformedException;
  * @author Alex1304
  *
  */
-public class GDLevelFactory {
+public abstract class GDLevelFactory {
 	
 	/**
 	 * Associates the integer value in the raw data with the corresponding difficulty
@@ -65,7 +66,7 @@ public class GDLevelFactory {
 	 */
 	public static GDLevel buildGDLevelSearchedByFilter(String rawData, int index) throws RawDataMalformedException, IndexOutOfBoundsException {
 		try {
-			Map<Integer, String> structuredLvlInfo = structureLevelInfo(cutOneLevel(cutLevelInfoPart(rawData), index));
+			Map<Integer, String> structuredLvlInfo = GDUtils.structureRawData(cutOneLevel(cutLevelInfoPart(rawData), index));
 			Map<Long, String> structuredCreatorsInfo = structureCreatorsInfo(cutCreatorInfoPart(rawData));
 
 			// Determines the difficulty of the level
@@ -124,17 +125,6 @@ public class GDLevelFactory {
 	
 	private static String cutOneLevel(String levelInfoPartRD, int index) {
 		return levelInfoPartRD.split("\\|")[index];
-	}
-	
-	private static Map<Integer, String> structureLevelInfo(String oneLevelRD) {
-		String[] arrayLvlInfo = oneLevelRD.split(":");
-		Map<Integer, String> structuredLvlInfo = new HashMap<>();
-		
-		for (int i = 0 ; i < arrayLvlInfo.length ; i += 2) {
-			structuredLvlInfo.put(Integer.parseInt(arrayLvlInfo[i]), arrayLvlInfo[i+1]);
-		}
-		
-		return structuredLvlInfo;
 	}
 	
 	private static Map<Long, String> structureCreatorsInfo(String creatorsInfoRD) {

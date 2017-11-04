@@ -24,7 +24,11 @@ public class AppParams {
 	public static final String LOCAL_DB_HOST = "jdbc:mysql://localhost/ultimategdbot";
 	public static final String REMOTE_DB_HOST = "jdbc:mysql://mysql-alex1304.alwaysdata.net/alex1304_ultimategdbot";
 	
+	// Geometry Dash bot account info
+	public static final long GD_ACCOUNT_ID = 7753855L;
+	public static final String GD_ACCOUNT_GJP = System.getenv().get("GD_ACCOUNT_GJP");
+	
 	public static boolean checkEnvVariables() {
-		return BOT_TOKEN != null && DB_USERNAME != null && DB_PASSWORD != null;
+		return BOT_TOKEN != null && DB_USERNAME != null && DB_PASSWORD != null && GD_ACCOUNT_GJP != null;
 	}
 }

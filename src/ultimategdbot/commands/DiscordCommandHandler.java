@@ -11,6 +11,9 @@ import java.util.Map;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.DiscordException;
+import ultimategdbot.commands.impl.AccountCommand;
+import ultimategdbot.commands.impl.AnnouncementCommand;
+import ultimategdbot.commands.impl.BotMessageCommand;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.CompareCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
@@ -19,6 +22,7 @@ import ultimategdbot.commands.impl.HelpCommand;
 import ultimategdbot.commands.impl.InviteCommand;
 import ultimategdbot.commands.impl.LevelCommand;
 import ultimategdbot.commands.impl.PingCommand;
+import ultimategdbot.commands.impl.ProfileCommand;
 import ultimategdbot.commands.impl.RestartCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
@@ -53,21 +57,25 @@ public class DiscordCommandHandler {
 	private void loadCommandMaps() {
 		// Superadmin commands
 		registerCommand(superadminCommandMap, new ChangeBotUsernameCommand());
-		registerCommand(superadminCommandMap, new GuildListCommand());
+		registerCommand(superadminCommandMap, new DMOnlyCommand(new GuildListCommand()));
+		registerCommand(superadminCommandMap, new AnnouncementCommand());
+		registerCommand(superadminCommandMap, new BotMessageCommand());
 		
 		// Beta-testers commands
 		registerCommand(betaTestersCommandMap, new RestartCommand());
 		
 		// Admin commands
-		registerCommand(adminCommandMap, new SetupCommand());
+		registerCommand(adminCommandMap, new ServerOnlyCommand(new SetupCommand()));
 		
 		// Public commands
 		registerCommand(commandMap, new PingCommand());
-		registerCommand(commandMap, new GDEventsCommand());
+		registerCommand(commandMap, new ServerOnlyCommand(new GDEventsCommand()));
 		registerCommand(commandMap, new HelpCommand());
 		registerCommand(commandMap, new InviteCommand());
 		registerCommand(commandMap, new LevelCommand());
 		registerCommand(commandMap, new CompareCommand());
+		registerCommand(commandMap, new AccountCommand());
+		registerCommand(commandMap, new ProfileCommand());
 	}
 	
 	private void registerCommand(Map<String, CoreCommand> map, CoreCommand cmd) {
@@ -127,6 +135,8 @@ public class DiscordCommandHandler {
 			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");
 			System.err.println(e.getErrorMessage());
 		} catch (Exception e) {
+			AppTools.sendMessage(event.getChannel(), "An internal error occured while running the command. Please try again "
+					+ "later.");
 			AppTools.sendDebugPMToSuperadmin(
 					"An internal error occured in the command handler. See logs for more details\n"
 							+ "Context info:\n"

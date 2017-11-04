@@ -50,9 +50,18 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 						
 						if (lastLevelRecorded == null) {
 							lastLevelRecorded = gdldao.findLastAwarded();
-							if (lastLevelRecorded == null)
+							// Checks if this level still exists on GD. If not, the level is deleted from the DB.
+							try {
+								quickLevelSearch(lastLevelRecorded.getId() + "");
+							} catch (RawDataMalformedException e) {
+								gdldao.delete(lastLevelRecorded);
+								lastLevelRecorded = null;
+							}
+							
+							if (lastLevelRecorded == null) {
 								gdldao.insert(awardedLevels.get(0));
-							lastLevelRecorded = gdldao.findLastAwarded();
+								lastLevelRecorded = awardedLevels.get(0);
+							}
 						}
 
 						// Add new awarded levels to a list
@@ -63,10 +72,15 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 						
 						if (checkForStateChange(awardedLevels.get(0)))
 							updateObservers(new LastAwardedStateChangedGDEvent(awardedLevels.get(0)));
-						
-						if (!awardedLevels.contains(lastLevelRecorded) &&
-								!quickLevelSearch(lastLevelRecorded.getId() + "").isAwarded())
-							updateObservers(new LastAwardedDeletedGDEvent(lastLevelRecorded));
+
+						if (!awardedLevels.contains(lastLevelRecorded)) {
+							if (!quickLevelSearch(lastLevelRecorded.getId() + "").isAwarded())
+								updateObservers(new LastAwardedDeletedGDEvent(lastLevelRecorded));
+							else {
+								gdldao.delete(lastLevelRecorded);
+								lastLevelRecorded = awardedLevels.get(0);
+							}
+						}
 						else if (!newAwardedLevels.isEmpty())
 							updateObservers(new NewAwardedGDEvent(newAwardedLevels));
 						
