@@ -54,7 +54,7 @@ public class LinkAccountSubCommand extends SubCommand<AccountCommand> {
 				AppTools.sendMessage(event.getChannel(), ":white_check_mark: A confirmation message has been sent to "
 						+ "the GD account '" + args.get(0) + "'. It contains a confirmation code that you are supposed "
 						+ "to enter through the command `" + Main.CMD_PREFIX + getParentCommand().getName() + " "
-						+ getParentCommand().getSyntax()[1].replace("|confirmunlink", "") + "`. If you deleted the "
+						+ getParentCommand().getSyntax()[2].replace("|confirmunlink", "") + "`. If you deleted the "
 						+ "message by accident, you can repeat this command and a new confirmation code will be "
 						+ "sent to you.");
 			else
