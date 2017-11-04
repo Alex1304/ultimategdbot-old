@@ -54,6 +54,19 @@ CREATE TABLE `guild_settings` (
   `gdevent_awarded_subscriber_channelid` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user_settings`
+--
+
+CREATE TABLE `user_settings` (
+  `user_id` bigint(20) NOT NULL,
+  `gd_user_id` bigint(20) NOT NULL,
+  `link_activated` tinyint(1) NOT NULL,
+  `confirmation_token` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Index pour les tables exportées
 --
@@ -69,6 +82,12 @@ ALTER TABLE `gd_level`
 --
 ALTER TABLE `guild_settings`
   ADD PRIMARY KEY (`guild_id`);
+  
+--
+-- Index pour la table `user_settings`
+--
+ALTER TABLE `user_settings`
+  ADD PRIMARY KEY (`user_id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
