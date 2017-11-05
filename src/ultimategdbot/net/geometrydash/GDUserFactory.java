@@ -44,10 +44,12 @@ public abstract class GDUserFactory {
 		String userSearchResultsRD = GDServer.fetchUsersByNameOrID(gdNameOrPlayerID);
 		List<String> searchResultList = new ArrayList<>(Arrays.asList(userSearchResultsRD.split("#")[0].split("\\|")));
 		List<Map<Integer, String>> structuredSearchResultList = new ArrayList<>();
-		searchResultList.forEach(e -> {
-			System.out.println(e);
-			structuredSearchResultList.add(GDUtils.structureRawData(e));
-		});
+		for (String e : searchResultList)
+			try {
+				structuredSearchResultList.add(GDUtils.structureRawData(e));
+			} catch (RawDataMalformedException e1) {
+				return -1;
+			}
 		
 		long result = -1;
 		int i = 0;

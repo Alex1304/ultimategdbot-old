@@ -8,6 +8,7 @@ import java.util.Map;
 
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.util.EmbedBuilder;
+import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.net.geometrydash.Difficulty;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDUser;
@@ -148,12 +149,16 @@ public abstract class GDUtils {
 		return difficultyIconByName.get(difficulty);
 	}
 	
-	public static Map<Integer, String> structureRawData(String rawData) {
+	public static Map<Integer, String> structureRawData(String rawData) throws RawDataMalformedException {
 		String[] arrayOfData = rawData.split(":");
 		Map<Integer, String> result = new HashMap<>();
-		
-		for (int i = 0 ; i < arrayOfData.length ; i += 2) {
-			result.put(Integer.parseInt(arrayOfData[i]), (i+1 < arrayOfData.length) ? arrayOfData[i+1] : "");
+
+		try {
+			for (int i = 0 ; i < arrayOfData.length ; i += 2) {
+				result.put(Integer.parseInt(arrayOfData[i]), (i+1 < arrayOfData.length) ? arrayOfData[i+1] : "");
+			}
+		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+			throw new RawDataMalformedException();
 		}
 		
 		return result;

@@ -143,7 +143,8 @@ public class DiscordCommandHandler {
 							+ "```\n"
 							+ "Guild: " + event.getGuild().getName() + " (" + event.getGuild().getLongID() + ")\n"
 							+ "Channel: #" + event.getChannel().getName() + "\n"
-							+ "Author: " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + "\n"
+							+ "Author: " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator()
+									+ "(" + event.getAuthor().getLongID() + ")\n"
 							+ "Full message: " + event.getMessage().getContent() + "\n"
 							+ "```\n");
 			e.printStackTrace();
