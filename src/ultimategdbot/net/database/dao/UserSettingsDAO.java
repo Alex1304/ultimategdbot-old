@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ultimategdbot.net.database.DatabaseConnection;
-import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.database.entities.UserSettings;
 
 public class UserSettingsDAO implements DAO<UserSettings> {
@@ -71,6 +70,25 @@ public class UserSettingsDAO implements DAO<UserSettings> {
 			if (result.first())
 				us = new UserSettings(id,
 						result.getLong("gd_user_id"),
+						result.getBoolean("link_activated"),
+						result.getString("confirmation_token"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return us;
+	}
+
+	public UserSettings findByGDUserID(long id) {
+		UserSettings us = null;
+
+		try {
+			ResultSet result = DatabaseConnection.getInstance()
+					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
+					.executeQuery("SELECT * FROM user_settings WHERE gd_user_id = " + id);
+			if (result.first())
+				us = new UserSettings(id,
+						result.getLong("user_id"),
 						result.getBoolean("link_activated"),
 						result.getString("confirmation_token"));
 		} catch (SQLException e) {

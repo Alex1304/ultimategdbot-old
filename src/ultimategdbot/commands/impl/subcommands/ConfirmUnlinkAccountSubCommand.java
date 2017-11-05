@@ -41,11 +41,8 @@ public class ConfirmUnlinkAccountSubCommand extends SubCommand<AccountCommand> {
 					+ "send you a new confirmation code, run`" + Main.CMD_PREFIX + getParentCommand().getName() + " "
 					+ getParentCommand().getSyntax()[1] + "` again.");
 		
-		us.setConfirmationToken(null);
-		us.setLinkActivated(false);
-		us.setGdUserID(-1);
-		usdao.update(us);
 		
+		usdao.delete(us);
 		AppTools.sendMessage(event.getChannel(), ":white_check_mark: You have successfully unlinked your account !");
 	}
 

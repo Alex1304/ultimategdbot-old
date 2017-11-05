@@ -11,6 +11,7 @@ import ultimategdbot.commands.SubCommand;
 import ultimategdbot.commands.impl.AccountCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.exceptions.InvalidCharacterException;
+import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.net.database.dao.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDServer;
@@ -31,6 +32,8 @@ public class LinkAccountSubCommand extends SubCommand<AccountCommand> {
 		if (args.isEmpty())
 			throw new CommandFailedException(this.getParentCommand());
 		
+		String concatArgs = AppTools.concatCommandArgs(args);
+		
 		try {
 			UserSettingsDAO usdao = new UserSettingsDAO();
 			UserSettings us = usdao.findOrCreate(event.getAuthor().getLongID());
@@ -39,7 +42,15 @@ public class LinkAccountSubCommand extends SubCommand<AccountCommand> {
 				throw new CommandFailedException("You are already linked to a GD account! Please unlink your existing one "
 						+ "if you want to link another GD account.");
 			
-			long recipientID = GDUserFactory.findAccountIDForGDUser(args.get(0));
+			String recipientName = "(unknown)";
+			try {
+				recipientName = GDUserFactory.buildGDUserFromNameOrDiscordTag(concatArgs).getName();
+			} catch (RawDataMalformedException e) {}
+			
+			long recipientID = GDUserFactory.findAccountIDForGDUser(concatArgs);
+			UserSettings usOfRecipient = usdao.findByGDUserID(recipientID);
+			if (usOfRecipient != null && usOfRecipient.isLinkActivated())
+				throw new CommandFailedException("This Geometry Dash account has already been linked by someone else.");
 			
 			String token = AppTools.generateAlphanumericToken(TOKEN_LENGTH);
 			us.setConfirmationToken(token);
@@ -47,19 +58,21 @@ public class LinkAccountSubCommand extends SubCommand<AccountCommand> {
 			usdao.update(us);
 		
 			if (recipientID == -1)
-				throw new CommandFailedException("This user couldn't be found on Geometry Dash servers.");
+				throw new CommandFailedException("This user couldn't be found on Geometry Dash servers. "
+						+ "If the user you're looking for has a nickname containing spaces, you can replace them with "
+						+ "underscores `_`");
 			int retCode = Integer.parseInt(GDServer.sendMessageFromBotToGDUser(recipientID, LINK_MESSAGE_SUBJECT,
 					confirmMessageBody(token)).replace("\n", ""));
 			if (retCode == 1)
 				AppTools.sendMessage(event.getChannel(), ":white_check_mark: A confirmation message has been sent to "
-						+ "the GD account '" + args.get(0) + "'. It contains a confirmation code that you are supposed "
+						+ "the GD account '" + recipientName + "'. It contains a confirmation code that you are supposed "
 						+ "to enter through the command `" + Main.CMD_PREFIX + getParentCommand().getName() + " "
 						+ getParentCommand().getSyntax()[2].replace("|confirmunlink", "") + "`. If you deleted the "
 						+ "message by accident, you can repeat this command and a new confirmation code will be "
 						+ "sent to you.");
 			else
 				throw new CommandFailedException("Hum... Something went wrong when trying to send the confirmation "
-						+ "message to the Geometry Dash user '" + args.get(0) + "'. Please "
+						+ "message to the Geometry Dash user '" + recipientName + "'. Please "
 						+ "check the following:\n- This user has direct messages enabled for everyone\n"
 						+ "- This user hasn't blocked 'UltimateGDBot' on Geometry Dash\n");
 		} catch (IOException|NumberFormatException e) {

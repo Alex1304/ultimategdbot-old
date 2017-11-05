@@ -32,7 +32,7 @@ public class AccountCommand extends CoreCommand {
 				+ "First, you have to provide the GD account username you want to link. Then, "
 				+ "a private message will be sent to the provided GD account containing a confirmation "
 				+ "code. Once you've received this message, go back to Discord and use the command "
-				+ "`" + Main.CMD_PREFIX + getName() + " " + getSyntax()[1] + "`";
+				+ "`" + Main.CMD_PREFIX + getName() + " " + getSyntax()[2] + "`";
 	}
 
 	@Override

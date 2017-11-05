@@ -17,6 +17,7 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.PermissionUtils;
 import sx.blah.discord.util.RequestBuffer;
 import ultimategdbot.app.Main;
@@ -105,7 +106,12 @@ public abstract class AppTools {
 		long currTime = System.currentTimeMillis();
 		
 		RequestBuffer.request(() -> {
-			messageQueue.put(currTime, (embed != null) ? channel.sendMessage(message, embed) : channel.sendMessage(message));
+			try {
+				messageQueue.put(currTime, (embed != null) ? channel.sendMessage(message, embed) : channel.sendMessage(message));
+			} catch (MissingPermissionsException | DiscordException e) {
+				System.err.println(e.getLocalizedMessage());
+				messageQueue.put(currTime, null);
+			}
 		});
 		
 		while (!messageQueue.containsKey(currTime) && System.currentTimeMillis() - currTime < 30000) {}

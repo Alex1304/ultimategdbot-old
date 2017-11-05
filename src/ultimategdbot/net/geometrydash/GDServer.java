@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.util.Base64;
 
 import ultimategdbot.app.AppParams;
+import ultimategdbot.app.Main;
 import ultimategdbot.exceptions.InvalidCharacterException;
 import ultimategdbot.util.GDMessageBodyEncoder;
 
@@ -44,7 +45,8 @@ public abstract class GDServer {
 			wr.flush();
 			wr.close();
 			
-			System.out.println(urlParams);
+			if (Main.isTestEnvironment())
+				System.out.println(urlParams);
 
 			// Fetching response
 			String result = "";
@@ -101,7 +103,7 @@ public abstract class GDServer {
 				+ GDMessageBodyEncoder.encode(body) + "&secret=" + SECRET);
 	}
 	
-	public static String fetchUserByNameOrID(String userNameOrID) throws IOException {
+	public static String fetchUsersByNameOrID(String userNameOrID) throws IOException {
 		return sendRequest("getGJUsers20.php",
 				"gameVersion=21&binaryVersion=33&gdw=0&type=0&str=" + URLEncoder.encode(userNameOrID, "UTF-8") + "&page=0&total=0"
 				+ "&secret=" + SECRET);

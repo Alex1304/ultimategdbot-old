@@ -34,7 +34,7 @@ public class ProfileCommand extends CoreCommand {
 					throw new CommandFailedException("You are not yet linked to any Geometry Dash account.");
 				user = GDUserFactory.buildGDUserFromProfileRawData(GDServer.fetchUserProfile(us.getGdUserID()));
 			} else
-				user = GDUserFactory.buildGDUserFromNameOrDiscordTag(args.get(0));
+				user = GDUserFactory.buildGDUserFromNameOrDiscordTag(AppTools.concatCommandArgs(args));
 			
 			if (user == null)
 				throw new CommandFailedException("This user isn't linked to any Geometry Dash account.");
@@ -47,7 +47,9 @@ public class ProfileCommand extends CoreCommand {
 			throw new CommandFailedException("Unable to communicate with Geometry Dash servers at the moment. "
 					+ "Please try again later.");
 		} catch (RawDataMalformedException e) {
-			throw new CommandFailedException("This user couldn't be found on Geometry Dash servers.");
+			throw new CommandFailedException("This user couldn't be found on Geometry Dash servers. "
+					+ "If the user you're looking for has a nickname containing spaces, you can replace them with "
+					+ "underscores `_`");
 		}
 	}
 

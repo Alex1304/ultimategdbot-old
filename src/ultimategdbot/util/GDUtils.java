@@ -1,6 +1,9 @@
 package ultimategdbot.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
@@ -116,7 +119,8 @@ public abstract class GDUtils {
 		eb.withAuthorIcon(authorIcon);
 		eb.withThumbnail(getDifficultyImageForLevel(lvl));
 	
-		eb.appendField(Emoji.PLAY + "  __" + lvl.getName() + "__ by " + lvl.getCreator() + "", "**Description:** " + lvl.getDescription(), true);
+		eb.appendField(Emoji.PLAY + "  __" + lvl.getName() + "__ by " + lvl.getCreator() + "", "**Description:** "
+				+ escapeMarkdown(lvl.getDescription()), true);
 		eb.appendField(Emoji.INFO + "  Stats and info", Emoji.DOWNLOADS + " " + lvl.getDownloads() + "\t\t"
 				+ (lvl.getLikes() < 0 ? Emoji.DISLIKE + " " : Emoji.LIKE + " ") + lvl.getLikes() + "\t\t"
 						+ Emoji.LENGTH + " " + lvl.getLength().toString().toUpperCase(), false);
@@ -145,14 +149,14 @@ public abstract class GDUtils {
 	}
 	
 	public static Map<Integer, String> structureRawData(String rawData) {
-		String[] arrayLvlInfo = rawData.split(":");
-		Map<Integer, String> structuredLvlInfo = new HashMap<>();
+		String[] arrayOfData = rawData.split(":");
+		Map<Integer, String> result = new HashMap<>();
 		
-		for (int i = 0 ; i < arrayLvlInfo.length ; i += 2) {
-			structuredLvlInfo.put(Integer.parseInt(arrayLvlInfo[i]), arrayLvlInfo[i+1]);
+		for (int i = 0 ; i < arrayOfData.length ; i += 2) {
+			result.put(Integer.parseInt(arrayOfData[i]), (i+1 < arrayOfData.length) ? arrayOfData[i+1] : "");
 		}
 		
-		return structuredLvlInfo;
+		return result;
 	}
 	
 	/**
@@ -173,15 +177,41 @@ public abstract class GDUtils {
 			+ Emoji.USERCOIN + "  " + user.getUserCoins() + "\t\t"
 			+ Emoji.SECRETCOIN + "  " + user.getSecretCoins() + "\t\t"
 			+ Emoji.DEMON + "  " + user.getDemons() + "\t\t"
-			+ Emoji.CREATOR_POINTS + "  " + user.getCreatorPoints() + "\t\t", false);
+			+ Emoji.CREATOR_POINTS + "  " + user.getCreatorPoints() + "\n", false);
 		
-		eb.appendField(Emoji.INFO + "  Extra info", Emoji.GLOBAL_RANK + "  **Global Rank:** " + user.getGlobalRank() + "\n"
-				+ Emoji.YOUTUBE + "  **Youtube:** https://www.youtube.com/channel/" + user.getYoutube() + "\n"
-				+ Emoji.TWITCH + "  **Twitch:** [" + user.getTwitch() + "](http://www.twitch.tv/" + user.getTwitch() + ")\n"
-				+ Emoji.TWITTER + "  **Twitter:** [@" + user.getTwitter() + "](http://www.twitter.com/" + user.getTwitter() + ")", false);
+		eb.appendField("───────────────────", Emoji.GLOBAL_RANK + "  **Global Rank:** "
+				+ (user.getGlobalRank() == 0 ? "*Unranked*" : user.getGlobalRank()) + "\n"
+				+ Emoji.YOUTUBE + "  **Youtube:** "
+					+ (user.getYoutube().isEmpty() ? "*not provided*" : "[Open link](https://www.youtube.com/channel/"
+					+ user.getYoutube() + ")") + "\n"
+				+ Emoji.TWITCH + "  **Twitch:** "
+					+ (user.getTwitch().isEmpty() ? "*not provided*" : "["  + user.getTwitch()
+					+ "](http://www.twitch.tv/" + user.getTwitch() + ")") + "\n"
+				+ Emoji.TWITTER + "  **Twitter:** "
+					+ (user.getTwitter().isEmpty() ? "*not provided*" : "[@" + user.getTwitter() + "]"
+					+ "(http://www.twitter.com/" + user.getTwitter() + ")"),
+				false);
 		
 		eb.withFooterText("PlayerID: " + user.getPlayerID() + " | " + "AccountID: " + user.getAccountID());
 		
 		return eb.build();
+	}
+	
+	public static String escapeMarkdown(String text) {
+		List<Character> resultList = new ArrayList<>();
+		Character[] charsToEscape = { '\\', '_', '*', '~', '`', ':', '@', '#' };
+		List<Character> charsToEscapeList = new ArrayList<>(Arrays.asList(charsToEscape));
+		
+		for (char c : text.toCharArray()) {
+			if (charsToEscapeList.contains(c))
+				resultList.add('\\');
+			resultList.add(c);
+		}
+		
+		char[] result = new char[resultList.size()];
+		for (int i = 0 ; i < result.length ; i++)
+			result[i] = resultList.get(i);
+		
+		return new String(result);
 	}
 }

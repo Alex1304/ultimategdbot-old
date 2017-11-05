@@ -1,6 +1,9 @@
 package ultimategdbot.net.geometrydash;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import ultimategdbot.exceptions.RawDataMalformedException;
@@ -38,16 +41,27 @@ public abstract class GDUserFactory {
 	}
 	
 	public static long findAccountIDForGDUser(String gdNameOrPlayerID) throws IOException {
-		String userSearchResultsRD = GDServer.fetchUserByNameOrID(gdNameOrPlayerID);
-		long result;
+		String userSearchResultsRD = GDServer.fetchUsersByNameOrID(gdNameOrPlayerID);
+		List<String> searchResultList = new ArrayList<>(Arrays.asList(userSearchResultsRD.split("#")[0].split("\\|")));
+		List<Map<Integer, String>> structuredSearchResultList = new ArrayList<>();
+		searchResultList.forEach(e -> {
+			System.out.println(e);
+			structuredSearchResultList.add(GDUtils.structureRawData(e));
+		});
 		
-		try {
-			if (!gdNameOrPlayerID.equalsIgnoreCase(userSearchResultsRD.split(":")[1]) && 
-					!gdNameOrPlayerID.equals(userSearchResultsRD.split(":")[3]))
-				return -1;
-			result = Long.parseLong(userSearchResultsRD.split(":")[21]);
-		} catch (ArrayIndexOutOfBoundsException|NumberFormatException e) {
-			return -1;
+		long result = -1;
+		int i = 0;
+		
+		while (result == -1 && i < structuredSearchResultList.size()) {
+			try {
+				if (gdNameOrPlayerID.equalsIgnoreCase(structuredSearchResultList.get(i).get(1)) ||
+						gdNameOrPlayerID.equals(structuredSearchResultList.get(i).get(2)))
+					result = Long.parseLong(structuredSearchResultList.get(i).get(16));
+			} catch (ArrayIndexOutOfBoundsException|NumberFormatException e) {
+				result = -1;
+			}
+			
+			i++;
 		}
 		
 		return result;
@@ -55,15 +69,15 @@ public abstract class GDUserFactory {
 
 	public static GDUser buildGDUserFromNameOrDiscordTag(String name) throws RawDataMalformedException, IOException {
 		long accountID = -1;
-		if (name.matches("<@!?[0-9]>")) {
-			long userID = Long.parseLong(name.replaceAll("<@!?", "").replace(">", ""));
+		if (name.trim().matches("<@!?[0-9]+>")) {
+			long userID = Long.parseLong(name.trim().replaceAll("<@!?", "").replace(">", ""));
 			UserSettings us = new UserSettingsDAO().find(userID);
 			if (us == null || !us.isLinkActivated())
 				return null;
 			
 			accountID = us.getGdUserID();
 		} else
-			accountID = GDUserFactory.findAccountIDForGDUser(name);
+			accountID = GDUserFactory.findAccountIDForGDUser(name.replace('_', ' '));
 		
 		return GDUserFactory.buildGDUserFromProfileRawData(GDServer.fetchUserProfile(accountID));
 	}

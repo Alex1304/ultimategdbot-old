@@ -42,7 +42,7 @@ public class ConfirmLinkAccountSubCommand extends SubCommand<AccountCommand> {
 		
 		if (!us.getConfirmationToken().equals(args.get(0)))
 			throw new CommandFailedException("The code you provided don't match with the one I sent to your Geometry Dash "
-					+ "private messages. Please try again.\nIf you want me to send you a new confirmation code, run`"
+					+ "private messages. Please try again.\nIf you want me to send you a new confirmation code, run `"
 					+ Main.CMD_PREFIX + getParentCommand().getName() + " "
 					+ getParentCommand().getSyntax()[0] + "` again.");
 		

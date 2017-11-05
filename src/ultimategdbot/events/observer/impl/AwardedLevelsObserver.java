@@ -76,11 +76,17 @@ public class AwardedLevelsObserver implements Observer<LoopRequestNewAwardedLeve
 				IChannel channelGDEventSub = guild.getChannelByID(gs.getGdeventSubscriberChannelId());
 				IRole roleGDEventSub = guild.getRoleByID(gs.getGdeventSubscriberRoleId());
 				IMessage lastMessage = null;
-				if (channelGDEventSub != null)
+				if (channelGDEventSub != null) {
+					try {
+						// This 1 millisecond break will guarantee that messages won't be sent at the
+						// same time, which can cause issues in the AppTools#sendMessage() method.
+						Thread.sleep(1);
+					} catch (InterruptedException e) {}
 					lastMessage = AppTools.sendMessage(channelGDEventSub,
 							(roleGDEventSub != null ? roleGDEventSub.mention() + " " : "")
 									+ message,
 							levelEmbed);
+				}
 				messageOfLastRecordedLevelForEachGuild.add(lastMessage);
 			} else {
 				System.err.println("[INFO] Guild deleted");
