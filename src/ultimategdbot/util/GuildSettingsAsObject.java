@@ -17,7 +17,7 @@ public class GuildSettingsAsObject {
 	public GuildSettingsAsObject(GuildSettings gs) {
 		super();
 		this.guildSettingsDBEntity = gs;
-		this.thisGuild = Main.client.getGuildByID(gs.getGuildId());
+		this.thisGuild = Main.DISCORD_ENV.getClient().getGuildByID(gs.getGuildId());
 		
 		if (thisGuild != null) {
 			this.gdEventsAnnouncementChannel = thisGuild.getChannelByID(gs.getGdeventSubscriberChannelId());

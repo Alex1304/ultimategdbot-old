@@ -1,6 +1,10 @@
 package ultimategdbot.commands.impl;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.app.Main;
@@ -9,31 +13,27 @@ import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.commands.DiscordCommandHandler;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 
 public class HelpCommand extends CoreCommand {
 
-	public HelpCommand() {
-		super("help");
+	public HelpCommand(EnumSet<BotRoles> rolesRequired) {
+		super("help", rolesRequired);
 	}
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
+		Map<String, CoreCommand> cmdMap = DiscordCommandHandler.COMMAND_MAP;
 		if (!args.isEmpty()) {
 			String cmdName = AppTools.concatCommandArgs(args);
-			Map<String, CoreCommand> cmdMap = null;
-			if (DiscordCommandHandler.adminCommandMap.containsKey(cmdName))
-				cmdMap = DiscordCommandHandler.adminCommandMap;
-			else if (DiscordCommandHandler.betaTestersCommandMap.containsKey(cmdName))
-				cmdMap = DiscordCommandHandler.betaTestersCommandMap;
-			else if (DiscordCommandHandler.superadminCommandMap.containsKey(cmdName))
-				cmdMap = DiscordCommandHandler.superadminCommandMap;
-			else if (DiscordCommandHandler.commandMap.containsKey(cmdName))
-				cmdMap = DiscordCommandHandler.commandMap;
 			
-			if (cmdMap == null)
+			if (!DiscordCommandHandler.COMMAND_MAP.containsKey(cmdName))
 				throw new CommandFailedException("Unable to display help for this command as it does not exist");
 			
-			CoreCommand cmd = cmdMap.get(AppTools.concatCommandArgs(args));
+			if (!BotRoles.isGrantedAll(event.getAuthor(), event.getChannel(), cmdMap.get(cmdName).getRolesRequired()))
+				throw new CommandFailedException("You don't have permission to view help for this command");
+			
+			CoreCommand cmd = cmdMap.get(cmdName);
 			String message = "";
 			if (cmd.getSyntax() != null) {
 				message += "**__Syntax:__**\n";
@@ -49,8 +49,10 @@ public class HelpCommand extends CoreCommand {
 			
 			if (cmd.getExamples() != null) {
 				message += "\n**__Usage examples:__**\n";
+				message += "```";
 				for (String ex : cmd.getExamples())
-					message += "`" + Main.CMD_PREFIX + cmdName + (ex.isEmpty() ? "" : " ") + ex + "`\n";
+					message += Main.CMD_PREFIX + cmdName + (ex.isEmpty() ? "" : " ") + ex + "\n";
+				message += "```";
 			} else {
 				message += "\nYou don't need to specify any arguments to run this command.";
 			}
@@ -59,38 +61,49 @@ public class HelpCommand extends CoreCommand {
 			return;
 		}
 		
-		String helpMsg = "__**Public Commands:** (can be used by everyone):__\n";
-		for (String comm : DiscordCommandHandler.commandMap.keySet())
-			helpMsg += "`" + Main.CMD_PREFIX + comm + "`, ";
-		helpMsg = helpMsg.substring(0, helpMsg.length() - 2);
-		helpMsg += "\n";
+		String helpMsg = "";
+		final Map<BotRoles, String> commandListHeadings = new HashMap<>();
+		commandListHeadings.put(BotRoles.USER,
+				"__**Public Commands:** (can be used by everyone):__\n");
+		commandListHeadings.put(BotRoles.BETA_TESTER,
+				"__**Beta-Testers Commands:** (can only be used by people with the Beta-Testers role in the dev server):__\n");
+		commandListHeadings.put(BotRoles.SERVER_ADMIN,
+				"__**Server Admin Commands:** (can only be used by people with Administrator permission in this server):__\n");
+		commandListHeadings.put(BotRoles.MODERATOR,
+				"__**Bot Moderator Commands:** (can only be used by people with the Bot Moderator role in the dev server):__\n");
+		commandListHeadings.put(BotRoles.SUPERADMIN,
+				"__**Developer Commands:** (can be used by the bot developer):__\n");
 		
-		helpMsg += "\n__**Administrator commands** (you need the Administrator permission in this server to run them):__\n";
-		for (String comm : DiscordCommandHandler.adminCommandMap.keySet())
-			helpMsg += "`" + Main.CMD_PREFIX + comm + "`, ";
-		helpMsg = helpMsg.substring(0, helpMsg.length() - 2);
-		helpMsg += "\n";
-		
-		if (event.getAuthor().equals(Main.superadmin) || event.getAuthor().getRolesForGuild(Main.betaTestersGuild).contains(Main.betaTestersRole)) {
-			helpMsg += "\n__**Beta-testers commands** (you need the Certified Beta Testers role in the official bot server to run them):__\n";
-			for (String comm : DiscordCommandHandler.betaTestersCommandMap.keySet())
-				helpMsg += "`" + Main.CMD_PREFIX + comm + "`, ";
-			helpMsg = helpMsg.substring(0, helpMsg.length() - 2);
-			helpMsg += "\n";
-		}
-		
-		if (event.getAuthor().equals(Main.superadmin)) {
-			helpMsg += "\n__**Superadmin commands** (only the bot developer "
-					+ Main.superadmin.getName() + "#" + Main.superadmin.getDiscriminator() + " can run them):__\n";
-			for (String comm : DiscordCommandHandler.superadminCommandMap.keySet())
-				helpMsg += "`" + Main.CMD_PREFIX + comm + "`, ";
-			helpMsg = helpMsg.substring(0, helpMsg.length() - 2);
-			helpMsg += "\n";
+		for (BotRoles role : BotRoles.values()) {
+			if (BotRoles.isGranted(event.getAuthor(), event.getChannel(), role)) {
+				helpMsg += commandListHeadings.get(role);
+				helpMsg += commandListFilteredBy(cmdMap,
+						cmd -> BotRoles.getHighestBotRoleInSet(cmd.getRolesRequired()).equals(role));
+			}
 		}
 		
 		helpMsg += "\nRun `" + Main.CMD_PREFIX + "help <command_name>` to get detailed help on a specific command.";
 		
 		AppTools.sendMessage(event.getChannel(), helpMsg);
+	}
+	
+	private String commandListFilteredBy(Map<String, CoreCommand> cmdMap, Predicate<CoreCommand> filter) {
+		String res = "";
+		boolean noCmd = true;
+		for (Entry<String, CoreCommand> comm : cmdMap.entrySet())
+			if (filter.test(comm.getValue())) {
+				res += "`" + Main.CMD_PREFIX + comm.getKey() + "`, ";
+				noCmd = false;
+			}
+		
+		if (noCmd)
+			res += "*(No commands to display)*";
+		else
+			res = (res.length() < 2) ? "" : res.substring(0, res.length() - 2);
+		
+		res += "\n\n";
+		
+		return res;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package ultimategdbot.commands.impl;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +14,12 @@ import ultimategdbot.commands.impl.subcommands.ConfirmUnlinkAccountSubCommand;
 import ultimategdbot.commands.impl.subcommands.LinkAccountSubCommand;
 import ultimategdbot.commands.impl.subcommands.UnlinkAccountSubCommand;
 import ultimategdbot.exceptions.CommandFailedException;
+import ultimategdbot.util.BotRoles;
 
 public class AccountCommand extends CoreCommand {
 
-	public AccountCommand() {
-		super("account");
+	public AccountCommand(EnumSet<BotRoles> rolesRequired) {
+		super("account", rolesRequired);
 	}
 
 	@Override

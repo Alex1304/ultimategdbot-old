@@ -7,9 +7,9 @@ public abstract class EmbeddedCoreCommand extends CoreCommand {
 	protected CoreCommand cmd;
 
 	public EmbeddedCoreCommand(CoreCommand cmd) {
-		super(cmd.getName());
+		super(cmd.getName(), cmd.getRolesRequired());
 		this.cmd = cmd;
-		this.setSubCommandMap(initSubCommandMap());
+		this.setSubCommandMap(cmd.getSubCommandMap());
 	}
 
 	@Override
@@ -29,9 +29,7 @@ public abstract class EmbeddedCoreCommand extends CoreCommand {
 
 	@Override
 	protected Map<String, Command> initSubCommandMap() {
-		if (cmd == null)
-			return null;
-		return cmd.initSubCommandMap();
+		return null;
 	}
 
 }

@@ -1,6 +1,7 @@
 package ultimategdbot.commands.impl;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +14,13 @@ import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDLevelFactory;
 import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.GDUtils;
 
 public class LevelCommand extends CoreCommand {
 
-	public LevelCommand() {
-		super("level");
+	public LevelCommand(EnumSet<BotRoles> rolesRequired) {
+		super("level", rolesRequired);
 	}
 
 	@Override

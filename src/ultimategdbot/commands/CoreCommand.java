@@ -1,5 +1,9 @@
 package ultimategdbot.commands;
 
+import java.util.EnumSet;
+
+import ultimategdbot.util.BotRoles;
+
 /**
  * Core commands are commands directly triggered by users, generally using a prefix.
  * 
@@ -9,9 +13,11 @@ package ultimategdbot.commands;
 public abstract class CoreCommand extends AbstractCommand {
 	
 	private String name;
+	private EnumSet<BotRoles> rolesRequired;
 	
-	public CoreCommand(String name) {
+	public CoreCommand(String name, EnumSet<BotRoles> rolesRequired) {
 		this.name = name;
+		this.rolesRequired = rolesRequired;
 	}
 	
 	/**
@@ -42,5 +48,14 @@ public abstract class CoreCommand extends AbstractCommand {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * Get {@link EnumSet} rolesRequired
+	 * 
+	 * @return EnumSet<BotRoles> the roles required to execute this command
+	 */
+	public EnumSet<BotRoles> getRolesRequired() {
+		return rolesRequired;
 	}
 }

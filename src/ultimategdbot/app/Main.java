@@ -24,16 +24,60 @@ public class Main {
 	 * Prefix for all bot commands
 	 */
 	public static final String CMD_PREFIX = "u!";
-
-	/**
-	 * Discord client (represents the bot itself)
-	 */
-	public static IDiscordClient client;
 	
-	// Superadmin and beta testers info
-	public static IUser superadmin;
-	public static IGuild betaTestersGuild;
-	public static IRole betaTestersRole;
+	public static class DiscordEnvironment {
+		private IDiscordClient client;
+		private IUser superadmin;
+		private IGuild officialDevGuild;
+		private IRole betaTestersRole;
+		private IRole moderatorsRole;
+		
+		public IDiscordClient getClient() {
+			return client;
+		}
+		
+		public IUser getSuperadmin() {
+			return superadmin;
+		}
+		
+		public IGuild getOfficialDevGuild() {
+			return officialDevGuild;
+		}
+		
+		public IRole getBetaTestersRole() {
+			return betaTestersRole;
+		}
+		
+		public IRole getModeratorsRole() {
+			return moderatorsRole;
+		}
+		
+		/**
+		 * Initializes the Discord environment using the values provided in AppParams.
+		 * @return true if all fields are successfully initialized, false otherwise.
+		 */
+		public boolean init() {
+			if (client == null || !client.isReady())
+				return false;
+			
+			superadmin = client.fetchUser(AppParams.SUPERADMIN_ID);
+			officialDevGuild = client.getGuildByID(AppParams.OFFICIAL_DEV_GUILD_ID);
+			
+			if (officialDevGuild == null)
+				return false;
+			
+			betaTestersRole = officialDevGuild.getRoleByID(AppParams.BETA_TESTERS_ROLE_ID);
+			moderatorsRole = officialDevGuild.getRoleByID(AppParams.MODERATORS_ROLE_ID);
+			
+			if (superadmin == null || betaTestersRole == null || moderatorsRole == null) {
+				return false;
+			}
+			
+			return true;
+		}
+	}
+	
+	public static final DiscordEnvironment DISCORD_ENV = new DiscordEnvironment();
 	public static final String BETA_TESTERS_GUILD_INVITE_LINK = "https://discord.gg/VpVdKvg";
 	
 	private static List<Thread> threadList = new ArrayList<>();
@@ -55,16 +99,16 @@ public class Main {
 		}
 		System.out.println("Test environment? " + isTestEnvironment());
 		// Building client
-		client = AppTools.createClient(AppParams.BOT_TOKEN, false);
+		DISCORD_ENV.client = AppTools.createClient(AppParams.BOT_TOKEN, false);
 		
 		startThreads();
 		
 		// Registering events
-		client.getDispatcher().registerListener(new DiscordCommandHandler());
-		client.getDispatcher().registerListener(new DiscordEvents());
+		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordCommandHandler());
+		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordEvents());
 		
 		// Let's start!
-		client.login();
+		DISCORD_ENV.client.login();
 	}
 	
 	private static void startThreads() {
@@ -75,19 +119,15 @@ public class Main {
 		
 		// Registering other threads
 		threadList.add(new Thread(new LoopRequestNewAwardedLevels()));
-		threadList.add(new Thread(new Runnable() { // Fetches the IUser instance for superadminID when client is ready
-			@Override
-			public void run() {
-				while (!client.isReady()) {} // Waits for the client
+		threadList.add(new Thread(() -> {
+			while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {}
+			
+			if (!DISCORD_ENV.init()) {
+				System.err.println("Unable to load users and roles necessary for the bot to work. "
+						+ "Please make sure you have provided the correct hierarchy info in AppParams.java");
+			} else
+				System.out.println("Hierarchy info successfully fetched!");
 				
-				superadmin = client.fetchUser(AppParams.SUPERADMIN_ID);
-				betaTestersGuild = client.getGuildByID(AppParams.BETA_TESTERS_GUILD_ID);
-				betaTestersRole = betaTestersGuild != null ?
-						betaTestersGuild.getRoleByID(AppParams.BETA_TESTERS_ROLE_ID) : null;
-				if (superadmin == null || betaTestersRole == null)
-					throw new RuntimeException("Failed to fetch superadmin and beta testers info");
-				System.out.println("Superadmin and beta testers info succesfully fetched!");
-			}
 		}));
 		
 		// Start all

@@ -70,7 +70,7 @@ public class AwardedLevelsObserver implements Observer<LoopRequestNewAwardedLeve
 		messageOfLastRecordedLevelForEachGuild.clear();
 
 		for (GuildSettings gs : gsList) {
-			IGuild guild = Main.client.getGuildByID(gs.getGuildId());
+			IGuild guild = Main.DISCORD_ENV.getClient().getGuildByID(gs.getGuildId());
 
 			if (guild != null) {
 				IChannel channelGDEventSub = guild.getChannelByID(gs.getGdeventSubscriberChannelId());

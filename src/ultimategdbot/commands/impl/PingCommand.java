@@ -2,6 +2,7 @@ package ultimategdbot.commands.impl;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 
 /**
  * Ping command
@@ -18,8 +20,8 @@ import ultimategdbot.util.AppTools;
  */
 public class PingCommand extends CoreCommand {
 
-	public PingCommand() {
-		super("ping");
+	public PingCommand(EnumSet<BotRoles> rolesRequired) {
+		super("ping", rolesRequired);
 	}
 
 	@Override

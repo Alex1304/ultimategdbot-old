@@ -2,24 +2,26 @@ package ultimategdbot.commands.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.app.Main;
-import ultimategdbot.commands.BetaTestersCoreCommand;
 import ultimategdbot.commands.Command;
+import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 
-public class RestartCommand extends BetaTestersCoreCommand {
+public class RestartCommand extends CoreCommand {
 
-	public RestartCommand() {
-		super("restart");
+	public RestartCommand(EnumSet<BotRoles> rolesRequired) {
+		super("restart", rolesRequired);
 	}
 
 	@Override
-	public void runBetaTestersCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
+	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		if (System.getenv().containsKey("RESTART_UNSUPPORTED"))
 			throw new CommandFailedException("This command is unsupported due to host restrictions.");
 		

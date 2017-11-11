@@ -3,26 +3,28 @@ package ultimategdbot.commands.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.commands.Command;
-import ultimategdbot.commands.SuperadminCoreCommand;
+import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.exceptions.InvalidCharacterException;
 import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.net.geometrydash.GDUserFactory;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 
-public class BotMessageCommand extends SuperadminCoreCommand {
+public class BotMessageCommand extends CoreCommand {
 
-	public BotMessageCommand() {
-		super("botmessage");
+	public BotMessageCommand(EnumSet<BotRoles> rolesRequired) {
+		super("botmessage", rolesRequired);
 	}
 
 	@Override
-	public void runSuperadminCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {final int indexOfBody = args.indexOf("--body");
+	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {final int indexOfBody = args.indexOf("--body");
 		final int indexOfSubject = args.indexOf("--subject");
 		final int indexOfTo = args.indexOf("--to");
 		

@@ -1,5 +1,6 @@
 package ultimategdbot.commands.impl;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +14,13 @@ import ultimategdbot.exceptions.SettingsNotProvidedException;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.Settings;
 
 public class GDEventsCommand extends CoreCommand {
 
-	public GDEventsCommand() {
-		super("gdevents");
+	public GDEventsCommand(EnumSet<BotRoles> rolesRequired) {
+		super("gdevents", rolesRequired);
 	}
 
 	@Override

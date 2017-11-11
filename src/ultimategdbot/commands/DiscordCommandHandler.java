@@ -4,6 +4,7 @@ import static ultimategdbot.app.Main.CMD_PREFIX;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import ultimategdbot.commands.impl.BotMessageCommand;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.CompareCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
-import ultimategdbot.commands.impl.GuildListCommand;
+import ultimategdbot.commands.impl.ServerCountCommand;
 import ultimategdbot.commands.impl.HelpCommand;
 import ultimategdbot.commands.impl.InviteCommand;
 import ultimategdbot.commands.impl.LevelCommand;
@@ -27,6 +28,7 @@ import ultimategdbot.commands.impl.RestartCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 
 /**
  * Bot commands are handled here, using the Discord API based on events
@@ -39,47 +41,46 @@ public class DiscordCommandHandler {
 	/**
 	 * Maps that associates text commands to their actions.
 	 */
-	public static Map<String, CoreCommand> commandMap = new HashMap<>();
-	public static Map<String, CoreCommand> superadminCommandMap = new HashMap<>();
-	public static Map<String, CoreCommand> betaTestersCommandMap = new HashMap<>();
-	public static Map<String, CoreCommand> adminCommandMap = new HashMap<>();
+	public static final Map<String, CoreCommand> COMMAND_MAP = new HashMap<>();
 
 	/**
 	 * Constructor
 	 */
 	public DiscordCommandHandler() {
-		loadCommandMaps();
+		loadCommandMap();
 	}
 
 	/**
 	 * Loads the command map so they are recognized by the handler
 	 */
-	private void loadCommandMaps() {
+	private void loadCommandMap() {
 		// Superadmin commands
-		registerCommand(superadminCommandMap, new ChangeBotUsernameCommand());
-		registerCommand(superadminCommandMap, new DMOnlyCommand(new GuildListCommand()));
-		registerCommand(superadminCommandMap, new AnnouncementCommand());
-		registerCommand(superadminCommandMap, new BotMessageCommand());
+		registerCommand(new ChangeBotUsernameCommand(EnumSet.of(BotRoles.SUPERADMIN)));
+		registerCommand(new AnnouncementCommand(EnumSet.of(BotRoles.SUPERADMIN)));
+		registerCommand(new BotMessageCommand(EnumSet.of(BotRoles.SUPERADMIN)));
+		
+		// Moderators commands
+		registerCommand(new RestartCommand(EnumSet.of(BotRoles.MODERATOR)));
+		
+		// Server admin commands
+		registerCommand(new ServerOnlyCommand(new SetupCommand(EnumSet.of(BotRoles.SERVER_ADMIN))));
 		
 		// Beta-testers commands
-		registerCommand(betaTestersCommandMap, new RestartCommand());
-		
-		// Admin commands
-		registerCommand(adminCommandMap, new ServerOnlyCommand(new SetupCommand()));
+		registerCommand(new ServerCountCommand(EnumSet.of(BotRoles.BETA_TESTER)));
 		
 		// Public commands
-		registerCommand(commandMap, new PingCommand());
-		registerCommand(commandMap, new ServerOnlyCommand(new GDEventsCommand()));
-		registerCommand(commandMap, new HelpCommand());
-		registerCommand(commandMap, new InviteCommand());
-		registerCommand(commandMap, new LevelCommand());
-		registerCommand(commandMap, new CompareCommand());
-		registerCommand(commandMap, new AccountCommand());
-		registerCommand(commandMap, new ProfileCommand());
+		registerCommand(new PingCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new ServerOnlyCommand(new GDEventsCommand(EnumSet.of(BotRoles.USER))));
+		registerCommand(new HelpCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new InviteCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new LevelCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new CompareCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new AccountCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new ProfileCommand(EnumSet.of(BotRoles.USER)));
 	}
 	
-	private void registerCommand(Map<String, CoreCommand> map, CoreCommand cmd) {
-		map.put(cmd.getName(), cmd);
+	private void registerCommand(CoreCommand cmd) {
+		COMMAND_MAP.put(cmd.getName(), cmd);
 	}
 
 	/**
@@ -121,14 +122,12 @@ public class DiscordCommandHandler {
 		argsList.remove(0); // Remove the command
 
 		try {
-			if (superadminCommandMap.containsKey(commandStr))
-				superadminCommandMap.get(commandStr).runCommand(event, argsList);
-			else if (betaTestersCommandMap.containsKey(commandStr))
-				betaTestersCommandMap.get(commandStr).runCommand(event, argsList);
-			else if (adminCommandMap.containsKey(commandStr))
-				adminCommandMap.get(commandStr).runCommand(event, argsList);
-			else if (commandMap.containsKey(commandStr))
-				commandMap.get(commandStr).runCommand(event, argsList);
+			if (COMMAND_MAP.containsKey(commandStr)) {
+				if (BotRoles.isGrantedAll(event.getAuthor(), event.getChannel(), COMMAND_MAP.get(commandStr).getRolesRequired()))
+					COMMAND_MAP.get(commandStr).runCommand(event, argsList);
+				else
+					throw new CommandFailedException("You don't have permission to use this command");
+			}
 		} catch (CommandFailedException e) {
 			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getFailureReason());
 		} catch (DiscordException e) {

@@ -15,8 +15,9 @@ public class AppParams {
 	
 	// Hierarchy info
 	public static final long SUPERADMIN_ID = 272872694473687041L;
-	public static final long BETA_TESTERS_GUILD_ID = 357655103768887297L;
+	public static final long OFFICIAL_DEV_GUILD_ID = 357655103768887297L;
 	public static final long BETA_TESTERS_ROLE_ID = 368084326019235851L;
+	public static final long MODERATORS_ROLE_ID = 368106954289184769L;
 	
 	// Database info
 	public static final String DB_USERNAME = System.getenv().get("DB_USERNAME");

@@ -32,7 +32,7 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 	@Override
 	public void run() {
 		while (true) {
-			if (Main.client.isReady()) {
+			if (Main.DISCORD_ENV.getClient().isReady()) {
 				try {
 					// First, fetch awarded levels from GD servers
 					String awardedLevelsRD = !Main.isTestEnvironment() ?
@@ -88,6 +88,8 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 
 					} catch (RawDataMalformedException e) {
 						e.printStackTrace();
+						gdldao.delete(lastLevelRecorded);
+						lastLevelRecorded = null;
 					}
 				} catch (IOException e) {
 					AppTools.sendDebugPMToSuperadmin("Unable to communicate with Geometry Dash servers: `"

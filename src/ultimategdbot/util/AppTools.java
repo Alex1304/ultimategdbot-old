@@ -15,6 +15,7 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -150,8 +151,8 @@ public abstract class AppTools {
 		IChannel generalChannel = null;
 
 		for (IChannel channel : guild.getChannels()) {
-			if (PermissionUtils.hasPermissions(channel, Main.client.getOurUser(), Permissions.SEND_MESSAGES)) {
-				if (botCommandsChannel == null && channel.getName().matches("bot[-_]commands"))
+			if (PermissionUtils.hasPermissions(channel, Main.DISCORD_ENV.getClient().getOurUser(), Permissions.SEND_MESSAGES)) {
+				if (botCommandsChannel == null && channel.getName().matches(".*bot.*"))
 					botCommandsChannel = channel;
 				else if (generalChannel == null && channel.getName().equals("general"))
 					generalChannel = channel;
@@ -242,9 +243,15 @@ public abstract class AppTools {
 	 * @param msg
 	 */
 	public static void sendDebugPMToSuperadmin(String msg) {
-		sendMessage(Main.superadmin.getOrCreatePMChannel(), msg);
+		sendMessage(Main.DISCORD_ENV.getSuperadmin().getOrCreatePMChannel(), msg);
 	}
 	
+	/**
+	 * Generates a random String made of alphanumeric characters.
+	 * The length of the generated String is specified as an argument.
+	 * @param n - the length of the generated String
+	 * @return the generated random String
+	 */
 	public static String generateAlphanumericToken(int n) {
 		if (n < 1)
 			return null;
@@ -257,4 +264,15 @@ public abstract class AppTools {
 		
 		return new String(result);
 	}
+	
+	/**
+	 * Formats the username of the user specified as argument with the format username#discriminator
+	 * @param user - The user whom username will be formatted
+	 * @return The formatted username as String.
+	 */
+	public static String formatDiscordUsername(IUser user) {
+		return user.getName() + "#" + user.getDiscriminator();
+	}
+	
+	
 }

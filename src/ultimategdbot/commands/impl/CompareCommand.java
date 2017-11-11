@@ -1,6 +1,7 @@
 package ultimategdbot.commands.impl;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -16,11 +17,12 @@ import ultimategdbot.net.geometrydash.GDLevelFactory;
 import ultimategdbot.net.geometrydash.GDLevelFeaturedScoreComparator;
 import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 
 public class CompareCommand extends CoreCommand {
 
-	public CompareCommand() {
-		super("compare");
+	public CompareCommand(EnumSet<BotRoles> rolesRequired) {
+		super("compare", rolesRequired);
 	}
 
 	@Override

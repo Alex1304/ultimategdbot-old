@@ -1,13 +1,15 @@
 package ultimategdbot.commands.impl;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
-import ultimategdbot.commands.SuperadminCoreCommand;
+import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 
 /**
  * Command to change the bot's usernamme
@@ -15,14 +17,14 @@ import ultimategdbot.util.AppTools;
  * @author Alex1304
  *
  */
-public class ChangeBotUsernameCommand extends SuperadminCoreCommand {
+public class ChangeBotUsernameCommand extends CoreCommand {
 
-	public ChangeBotUsernameCommand() {
-		super("changebotusername");
+	public ChangeBotUsernameCommand(EnumSet<BotRoles> rolesRequired) {
+		super("changebotusername", rolesRequired);
 	}
 
 	@Override
-	public void runSuperadminCommand(MessageReceivedEvent event, List<String> args) {
+	public void runCommand(MessageReceivedEvent event, List<String> args) {
 		String newName = "";
 		for (String arg : args)
 			newName += (arg + " ");
@@ -30,7 +32,7 @@ public class ChangeBotUsernameCommand extends SuperadminCoreCommand {
 		if (newName.isEmpty())
 			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Username is empty!");
 		else {
-			Main.client.changeUsername(newName);
+			Main.DISCORD_ENV.getClient().changeUsername(newName);
 			AppTools.sendMessage(event.getChannel(), ":white_check_mark: Bot username changed!");
 		}
 	}

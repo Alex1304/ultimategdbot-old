@@ -1,5 +1,6 @@
 package ultimategdbot.commands.impl;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,21 +10,22 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IRole;
 import ultimategdbot.app.Main;
-import ultimategdbot.commands.AdminCoreCommand;
 import ultimategdbot.commands.Command;
+import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.commands.impl.subcommands.SetupEditSubCommand;
 import ultimategdbot.commands.impl.subcommands.SetupInfoSubCommand;
 import ultimategdbot.commands.impl.subcommands.SetupResetSubCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.GuildSettingsAsObject;
 import ultimategdbot.util.Settings;
 
-public class SetupCommand extends AdminCoreCommand {
+public class SetupCommand extends CoreCommand {
 	
-	public SetupCommand() {
-		super("setup");
+	public SetupCommand(EnumSet<BotRoles> rolesRequired) {
+		super("setup", rolesRequired);
 	}
 
 	private Map<Settings, String> settings = new HashMap<>();
@@ -31,7 +33,7 @@ public class SetupCommand extends AdminCoreCommand {
 	private GuildSettingsAsObject gso;
 
 	@Override
-	public void runAdminCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
+	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		this.gso = new GuildSettingsAsObject(gsdao.findOrCreate(event.getGuild().getLongID()));
 		
 		// Whether the user typed the command with or without args

@@ -5,27 +5,29 @@ import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
-public class ShutdownCommand extends CoreCommand {
+public class ServerCountCommand extends CoreCommand {
 
-	public ShutdownCommand(EnumSet<BotRoles> rolesRequired) {
-		super("shutdown", rolesRequired);
+	public ServerCountCommand(EnumSet<BotRoles> rolesRequired) {
+		super("servercount", rolesRequired);
 	}
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		AppTools.sendMessage(event.getChannel(), "Shuting down...");
-		System.exit(0);
+		String message = "**UltimateGDBot is member of " + Main.DISCORD_ENV.getClient().getGuilds().size()
+				+ " servers!**\n";
+		AppTools.sendMessage(event.getChannel(), message);
 	}
 
 	@Override
 	public String getHelp() {
-		return "Shuts the bot down.";
+		return "Displays the number of servers where the bot is operating.";
 	}
 
 	@Override

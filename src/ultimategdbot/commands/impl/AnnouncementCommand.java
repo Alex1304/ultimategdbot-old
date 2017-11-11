@@ -1,24 +1,26 @@
 package ultimategdbot.commands.impl;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
-import ultimategdbot.commands.SuperadminCoreCommand;
+import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 
-public class AnnouncementCommand extends SuperadminCoreCommand {
+public class AnnouncementCommand extends CoreCommand {
 
-	public AnnouncementCommand() {
-		super("announcement");
+	public AnnouncementCommand(EnumSet<BotRoles> rolesRequired) {
+		super("announcement", rolesRequired);
 	}
 
 	@Override
-	public void runSuperadminCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		Main.client.getGuilds().forEach(g -> {
+	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
+		Main.DISCORD_ENV.getClient().getGuilds().forEach(g -> {
 			AppTools.sendMessage(AppTools.findDefaultBotChannelForGuild(g), "[Announcement by the bot developer] "
 					+ AppTools.concatCommandArgs(args));
 		});

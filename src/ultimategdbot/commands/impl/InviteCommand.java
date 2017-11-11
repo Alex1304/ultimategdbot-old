@@ -13,16 +13,17 @@ import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 
 public class InviteCommand extends CoreCommand {
 
-	public InviteCommand() {
-		super("invite");
+	public InviteCommand(EnumSet<BotRoles> rolesRequired) {
+		super("invite", rolesRequired);
 	}
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		BotInviteBuilder bib = new BotInviteBuilder(Main.client);
+		BotInviteBuilder bib = new BotInviteBuilder(Main.DISCORD_ENV.getClient());
 		bib.withClientID("" + 
 				(Main.isTestEnvironment() ? AppParams.CLIENT_TEST_ID : AppParams.CLIENT_ID));
 		

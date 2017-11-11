@@ -1,6 +1,7 @@
 package ultimategdbot.commands.impl;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -16,12 +17,13 @@ import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.net.geometrydash.GDUserFactory;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.GDUtils;
 
 public class ProfileCommand extends CoreCommand {
 
-	public ProfileCommand() {
-		super("profile");
+	public ProfileCommand(EnumSet<BotRoles> rolesRequired) {
+		super("profile", rolesRequired);
 	}
 
 	@Override
@@ -69,7 +71,7 @@ public class ProfileCommand extends CoreCommand {
 
 	@Override
 	public String[] getExamples() {
-		String[] ex = { "", "Alex1304", "16", "@" + Main.superadmin.getName() + "#" + Main.superadmin.getDiscriminator() };
+		String[] ex = { "", "Alex1304", "16", "@" + AppTools.formatDiscordUsername(Main.DISCORD_ENV.getSuperadmin()) };
 		return ex;
 	}
 
