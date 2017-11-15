@@ -68,6 +68,14 @@ CREATE TABLE `user_settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Structure de la table `gd_mod_list`
+--
+
+CREATE TABLE `gd_mod_list` (
+  `account_id` int(11) NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
 -- Index pour les tables exportées
 --
 
@@ -88,6 +96,12 @@ ALTER TABLE `guild_settings`
 --
 ALTER TABLE `user_settings`
   ADD PRIMARY KEY (`user_id`);
+
+--
+-- Index pour la table `gd_mod_list`
+--
+ALTER TABLE `gd_mod_list`
+  ADD PRIMARY KEY (`account_id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

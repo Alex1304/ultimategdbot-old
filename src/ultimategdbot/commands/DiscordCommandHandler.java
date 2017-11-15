@@ -18,14 +18,16 @@ import ultimategdbot.commands.impl.BotMessageCommand;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.CompareCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
-import ultimategdbot.commands.impl.ServerCountCommand;
 import ultimategdbot.commands.impl.HelpCommand;
 import ultimategdbot.commands.impl.InviteCommand;
 import ultimategdbot.commands.impl.LevelCommand;
+import ultimategdbot.commands.impl.ModListCommand;
 import ultimategdbot.commands.impl.PingCommand;
 import ultimategdbot.commands.impl.ProfileCommand;
 import ultimategdbot.commands.impl.RestartCommand;
+import ultimategdbot.commands.impl.ServerCountCommand;
 import ultimategdbot.commands.impl.SetupCommand;
+import ultimategdbot.commands.impl.UpdateModListCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
@@ -42,6 +44,11 @@ public class DiscordCommandHandler {
 	 * Maps that associates text commands to their actions.
 	 */
 	public static final Map<String, CoreCommand> COMMAND_MAP = new HashMap<>();
+	
+	/**
+	 * Set to true if the command is currently running.
+	 */
+	boolean running = true;
 
 	/**
 	 * Constructor
@@ -58,6 +65,7 @@ public class DiscordCommandHandler {
 		registerCommand(new ChangeBotUsernameCommand(EnumSet.of(BotRoles.SUPERADMIN)));
 		registerCommand(new AnnouncementCommand(EnumSet.of(BotRoles.SUPERADMIN)));
 		registerCommand(new BotMessageCommand(EnumSet.of(BotRoles.SUPERADMIN)));
+		registerCommand(new UpdateModListCommand(EnumSet.of(BotRoles.SUPERADMIN)));
 		
 		// Moderators commands
 		registerCommand(new RestartCommand(EnumSet.of(BotRoles.MODERATOR)));
@@ -67,6 +75,7 @@ public class DiscordCommandHandler {
 		
 		// Beta-testers commands
 		registerCommand(new ServerCountCommand(EnumSet.of(BotRoles.BETA_TESTER)));
+		registerCommand(new ModListCommand(EnumSet.of(BotRoles.BETA_TESTER)));
 		
 		// Public commands
 		registerCommand(new PingCommand(EnumSet.of(BotRoles.USER)));
@@ -120,22 +129,39 @@ public class DiscordCommandHandler {
 		// Load the rest of the args in the array into a List for safer access
 		List<String> argsList = new ArrayList<>(Arrays.asList(argArray));
 		argsList.remove(0); // Remove the command
+		
+		running = true;
+		Thread typingKeepAlive = new Thread(() -> {
+			while (running) {
+				if (!event.getChannel().getTypingStatus())
+					event.getChannel().setTypingStatus(true);
+				
+				try {
+					Thread.sleep(15000);
+				} catch (InterruptedException e) {
+				}
+			}
+		});
 
 		try {
 			if (COMMAND_MAP.containsKey(commandStr)) {
-				if (BotRoles.isGrantedAll(event.getAuthor(), event.getChannel(), COMMAND_MAP.get(commandStr).getRolesRequired()))
+				if (BotRoles.isGrantedAll(event.getAuthor(), event.getChannel(),
+						COMMAND_MAP.get(commandStr).getRolesRequired())) {
+					typingKeepAlive.start();
 					COMMAND_MAP.get(commandStr).runCommand(event, argsList);
+				}
 				else
 					throw new CommandFailedException("You don't have permission to use this command");
 			}
 		} catch (CommandFailedException e) {
 			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: " + e.getFailureReason());
 		} catch (DiscordException e) {
-			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Sorry, an error occured while running the command.\n```\n" + e.getErrorMessage() + "\n```");
+			AppTools.sendMessage(event.getChannel(), ":negative_squared_cross_mark: Sorry, an error occured"
+					+ " while running the command.\n```\n" + e.getErrorMessage() + "\n```");
 			System.err.println(e.getErrorMessage());
 		} catch (Exception e) {
-			AppTools.sendMessage(event.getChannel(), "An internal error occured while running the command. Please try again "
-					+ "later.");
+			AppTools.sendMessage(event.getChannel(), "An internal error occured while running the command."
+					+ " Please try again later.");
 			AppTools.sendDebugPMToSuperadmin(
 					"An internal error occured in the command handler. See logs for more details\n"
 							+ "Context info:\n"
@@ -147,6 +173,9 @@ public class DiscordCommandHandler {
 							+ "Full message: " + event.getMessage().getContent() + "\n"
 							+ "```\n");
 			e.printStackTrace();
+		} finally {
+			running = false;
+			event.getChannel().setTypingStatus(false);
 		}
 	}
 }

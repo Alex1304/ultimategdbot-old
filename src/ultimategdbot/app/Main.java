@@ -25,6 +25,8 @@ public class Main {
 	 */
 	public static final String CMD_PREFIX = "u!";
 	
+	private static boolean testEnv = false;
+	
 	public static class DiscordEnvironment {
 		private IDiscordClient client;
 		private IUser superadmin;
@@ -82,13 +84,17 @@ public class Main {
 	
 	private static List<Thread> threadList = new ArrayList<>();
 
+	public static void main(String[] args) {
+		launch(false);
+	}
+
 	/**
 	 * Starts the program Creates the client, registers events and then logs in
 	 * the client.
 	 * 
-	 * @param args
+	 * @param test - Tells whether you are running in test environment
 	 */
-	public static void main(String[] args) {
+	public static void launch(boolean test) {
 		if (!AppParams.checkEnvVariables()) {
 			System.err.println("You need to define all of the following system environnement variables for this "
 					+ "program to work:\n"
@@ -97,6 +103,7 @@ public class Main {
 					+ "GD_ACCOUNT_GJP - The GJP of the Geometry Dash bot account.");
 			return;
 		}
+		testEnv = test;
 		System.out.println("Test environment? " + isTestEnvironment());
 		// Building client
 		DISCORD_ENV.client = AppTools.createClient(AppParams.BOT_TOKEN, false);
@@ -114,7 +121,7 @@ public class Main {
 	private static void startThreads() {
 		// Registering threads that are ONLY supposed to run in test environment
 		if (isTestEnvironment()) {
-			// Nothing here yet
+			
 		}
 		
 		// Registering other threads
@@ -136,6 +143,6 @@ public class Main {
 	}
 	
 	public static boolean isTestEnvironment() {
-		return System.getenv().containsKey("UGDB_TEST_ENV");
+		return testEnv;
 	}
 }

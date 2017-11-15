@@ -29,7 +29,7 @@ public abstract class GDUserFactory {
 					structuredRD.get(20),
 					structuredRD.get(30).equals("") ? 0 : Integer.parseInt(structuredRD.get(30)),
 					Long.parseLong(structuredRD.get(16)),
-					false,
+					GDRole.values()[Integer.parseInt(structuredRD.get(49))],
 					structuredRD.get(44),
 					structuredRD.get(45)
 			);

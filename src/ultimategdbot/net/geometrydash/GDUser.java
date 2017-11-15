@@ -13,12 +13,12 @@ public class GDUser {
 	private String youtube;
 	private int globalRank;
 	private long accountID;
-	private boolean moderator;
+	private GDRole role;
 	private String twitter;
 	private String twitch;
 
 	public GDUser(String name, long playerID, int secretCoins, int userCoins, int stars, int diamonds, int demons,
-			int creatorPoints, String youtube, int globalRank, long accountID, boolean moderator, String twitter,
+			int creatorPoints, String youtube, int globalRank, long accountID, GDRole role, String twitter,
 			String twitch) {
 		this.name = name;
 		this.playerID = playerID;
@@ -31,7 +31,7 @@ public class GDUser {
 		this.youtube = youtube;
 		this.globalRank = globalRank;
 		this.accountID = accountID;
-		this.moderator = moderator;
+		this.role = role;
 		this.twitter = twitter;
 		this.twitch = twitch;
 	}
@@ -80,8 +80,8 @@ public class GDUser {
 		return accountID;
 	}
 
-	public boolean isModerator() {
-		return moderator;
+	public GDRole getRole() {
+		return role;
 	}
 
 	public String getTwitter() {
