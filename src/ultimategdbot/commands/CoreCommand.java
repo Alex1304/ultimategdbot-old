@@ -12,7 +12,7 @@ import ultimategdbot.util.BotRoles;
  */
 public abstract class CoreCommand extends AbstractCommand {
 	
-	private String name;
+	protected String name;
 	private EnumSet<BotRoles> rolesRequired;
 	
 	public CoreCommand(String name, EnumSet<BotRoles> rolesRequired) {

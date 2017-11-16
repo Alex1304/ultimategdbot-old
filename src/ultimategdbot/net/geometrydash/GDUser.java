@@ -91,4 +91,26 @@ public class GDUser {
 	public String getTwitch() {
 		return twitch;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (accountID ^ (accountID >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof GDUser))
+			return false;
+		GDUser other = (GDUser) obj;
+		if (accountID != other.accountID)
+			return false;
+		return true;
+	}
 }

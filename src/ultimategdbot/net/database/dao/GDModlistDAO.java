@@ -36,13 +36,26 @@ public class GDModlistDAO implements DAO<GDUser> {
 
 	@Override
 	public boolean delete(GDUser obj) {
-		throw new UnsupportedOperationException();
-	}
-	
-	public boolean truncate() {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
-					"TRUNCATE TABLE gd_mod_list");
+					"DELETE FROM gd_mod_list WHERE account_id = ?");
+			ps.setLong(1, obj.getAccountID());
+			return ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean deleteRange(long min, long max) {
+		if (min > max)
+			throw new IllegalArgumentException();
+		
+		try {
+			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
+					"DELETE FROM gd_mod_list WHERE account_id >= ? AND account_id <= ?");
+			ps.setLong(1, min);
+			ps.setLong(2, max);
 			return ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();

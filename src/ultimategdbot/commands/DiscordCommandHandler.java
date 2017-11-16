@@ -16,6 +16,7 @@ import ultimategdbot.commands.impl.AccountCommand;
 import ultimategdbot.commands.impl.AnnouncementCommand;
 import ultimategdbot.commands.impl.BotMessageCommand;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
+import ultimategdbot.commands.impl.CheckModCommand;
 import ultimategdbot.commands.impl.CompareCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
 import ultimategdbot.commands.impl.HelpCommand;
@@ -27,6 +28,7 @@ import ultimategdbot.commands.impl.ProfileCommand;
 import ultimategdbot.commands.impl.RestartCommand;
 import ultimategdbot.commands.impl.ServerCountCommand;
 import ultimategdbot.commands.impl.SetupCommand;
+import ultimategdbot.commands.impl.ShutdownCommand;
 import ultimategdbot.commands.impl.UpdateModListCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
@@ -65,17 +67,20 @@ public class DiscordCommandHandler {
 		registerCommand(new ChangeBotUsernameCommand(EnumSet.of(BotRoles.SUPERADMIN)));
 		registerCommand(new AnnouncementCommand(EnumSet.of(BotRoles.SUPERADMIN)));
 		registerCommand(new BotMessageCommand(EnumSet.of(BotRoles.SUPERADMIN)));
-		registerCommand(new UpdateModListCommand(EnumSet.of(BotRoles.SUPERADMIN)));
+		registerCommand(new SingleRunningCommand(new UpdateModListCommand(EnumSet.of(BotRoles.SUPERADMIN))));
+		registerCommand(new ShutdownCommand(EnumSet.of(BotRoles.SUPERADMIN)));
 		
 		// Moderators commands
 		registerCommand(new RestartCommand(EnumSet.of(BotRoles.MODERATOR)));
 		
 		// Server admin commands
 		registerCommand(new ServerOnlyCommand(new SetupCommand(EnumSet.of(BotRoles.SERVER_ADMIN))));
+		registerCommand(new ModListCommand(EnumSet.of(BotRoles.BETA_TESTER, BotRoles.SERVER_ADMIN)));
 		
 		// Beta-testers commands
 		registerCommand(new ServerCountCommand(EnumSet.of(BotRoles.BETA_TESTER)));
 		registerCommand(new ModListCommand(EnumSet.of(BotRoles.BETA_TESTER)));
+		registerCommand(new CheckModCommand(EnumSet.of(BotRoles.BETA_TESTER)));
 		
 		// Public commands
 		registerCommand(new PingCommand(EnumSet.of(BotRoles.USER)));

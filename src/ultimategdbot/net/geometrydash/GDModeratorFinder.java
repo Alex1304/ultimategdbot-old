@@ -3,38 +3,33 @@ package ultimategdbot.net.geometrydash;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.RecursiveTask;
 import java.util.function.Consumer;
 
+import ultimategdbot.commands.impl.UpdateModListCommand;
 import ultimategdbot.exceptions.RawDataMalformedException;
 
-public class GDUserFinder extends RecursiveTask<List<GDUser>> {
-
-	private static final long serialVersionUID = 8261445683197877942L;
+public class GDModeratorFinder implements Runnable {
+	
 	private long beginAccountID;
 	private long endAccountID;
 	private Consumer<GDUser> actionOnModeratorFound;
-	private static final int NB_MAX_ATTEMPTS = 5;
+	private static final int NB_MAX_ATTEMPTS = 3;
 	
-	public GDUserFinder(long beginAccountID, long endAccountID, Consumer<GDUser> actionOnModeratorFound) {
+	public GDModeratorFinder(long beginAccountID, long endAccountID, Consumer<GDUser> actionOnModeratorFound) {
 		this.beginAccountID = beginAccountID;
 		this.endAccountID = endAccountID;
 		this.actionOnModeratorFound = actionOnModeratorFound;
 	}
 
 	@Override
-	public List<GDUser> compute() {
-		List<GDUser> result = new ArrayList<>();
-		
-		for (long i = beginAccountID ; i < endAccountID ; i++) {
+	public void run() {
+		System.out.println("From " + beginAccountID + " to " + endAccountID);
+		for (long i = beginAccountID ; i <= endAccountID ; i++) {
 			GDUser user = fetchOneUser(i);
-			if (user != null && user.getRole() != GDRole.USER) {
-				result.add(user);
+			if (user != null && user.getRole() != GDRole.USER)
 				actionOnModeratorFound.accept(user);
-			}
+			UpdateModListCommand.incrementAndShowProcessedUsers();
 		}
-		
-		return result;
 	}
 	
 	private GDUser fetchOneUser(long accountID) {
@@ -50,7 +45,7 @@ public class GDUserFinder extends RecursiveTask<List<GDUser>> {
 				attempt++;
 				if (attempt < NB_MAX_ATTEMPTS)
 					try {
-						Thread.sleep(3000);
+						Thread.sleep(200);
 					} catch (InterruptedException e1) {
 					}
 			}

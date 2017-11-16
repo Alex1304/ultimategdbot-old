@@ -90,8 +90,18 @@ public abstract class AppTools {
 	 * @param channel
 	 * @param message
 	 */
-	public static synchronized IMessage sendMessage(IChannel channel, String message) {
+	public static IMessage sendMessage(IChannel channel, String message) {
 		return sendMessage(channel, message, null);
+	}
+	
+	/**
+	 * Edits a message in Discord using a RequestBuffer
+	 * 
+	 * @param messageToEdit
+	 * @param message
+	 */
+	public static IMessage editMessage(IMessage messageToEdit, String message) {
+		return editMessage(messageToEdit, message, null);
 	}
 
 	/**
@@ -109,6 +119,35 @@ public abstract class AppTools {
 		RequestBuffer.request(() -> {
 			try {
 				messageQueue.put(currTime, (embed != null) ? channel.sendMessage(message, embed) : channel.sendMessage(message));
+			} catch (MissingPermissionsException | DiscordException e) {
+				System.err.println(e.getLocalizedMessage());
+				messageQueue.put(currTime, null);
+			}
+		});
+		
+		while (!messageQueue.containsKey(currTime) && System.currentTimeMillis() - currTime < 30000) {}
+		
+		if (!messageQueue.containsKey(currTime))
+			System.err.println("Unable to send message: Timeout");
+		
+		return messageQueue.remove(currTime);
+	}
+	
+	/**
+	 * Edits a message in Discord using a RequestBuffer.
+	 * This method supports embeds.
+	 * 
+	 * @param messageToEdit
+	 * @param message
+	 * @return the IMessage instance of the edited message, or null if it failed to edit the message
+	 * in less than 10 seconds.
+	 */
+	public static IMessage editMessage(IMessage messageToEdit, String message, EmbedObject embed) {
+		long currTime = System.currentTimeMillis();
+		
+		RequestBuffer.request(() -> {
+			try {
+				messageQueue.put(currTime, (embed != null) ? messageToEdit.edit(message, embed) : messageToEdit.edit(message));
 			} catch (MissingPermissionsException | DiscordException e) {
 				System.err.println(e.getLocalizedMessage());
 				messageQueue.put(currTime, null);
