@@ -12,6 +12,7 @@ import java.util.Map;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.RequestBuffer;
 import ultimategdbot.commands.impl.AccountCommand;
 import ultimategdbot.commands.impl.AnnouncementCommand;
 import ultimategdbot.commands.impl.BotMessageCommand;
@@ -138,12 +139,14 @@ public class DiscordCommandHandler {
 		running = true;
 		Thread typingKeepAlive = new Thread(() -> {
 			while (running) {
-				if (!event.getChannel().getTypingStatus())
-					event.getChannel().setTypingStatus(true);
-				
 				try {
-					Thread.sleep(15000);
-				} catch (InterruptedException e) {
+					if (!event.getChannel().getTypingStatus())
+						RequestBuffer.request(() -> event.getChannel().setTypingStatus(true));
+					
+						Thread.sleep(20000);
+				} catch (InterruptedException|RuntimeException e) {
+					e.printStackTrace();
+					RequestBuffer.request(() -> event.getChannel().setTypingStatus(false));
 				}
 			}
 		});
@@ -180,7 +183,7 @@ public class DiscordCommandHandler {
 			e.printStackTrace();
 		} finally {
 			running = false;
-			event.getChannel().setTypingStatus(false);
+			RequestBuffer.request(() -> event.getChannel().setTypingStatus(false));
 		}
 	}
 }

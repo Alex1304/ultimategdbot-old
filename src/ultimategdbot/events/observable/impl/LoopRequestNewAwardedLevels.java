@@ -70,6 +70,9 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 							i++;
 						}
 						
+						List<GDLevel> levelsAlreadyInDB = gdldao.findAll();
+						newAwardedLevels.removeIf(level -> levelsAlreadyInDB.contains(level));
+						
 						if (checkForStateChange(awardedLevels.get(0)))
 							updateObservers(new LastAwardedStateChangedGDEvent(awardedLevels.get(0)));
 
