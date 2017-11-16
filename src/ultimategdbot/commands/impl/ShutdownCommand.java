@@ -19,7 +19,7 @@ public class ShutdownCommand extends CoreCommand {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		AppTools.sendMessage(event.getChannel(), "Shutting down...");
+		AppTools.sendMessage(event.getChannel(), "Terminating process...");
 		System.exit(0);
 	}
 

@@ -54,8 +54,10 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 							try {
 								quickLevelSearch(lastLevelRecorded.getId() + "");
 							} catch (RawDataMalformedException e) {
-								gdldao.delete(lastLevelRecorded);
-								lastLevelRecorded = null;
+								if (!lastLevelRecorded.equals(awardedLevels.get(0))) {
+									gdldao.delete(lastLevelRecorded);
+									lastLevelRecorded = null;
+								}
 							}
 							
 							if (lastLevelRecorded == null) {
@@ -91,7 +93,7 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 
 					} catch (RawDataMalformedException e) {
 						e.printStackTrace();
-						gdldao.delete(lastLevelRecorded);
+						System.err.println(awardedLevelsRD);
 						lastLevelRecorded = null;
 					}
 				} catch (IOException e) {
