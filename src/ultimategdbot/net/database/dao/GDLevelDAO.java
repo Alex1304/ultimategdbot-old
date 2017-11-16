@@ -118,7 +118,7 @@ public class GDLevelDAO implements DAO<GDLevel> {
 			ResultSet result = DatabaseConnection.getInstance()
 					.createStatement().executeQuery("SELECT * FROM gd_level");
 			while (result.next())
-				gsList.add(new GDLevel(result.getLong("level"),
+				gsList.add(new GDLevel(result.getLong("level_id"),
 						result.getString("name"),
 						result.getString("creator"),
 						result.getString("description"),
