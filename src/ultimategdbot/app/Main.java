@@ -1,8 +1,5 @@
 package ultimategdbot.app;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
@@ -11,6 +8,7 @@ import ultimategdbot.commands.DiscordCommandHandler;
 import ultimategdbot.discordevents.DiscordEvents;
 import ultimategdbot.events.observable.impl.LoopRequestNewAwardedLevels;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.ThreadManager;
 
 /**
  * Main class of the program Contains everything required for the bot to work
@@ -80,9 +78,8 @@ public class Main {
 	}
 	
 	public static final DiscordEnvironment DISCORD_ENV = new DiscordEnvironment();
+	public static final ThreadManager THREADS = new ThreadManager();
 	public static final String BETA_TESTERS_GUILD_INVITE_LINK = "https://discord.gg/VpVdKvg";
-	
-	private static List<Thread> threadList = new ArrayList<>();
 
 	public static void main(String[] args) {
 		launch(false);
@@ -108,7 +105,7 @@ public class Main {
 		// Building client
 		DISCORD_ENV.client = AppTools.createClient(AppParams.BOT_TOKEN, false);
 		
-		startThreads();
+		registerThreads();
 		
 		// Registering events
 		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordCommandHandler());
@@ -118,15 +115,15 @@ public class Main {
 		DISCORD_ENV.client.login();
 	}
 	
-	private static void startThreads() {
+	private static void registerThreads() {
 		// Registering threads that are ONLY supposed to run in test environment
 		if (isTestEnvironment()) {
 			
 		}
 		
 		// Registering other threads
-		threadList.add(new Thread(new LoopRequestNewAwardedLevels()));
-		threadList.add(new Thread(() -> {
+		THREADS.addThread("loop_newawarded", new LoopRequestNewAwardedLevels());
+		THREADS.addThread("fetch_hierarchy_info", () -> {
 			while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {}
 			
 			if (!DISCORD_ENV.init()) {
@@ -134,12 +131,9 @@ public class Main {
 						+ "Please make sure you have provided the correct hierarchy info in AppParams.java");
 			} else
 				System.out.println("Hierarchy info successfully fetched!");
-				
-		}));
+		});
 		
-		// Start all
-		for (Thread t : threadList)
-			t.start();
+		THREADS.startAllNew();
 	}
 	
 	public static boolean isTestEnvironment() {

@@ -35,9 +35,20 @@ public class ProgressMessage {
 	  * @return false if it fails to send the updated message, true otherwise.
 	  */
 	public boolean updateProgress(String content) {
-		if (progressMessage == null || AppTools.editMessage(progressMessage, content) == null)
+		if (progressMessage == null || progressMessage.isDeleted()
+				|| AppTools.editMessage(progressMessage, content) == null) {
+			if (progressMessage != null && !progressMessage.isDeleted())
+				progressMessage.delete();
 			progressMessage = AppTools.sendMessage(workingChannel, content);
+		}
 		
 		return progressMessage != null;
+	}
+	
+	/**
+	 * Upon new update, the progress message will be sent as a new message instead of editing the existing one
+	 */
+	public void release() {
+		progressMessage = null;
 	}
 }

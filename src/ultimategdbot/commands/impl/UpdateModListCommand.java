@@ -24,7 +24,6 @@ public class UpdateModListCommand extends CoreCommand {
 	
 	private static final long ESTIMATED_NB_ACCOUNTS = 8_000_000L;
 	private static final int MAX_NB_TASKS = 500;
-	private static final double NB_TASKS_FACTOR = 0.2;
 	private static volatile long processedUsers = 0;
 	private static long totalUsers;
 	private ProgressMessage resultsPreviewMessage;
@@ -61,16 +60,25 @@ public class UpdateModListCommand extends CoreCommand {
 		
 		to++; // The last ID will be omitted if we don't put this instruction
 		
-		nbTasks = (long) Math.ceil((to - from) * NB_TASKS_FACTOR);
+		nbTasks = to - from;
 		if (nbTasks > MAX_NB_TASKS)
 			nbTasks = MAX_NB_TASKS;
  		
+		// If the result preview message exceeds 2000 characters, it will
+		// be released and a new one will be made without the users contained
+		// in this list.
+		final List<GDUser> ignoredUsers = new ArrayList<>();
 		final Consumer<GDUser> actionOnModFound = user -> {
 			RESULT.add(user);
 			String message = "";
 			for (GDUser u : RESULT)
-				message += "> **" + u.getName() + "** (" + u.getAccountID()
-					+ ") - *" + u.getRole().toString().substring(0, 3) + "*\n";
+				if (!ignoredUsers.contains(u))
+					message += "> **" + u.getName() + "** (" + u.getAccountID()
+						+ ") - *" + u.getRole().toString().substring(0, 3) + "*\n";
+			if (message.length() >= 2000) {
+				resultsPreviewMessage.release();
+				ignoredUsers.addAll(RESULT);
+			}
 			resultsPreviewMessage.updateProgress(message);
 		};
 		
@@ -78,24 +86,27 @@ public class UpdateModListCommand extends CoreCommand {
 		processedUsers = 0;
 		
 		AppTools.sendMessage(event.getChannel(), "Moderator list updating process started...\n"
-				+ nbTasks + " sub-processes have been created.");
+				+ nbTasks + " threads have been created.");
 		
 		RESULT.clear();
 		long startTime = System.currentTimeMillis();
-		List<Thread> processes = new ArrayList<>();
+		List<GDModeratorFinder> threads = new ArrayList<>();
 		
 		for (long i = 0 ; i < nbTasks ; i++) {
-			Thread process = new Thread(new GDModeratorFinder((i * (to - from)) / nbTasks + from,
+			GDModeratorFinder process = new GDModeratorFinder((i * (to - from)) / nbTasks + from,
 					((i + 1) * (to - from)) / nbTasks + from - 1,
-					actionOnModFound));
-			processes.add(process);
+					actionOnModFound);
+			threads.add(process);
 			process.start();
 		}
 		
-		for (Thread process : processes) {
+		for (Thread process : threads) {
 			try {
 				process.join();
 			} catch (InterruptedException e) {
+				for (GDModeratorFinder t : threads)
+					t.stopThread();
+				throw new CommandFailedException("Interrupted by user.");
 			}
 		}
 		

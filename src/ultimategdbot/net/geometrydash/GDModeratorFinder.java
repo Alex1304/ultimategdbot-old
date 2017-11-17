@@ -8,12 +8,13 @@ import java.util.function.Consumer;
 import ultimategdbot.commands.impl.UpdateModListCommand;
 import ultimategdbot.exceptions.RawDataMalformedException;
 
-public class GDModeratorFinder implements Runnable {
+public class GDModeratorFinder extends Thread {
 	
 	private long beginAccountID;
 	private long endAccountID;
 	private Consumer<GDUser> actionOnModeratorFound;
 	private static final int NB_MAX_ATTEMPTS = 3;
+	private boolean stopped = false;
 	
 	public GDModeratorFinder(long beginAccountID, long endAccountID, Consumer<GDUser> actionOnModeratorFound) {
 		this.beginAccountID = beginAccountID;
@@ -23,8 +24,7 @@ public class GDModeratorFinder implements Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("From " + beginAccountID + " to " + endAccountID);
-		for (long i = beginAccountID ; i <= endAccountID ; i++) {
+		for (long i = beginAccountID ; !stopped && i <= endAccountID ; i++) {
 			GDUser user = fetchOneUser(i);
 			if (user != null && user.getRole() != GDRole.USER)
 				actionOnModeratorFound.accept(user);
@@ -63,6 +63,10 @@ public class GDModeratorFinder implements Runnable {
 		});
 		
 		return res;
+	}
+	
+	public void stopThread() {
+		stopped = true;
 	}
 
 }
