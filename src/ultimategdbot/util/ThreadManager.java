@@ -96,8 +96,6 @@ public class ThreadManager {
 	public void killThread(String name) {
 		if (threadMap.containsKey(name))
 			threadMap.remove(name).interrupt();
-		else
-			System.out.println("bruh");
 	}
 	
 	/**

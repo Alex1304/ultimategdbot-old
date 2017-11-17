@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
@@ -22,10 +23,11 @@ import ultimategdbot.util.ProgressMessage;
 
 public class UpdateModListCommand extends CoreCommand {
 	
-	private static final long ESTIMATED_NB_ACCOUNTS = 8_000_000L;
-	private static final int MAX_NB_TASKS = 500;
+	private static final int DEFAULT_THREAD_COUNT = 100;
+	private static final int DEFAULT_STEP = 1000;
 	private static volatile long processedUsers = 0;
 	private static long totalUsers;
+	private static int step;
 	private ProgressMessage resultsPreviewMessage;
 	private static ProgressMessage commandProgressMessage;
 	private final Set<GDUser> RESULT = new HashSet<>();
@@ -36,33 +38,26 @@ public class UpdateModListCommand extends CoreCommand {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		if (args.size() != 2 && args.size() != 0)
+		if (args.size() < 2)
 			throw new CommandFailedException(this);
 		
 		long from, to, nbTasks;
 		resultsPreviewMessage = new ProgressMessage(event.getChannel());
 		commandProgressMessage = new ProgressMessage(event.getChannel());
 		
-		if (args.size() == 2) {
-			try {
-				from = Long.parseLong(args.get(0));
-				to = Long.parseLong(args.get(1));
-				if (from > to)
-					throw new CommandFailedException("Second argument must be a larger "
-							+ "numeric value than the first argument.");
-			} catch (NumberFormatException e) {
-				throw new CommandFailedException(this);
-			}	
-		} else {
-			from = 1;
-			to = ESTIMATED_NB_ACCOUNTS;
+		try {
+			from = Long.parseLong(args.get(0));
+			to = Long.parseLong(args.get(1));
+			nbTasks = (args.size() >= 3) ? Long.parseLong(args.get(2)) : DEFAULT_THREAD_COUNT;
+			step = (args.size() >= 4) ? Integer.parseInt(args.get(3)) : DEFAULT_STEP;
+			if (from > to)
+				throw new CommandFailedException("Second argument must be a larger "
+						+ "numeric value than the first argument.");
+		} catch (NumberFormatException e) {
+			throw new CommandFailedException(this);
 		}
 		
 		to++; // The last ID will be omitted if we don't put this instruction
-		
-		nbTasks = to - from;
-		if (nbTasks > MAX_NB_TASKS)
-			nbTasks = MAX_NB_TASKS;
  		
 		// If the result preview message exceeds 2000 characters, it will
 		// be released and a new one will be made without the users contained
@@ -143,27 +138,30 @@ public class UpdateModListCommand extends CoreCommand {
 		
 		if (processedUsers % 10 == 0 || totalUsers == processedUsers)
 			System.out.println(progressText);
-		if (processedUsers % 1000 == 0 || totalUsers == processedUsers)
+		if (processedUsers % step == 0 || totalUsers == processedUsers)
 			commandProgressMessage.updateProgress(progressText);
 	}
 
 	@Override
 	public String getHelp() {
-		return "Iterates through the entire database of users and builds a list of all moderators in Geometry Dash.\n"
-				+ "You can also specify a range of AccountIDs if you don't need to update the whole list."
-				+ ":warning: Warning: This command takes a huge amount of time to process, as Geometry Dash counts "
-				+ "over 7 millions of registered accounts. Please run this command only once from time to time !";
+		return "Iterates through the database of users which AccountID is in the specified range and builds a list "
+				+ "of moderators found in Geometry Dash.\n"
+				+ "You can also specify the number of threads (sub-tasks) and the progress message step (i.e "
+				+ "how often the progress indicator message should update) to optimize execution time."
+				+ ":warning: Warning: If you specify a high range to scan, this command may take a huge amount "
+				+ "of time to process. You or a moderator can interrupt it at anytime using the command `"
+				+ Main.CMD_PREFIX +"kill`.";
 	}
 
 	@Override
 	public String[] getSyntax() {
-		String[] syn = { "", "<from_accountID> <to_accountID>" };
+		String[] syn = { "<from_accountID> <to_accountID> [<thread_count>] [<progress_message_step>]" };
 		return syn;
 	}
 
 	@Override
 	public String[] getExamples() {
-		String[] ex = { "", "100 500000" };
+		String[] ex = { "100 500000", "5000 20000 50 500" };
 		return ex;
 	}
 

@@ -7,7 +7,7 @@ import ultimategdbot.exceptions.CommandFailedException;
 
 public class SingleRunningCommand extends EmbeddedCoreCommand {
 	
-	private static boolean running = false;
+	private boolean running = false;
 
 	public SingleRunningCommand(CoreCommand cmd) {
 		super(cmd);
@@ -19,7 +19,14 @@ public class SingleRunningCommand extends EmbeddedCoreCommand {
 			throw new CommandFailedException("This command is already running. This command cannot be run several times"
 					+ " in parallel by different users.");
 		running = true;
-		cmd.runCommand(event, args);
-		running = false;
+		try {
+			cmd.runCommand(event, args);
+		} catch (Exception e) {
+			running = false;
+			throw e;
+		} finally {
+			running = false;
+		}
+		
 	}
 }

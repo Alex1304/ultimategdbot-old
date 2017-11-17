@@ -22,18 +22,17 @@ public class KillCommand extends CoreCommand {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		boolean pMessageID = args.isEmpty() ? true : name.matches(".*m" + AppTools.concatCommandArgs(args).trim() + ".*");
 		int count = 0;
 		
 		for (String name : Main.THREADS.nameSet()) {
 			if (!name.equals(DiscordCommandHandler.generateThreadName(event)) &&
 					name.startsWith("command_") &&
-					name.matches(".*c" + event.getChannel().getLongID() + ".*") && pMessageID) {
+					name.matches(".*c" + event.getChannel().getLongID() + ".*")) {
 				if (Main.THREADS.getThread(name).getState() != State.TERMINATED)
 					count++;
 				
 				Main.THREADS.killThread(name);
-				System.out.println(name);
+				System.out.println("Killed: " + name);
 			}
 		}
 		Main.THREADS.removeAllTerminated();
