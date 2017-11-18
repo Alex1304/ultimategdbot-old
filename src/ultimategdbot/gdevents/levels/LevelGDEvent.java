@@ -1,5 +1,6 @@
-package ultimategdbot.events;
+package ultimategdbot.gdevents.levels;
 
+import ultimategdbot.gdevents.GDEvent;
 import ultimategdbot.net.geometrydash.GDLevel;
 
 /**

@@ -8,16 +8,16 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RequestBuffer;
 import ultimategdbot.exceptions.CommandFailedException;
+import ultimategdbot.exceptions.ThreadKilledException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
+import ultimategdbot.util.KillableThread;
 
-public class CommandThread extends Thread {
+public class CommandThread extends KillableThread {
 	
 	private MessageReceivedEvent event;
 	private List<String> args;
 	private String cmdName;
-	
-	boolean running = true;
 	
 	public CommandThread(MessageReceivedEvent event, String cmdName, List<String> args) {
 		this.event = event;
@@ -26,21 +26,24 @@ public class CommandThread extends Thread {
 	}
 	
 	@Override
-	public void run() {
-		running = true;
-		Thread typingKeepAlive = new Thread(() -> {
-			while (running) {
+	public void run(KillableThread thisThread) throws ThreadKilledException {
+		KillableThread typingKeepAlive = new KillableThread((thread) -> {
+			while (!thread.isKilled()) {
 				try {
 					if (!event.getChannel().getTypingStatus())
 						RequestBuffer.request(() -> event.getChannel().setTypingStatus(true));
 					
 						Thread.sleep(20000);
 				} catch (InterruptedException|RuntimeException e) {
-					e.printStackTrace();
-					RequestBuffer.request(() -> event.getChannel().setTypingStatus(false));
 				}
 			}
-		});
+			
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+			}
+			RequestBuffer.request(() -> event.getChannel().setTypingStatus(false));
+		}, "typing_keep_alive");
 
 		try {
 			if (COMMAND_MAP.containsKey(cmdName)) {
@@ -73,8 +76,7 @@ public class CommandThread extends Thread {
 							+ "```\n");
 			e.printStackTrace();
 		} finally {
-			running = false;
-			RequestBuffer.request(() -> event.getChannel().setTypingStatus(false));
+			typingKeepAlive.kill();
 		}
 	}
 

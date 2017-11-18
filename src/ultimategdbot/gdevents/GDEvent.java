@@ -1,4 +1,4 @@
-package ultimategdbot.events;
+package ultimategdbot.gdevents;
 
 /**
  * All events specific to Geometry Dash will implement this interface.

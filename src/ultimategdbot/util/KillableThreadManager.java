@@ -11,14 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 /**
- * Facilitates threads management
+ * Facilitates killable threads management
  * 
  * @author Alex1304
  *
  */
-public class ThreadManager {
+public class KillableThreadManager {
 	
-	private Map<String, Thread> threadMap = new ConcurrentHashMap<>();
+	private Map<String, KillableThread> threadMap = new ConcurrentHashMap<>();
 
 	/**
 	 * Adds an implementation of Runnable into a map which key is the given name
@@ -29,9 +29,9 @@ public class ThreadManager {
 	 * @param r
 	 *            - the runnable to add
 	 */
-	public void addThread(String name, Runnable r) {
+	public void addThread(String name, KillableRunnable r) {
 		if (!threadMap.containsKey(name))
-			threadMap.put(name, new Thread(r));
+			threadMap.put(name, new KillableThread(r, name));
 	}
 	
 	/**
@@ -42,12 +42,14 @@ public class ThreadManager {
 	 * @param t
 	 *            - the thread to add
 	 */
-	public void addExistingThread(String name, Thread t) {
-		if (!threadMap.containsKey(name))
+	public void addExistingThread(String name, KillableThread t) {
+		if (!threadMap.containsKey(name)) {
 			threadMap.put(name, t);
+			t.setName(name);
+		}
 	}
 
-	public Thread getThread(String name) {
+	public KillableThread getThread(String name) {
 		return threadMap.get(name);
 	}
 
@@ -67,7 +69,7 @@ public class ThreadManager {
 	 */
 	public int startAllNew(Predicate<String> filter) {
 		int count = 0;
-		for (Entry<String, Thread> t : threadMap.entrySet())
+		for (Entry<String, KillableThread> t : threadMap.entrySet())
 			if (filter.test(t.getKey()) && t.getValue().getState() == State.NEW) {
 				t.getValue().start();
 				count++;
@@ -99,15 +101,20 @@ public class ThreadManager {
 	}
 	
 	/**
-	 * Restarts a thread by killing it first, then instantiate a new Thread using
-	 * the same Runnable instance.
+	 * Restarts a thread by killing it first, then instantiate a new Thread
+	 * using the same Runnable instance. This method waits until the desired
+	 * thread dies, unless it exceeds the given timeout (in milliseconds).
 	 * 
 	 * @param name
 	 *            - name of target thread
+	 * @param timeout
+	 *            - how long this method should wait for the thread to actually
+	 *            die.
 	 */
-	public void restartThread(String name) {
+	public void restartThread(String name, long timeout) {
 		killThread(name);
-		Runnable r = threadMap.remove(name);
+		
+		KillableRunnable r = threadMap.remove(name);
 		addThread(name, r);
 	}
 	
@@ -123,7 +130,7 @@ public class ThreadManager {
 	 * removed from the map.
 	 */
 	public void removeAllTerminated(Predicate<String> filter) {
-		for (Entry<String, Thread> t : threadMap.entrySet())
+		for (Entry<String, KillableThread> t : threadMap.entrySet())
 			if (filter.test(t.getKey()) && t.getValue().getState() == State.TERMINATED)
 				threadMap.remove(t.getKey());
 	}
@@ -147,9 +154,9 @@ public class ThreadManager {
 	 *            - the predicate to test
 	 * @return collection of threads
 	 */
-	public Collection<Thread> getThreadsFilteredByName(Predicate<String> filter) {
-		List<Thread> result = new ArrayList<>();
-		for (Entry<String, Thread> t : threadMap.entrySet())
+	public Collection<KillableThread> getThreadsFilteredByName(Predicate<String> filter) {
+		List<KillableThread> result = new ArrayList<>();
+		for (Entry<String, KillableThread> t : threadMap.entrySet())
 			if (filter.test(t.getKey()))
 				result.add(t.getValue());
 		
