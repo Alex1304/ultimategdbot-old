@@ -70,12 +70,12 @@ public class DiscordCommandHandler {
 		
 		// Server admin commands
 		registerCommand(new ServerOnlyCommand(new SetupCommand(EnumSet.of(BotRoles.SERVER_ADMIN))));
-		registerCommand(new ModListCommand(EnumSet.of(BotRoles.BETA_TESTER, BotRoles.SERVER_ADMIN)));
+		registerCommand(new ModListCommand(EnumSet.of(BotRoles.SERVER_ADMIN)));
 		
 		// Beta-testers commands
-		registerCommand(new ServerCountCommand(EnumSet.of(BotRoles.BETA_TESTER)));
-		registerCommand(new ModListCommand(EnumSet.of(BotRoles.BETA_TESTER)));
-		registerCommand(new CheckModCommand(EnumSet.of(BotRoles.BETA_TESTER)));
+		registerCommand(new ServerCountCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new ModListCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new CheckModCommand(EnumSet.of(BotRoles.USER)));
 		
 		// Public commands
 		registerCommand(new PingCommand(EnumSet.of(BotRoles.USER)));
