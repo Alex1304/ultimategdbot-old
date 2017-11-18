@@ -11,6 +11,7 @@ import sx.blah.discord.util.EmbedBuilder;
 import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.net.geometrydash.Difficulty;
 import ultimategdbot.net.geometrydash.GDLevel;
+import ultimategdbot.net.geometrydash.GDRole;
 import ultimategdbot.net.geometrydash.GDUser;
 
 /**
@@ -184,7 +185,12 @@ public abstract class GDUtils {
 			+ Emoji.DEMON + "  " + user.getDemons() + "\t\t"
 			+ Emoji.CREATOR_POINTS + "  " + user.getCreatorPoints() + "\n", false);
 		
-		eb.appendField("───────────────────", Emoji.GLOBAL_RANK + "  **Global Rank:** "
+		String mod = "";
+		if (user.getRole() != GDRole.USER)
+			mod = Emoji.MODERATOR + "  **" + user.getRole() + "**\n";
+		
+		eb.appendField("───────────────────", mod
+				+ Emoji.GLOBAL_RANK + "  **Global Rank:** "
 				+ (user.getGlobalRank() == 0 ? "*Unranked*" : user.getGlobalRank()) + "\n"
 				+ Emoji.YOUTUBE + "  **Youtube:** "
 					+ (user.getYoutube().isEmpty() ? "*not provided*" : "[Open link](https://www.youtube.com/channel/"

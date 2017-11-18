@@ -1,4 +1,4 @@
-package ultimategdbot.events;
+package ultimategdbot.gdevents.levels;
 
 import java.util.List;
 

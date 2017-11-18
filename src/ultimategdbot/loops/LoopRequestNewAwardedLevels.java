@@ -1,43 +1,43 @@
-package ultimategdbot.events.observable.impl;
+package ultimategdbot.loops;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import ultimategdbot.app.Main;
-import ultimategdbot.events.GDEvent;
-import ultimategdbot.events.LastAwardedDeletedGDEvent;
-import ultimategdbot.events.LastAwardedStateChangedGDEvent;
-import ultimategdbot.events.NewAwardedGDEvent;
-import ultimategdbot.events.observable.Observable;
-import ultimategdbot.events.observer.Observer;
-import ultimategdbot.events.observer.impl.AwardedLevelsObserver;
 import ultimategdbot.exceptions.RawDataMalformedException;
+import ultimategdbot.gdevents.levels.LastAwardedDeletedGDEvent;
+import ultimategdbot.gdevents.levels.LastAwardedStateChangedGDEvent;
+import ultimategdbot.gdevents.levels.NewAwardedGDEvent;
 import ultimategdbot.net.database.dao.GDLevelDAO;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDLevelFactory;
 import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.KillableRunnable;
+import ultimategdbot.util.KillableThread;
 
-public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopRequestNewAwardedLevels> {
+/**
+ * Checks regularly if new levels get rated/unrated/updated on Geometry Dash
+ * by looking at the Awarded section of the game.
+ * 
+ * @author Alex1304
+ *
+ */
+public class LoopRequestNewAwardedLevels implements KillableRunnable {
 
 	private static final int REQUEST_COOLDOWN_SECONDS = 10;
 	private GDLevel lastLevelRecorded;
-	private List<Observer<LoopRequestNewAwardedLevels>> obsList = new ArrayList<>();
-
-	public LoopRequestNewAwardedLevels() {
-		this.addObserver(new AwardedLevelsObserver());
-	}
-
+	
 	@Override
-	public void run() {
-		while (true) {
+	public void run(KillableThread thisThread) {
+		while (!thisThread.isKilled()) {
 			if (Main.DISCORD_ENV.getClient().isReady()) {
 				try {
 					// First, fetch awarded levels from GD servers
-					String awardedLevelsRD = !Main.isTestEnvironment() ?
-							GDServer.fetchNewAwardedLevels() : 
-							GDServer.fetchMostRecentLevels();
+					String awardedLevelsRD = Main.isTestEnvironment() ?
+							GDServer.fetchMostRecentLevels() :
+							GDServer.fetchNewAwardedLevels();
 							
 					GDLevelDAO gdldao = new GDLevelDAO();
 
@@ -55,14 +55,14 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 								quickLevelSearch(lastLevelRecorded.getId() + "");
 							} catch (RawDataMalformedException e) {
 								if (!lastLevelRecorded.equals(awardedLevels.get(0))) {
-									gdldao.delete(lastLevelRecorded);
 									lastLevelRecorded = null;
+									gdldao.delete(lastLevelRecorded);
 								}
 							}
 							
 							if (lastLevelRecorded == null) {
-								gdldao.insert(awardedLevels.get(0));
 								lastLevelRecorded = awardedLevels.get(0);
+								gdldao.insert(awardedLevels.get(0));
 							}
 						}
 
@@ -76,18 +76,18 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 						newAwardedLevels.removeIf(level -> levelsAlreadyInDB.contains(level));
 						
 						if (checkForStateChange(awardedLevels.get(0)))
-							updateObservers(new LastAwardedStateChangedGDEvent(awardedLevels.get(0)));
+							Main.GD_EVENT_DISPATCHER.dispatch(new LastAwardedStateChangedGDEvent(awardedLevels.get(0)));
 
 						if (!awardedLevels.contains(lastLevelRecorded)) {
 							if (!quickLevelSearch(lastLevelRecorded.getId() + "").isAwarded())
-								updateObservers(new LastAwardedDeletedGDEvent(lastLevelRecorded));
+								Main.GD_EVENT_DISPATCHER.dispatch(new LastAwardedDeletedGDEvent(lastLevelRecorded));
 							else {
 								gdldao.delete(lastLevelRecorded);
 								lastLevelRecorded = awardedLevels.get(0);
 							}
 						}
 						else if (!newAwardedLevels.isEmpty())
-							updateObservers(new NewAwardedGDEvent(newAwardedLevels));
+							Main.GD_EVENT_DISPATCHER.dispatch(new NewAwardedGDEvent(newAwardedLevels));
 						
 						lastLevelRecorded = awardedLevels.get(0);
 
@@ -103,14 +103,13 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 					AppTools.sendDebugPMToSuperadmin(
 							"An internal error occured when trying to fetch Awarded levels from GD Servers: `"
 									+ e.getLocalizedMessage() + "`");
-					e.printStackTrace();
+					thisThread.kill();
 				}
 			} else
 				System.out.println("Client not ready, trying again in " + REQUEST_COOLDOWN_SECONDS + " seconds...");
 			try {
 				Thread.sleep(REQUEST_COOLDOWN_SECONDS * 1000);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -135,26 +134,4 @@ public class LoopRequestNewAwardedLevels implements Runnable, Observable<LoopReq
 	private GDLevel quickLevelSearch(String levelNameOrID) throws IOException, RawDataMalformedException {
 		return GDLevelFactory.buildGDLevelFirstSearchResult(GDServer.fetchLevelByNameOrID(levelNameOrID));
 	}
-
-	@Override
-	public void addObserver(Observer<LoopRequestNewAwardedLevels> o) {
-		this.obsList.add(o);
-	}
-
-	@Override
-	public void removeObserver(Observer<LoopRequestNewAwardedLevels> o) {
-		this.obsList.remove(o);
-	}
-
-	@Override
-	public void clearObservers() {
-		this.obsList.clear();
-	}
-
-	@Override
-	public void updateObservers(GDEvent event) {
-		for (Observer<LoopRequestNewAwardedLevels> o : obsList)
-			o.update(event);
-	}
-
 }

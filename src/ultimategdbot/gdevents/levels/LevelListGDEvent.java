@@ -1,7 +1,8 @@
-package ultimategdbot.events;
+package ultimategdbot.gdevents.levels;
 
 import java.util.List;
 
+import ultimategdbot.gdevents.GDEvent;
 import ultimategdbot.net.geometrydash.GDLevel;
 
 public abstract class LevelListGDEvent implements GDEvent {

@@ -1,4 +1,4 @@
-package ultimategdbot.events;
+package ultimategdbot.gdevents.levels;
 
 import ultimategdbot.net.geometrydash.GDLevel;
 

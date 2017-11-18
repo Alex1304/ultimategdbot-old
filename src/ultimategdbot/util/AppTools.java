@@ -3,6 +3,8 @@ package ultimategdbot.util;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +133,39 @@ public abstract class AppTools {
 			System.err.println("Unable to send message: Timeout");
 		
 		return messageQueue.remove(currTime);
+	}
+	
+	/**
+	 * Applies the sendMessage method to a collection of channels. The same message will be sent
+	 * in all of the channels in this collection. This method supports embeds.
+	 * 
+	 * @param channels - Collection of channels to send the message in
+	 * @param message - text content of message
+	 * @param embed - embed to attach to the message.
+	 * @return a List containing all of the messages successfully sent.
+	 */
+	public static List<IMessage> sendMessageToAll(Collection<IChannel> channels, String message, EmbedObject embed) {
+		List<IMessage> sentMessages = new ArrayList<>();
+		
+		for (IChannel channel : channels) {
+			IMessage m = sendMessage(channel, message, embed);
+			if (m != null)
+				sentMessages.add(m);
+		}
+		
+		return sentMessages;
+	}
+	
+	/**
+	 * Applies the sendMessage method to a collection of channels. The same message will be sent
+	 * in all of the channels in this collection.
+	 * 
+	 * @param channels - Collection of channels to send the message in
+	 * @param message - text content of message
+	 * @return a List containing all of the messages successfully sent.
+	 */
+	public static List<IMessage> sendMessageToAll(Collection<IChannel> channels, String message) {
+		return sendMessageToAll(channels, message, null);
 	}
 	
 	/**
