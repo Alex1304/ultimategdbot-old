@@ -366,8 +366,6 @@ public abstract class AppTools {
 			command.add(javaBin);
 			command.add("-jar");
 			command.add(currentJar.getPath());
-			command.add(">>");
-			command.add("./ultimategdbot.log");
 			
 			final ProcessBuilder builder = new ProcessBuilder(command);
 			builder.start();
