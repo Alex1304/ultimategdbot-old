@@ -12,6 +12,7 @@ import java.util.Map;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.app.Main;
+import ultimategdbot.app.PlayingCommand;
 import ultimategdbot.commands.impl.AccountCommand;
 import ultimategdbot.commands.impl.AnnouncementCommand;
 import ultimategdbot.commands.impl.BotMessageCommand;
@@ -62,11 +63,12 @@ public class DiscordCommandHandler {
 		registerCommand(new AnnouncementCommand(EnumSet.of(BotRoles.SUPERADMIN)));
 		registerCommand(new BotMessageCommand(EnumSet.of(BotRoles.SUPERADMIN)));
 		registerCommand(new SingleRunningCommand(new UpdateModListCommand(EnumSet.of(BotRoles.SUPERADMIN))));
-		registerCommand(new ShutdownCommand(EnumSet.of(BotRoles.SUPERADMIN)));
 		
 		// Moderators commands
 		registerCommand(new RestartCommand(EnumSet.of(BotRoles.MODERATOR)));
-		registerCommand(new KillCommand(EnumSet.of(BotRoles.BETA_TESTER)));
+		registerCommand(new ShutdownCommand(EnumSet.of(BotRoles.MODERATOR)));
+		registerCommand(new KillCommand(EnumSet.of(BotRoles.MODERATOR)));
+		registerCommand(new PlayingCommand(EnumSet.of(BotRoles.MODERATOR)));
 		
 		// Server admin commands
 		registerCommand(new ServerOnlyCommand(new SetupCommand(EnumSet.of(BotRoles.SERVER_ADMIN))));

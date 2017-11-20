@@ -55,8 +55,8 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 								quickLevelSearch(lastLevelRecorded.getId() + "");
 							} catch (RawDataMalformedException e) {
 								if (!lastLevelRecorded.equals(awardedLevels.get(0))) {
-									lastLevelRecorded = null;
 									gdldao.delete(lastLevelRecorded);
+									lastLevelRecorded = null;
 								}
 							}
 							
@@ -103,6 +103,7 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 					AppTools.sendDebugPMToSuperadmin(
 							"An internal error occured when trying to fetch Awarded levels from GD Servers: `"
 									+ e.getLocalizedMessage() + "`");
+					e.printStackTrace();
 					thisThread.kill();
 				}
 			} else

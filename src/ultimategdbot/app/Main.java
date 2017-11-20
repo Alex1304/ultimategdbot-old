@@ -86,6 +86,20 @@ public class Main {
 			} else
 				System.out.println("Hierarchy info successfully fetched!");
 		});
+		THREADS.addThread("restart_if_logged_out", (thread) -> {
+			while (!thread.isKilled()) {
+				while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {}
+				
+				if (!DISCORD_ENV.client.isLoggedIn()) {
+					AppTools.restart();
+					System.exit(1);
+				}
+				
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {}
+			}
+		});
 		
 		THREADS.startAllNew();
 	}

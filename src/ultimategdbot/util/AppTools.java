@@ -1,5 +1,6 @@
 package ultimategdbot.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -348,5 +349,32 @@ public abstract class AppTools {
 		return user.getName() + "#" + user.getDiscriminator();
 	}
 	
+	/**
+	 * Restarts the bot. Doesn't work if the bot hasn't been launched using a JAR file.
+	 */
+	public static void restart() {
+		try {
+			final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+			File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+	
+			/* is it a jar file? */
+			if(!currentJar.getName().endsWith(".jar"))
+				return;
+	
+			/* Build command: java -jar application.jar */
+			final List<String> command = new ArrayList<String>();
+			command.add(javaBin);
+			command.add("-jar");
+			command.add(currentJar.getPath());
+			command.add(">>");
+			command.add("./ultimategdbot.log");
+			
+			final ProcessBuilder builder = new ProcessBuilder(command);
+			builder.start();
+			System.exit(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }
