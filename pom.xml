@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>com.github.austinv11</groupId>
 			<artifactId>Discord4J</artifactId>
-			<version>49a6f26</version>
+			<version>cc97092</version>
 		</dependency>
 		<dependency>
 		    <groupId>mysql</groupId>
