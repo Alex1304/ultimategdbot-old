@@ -10,7 +10,6 @@ import java.net.URLEncoder;
 import java.util.Base64;
 
 import ultimategdbot.app.AppParams;
-import ultimategdbot.app.Main;
 import ultimategdbot.exceptions.InvalidCharacterException;
 import ultimategdbot.util.GDMessageBodyEncoder;
 
