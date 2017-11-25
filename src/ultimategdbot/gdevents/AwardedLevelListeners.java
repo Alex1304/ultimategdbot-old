@@ -8,11 +8,12 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
-import ultimategdbot.app.Main;
 import ultimategdbot.gdevents.handler.GDEventHandler;
 import ultimategdbot.gdevents.levels.LastAwardedDeletedGDEvent;
 import ultimategdbot.gdevents.levels.LastAwardedStateChangedGDEvent;
 import ultimategdbot.gdevents.levels.NewAwardedGDEvent;
+import ultimategdbot.guildsettings.ChannelAwardedLevelsSetting;
+import ultimategdbot.guildsettings.RoleAwardedLevelsSetting;
 import ultimategdbot.net.database.dao.GDLevelDAO;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
@@ -72,20 +73,15 @@ public class AwardedLevelListeners {
 		notifMessageOfLastAwardedForEachGuild.clear();
 
 		for (GuildSettings gs : gsList) {
-			IGuild guild = Main.DISCORD_ENV.getClient().getGuildByID(gs.getGuildId());
+			IGuild guild = gs.getGuild();
 
 			if (guild != null) {
-				IChannel channelGDEventSub = guild.getChannelByID(gs.getGdeventSubscriberChannelId());
-				IRole roleGDEventSub = guild.getRoleByID(gs.getGdeventSubscriberRoleId());
+				IChannel channelAwardedLevels = gs.getSetting(ChannelAwardedLevelsSetting.class).getValue();
+				IRole roleAwardedLevelsSub = gs.getSetting(RoleAwardedLevelsSetting.class).getValue();
 				IMessage lastMessage = null;
-				if (channelGDEventSub != null) {
-					try {
-						// This 1 millisecond break will guarantee that messages won't be sent at the
-						// same time, which can cause issues in the AppTools#sendMessage() method.
-						Thread.sleep(1);
-					} catch (InterruptedException e) {}
-					lastMessage = AppTools.sendMessage(channelGDEventSub,
-							(roleGDEventSub != null ? roleGDEventSub.mention() + " " : "")
+				if (channelAwardedLevels != null) {
+					lastMessage = AppTools.sendMessage(channelAwardedLevels,
+							(roleAwardedLevelsSub != null ? roleAwardedLevelsSub.mention() + " " : "")
 									+ message,
 							levelEmbed);
 				}

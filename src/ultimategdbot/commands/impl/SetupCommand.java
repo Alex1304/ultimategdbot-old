@@ -4,23 +4,23 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IRole;
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
-import ultimategdbot.commands.impl.subcommands.SetupEditSubCommand;
+import ultimategdbot.commands.impl.subcommands.SetupSetSubCommand;
 import ultimategdbot.commands.impl.subcommands.SetupInfoSubCommand;
 import ultimategdbot.commands.impl.subcommands.SetupResetSubCommand;
 import ultimategdbot.exceptions.CommandFailedException;
+import ultimategdbot.guildsettings.ChannelAwardedLevelsSetting;
+import ultimategdbot.guildsettings.ChannelBotAnnouncementsSetting;
+import ultimategdbot.guildsettings.GuildSetting;
+import ultimategdbot.guildsettings.RoleAwardedLevelsSetting;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
-import ultimategdbot.util.GuildSettingsAsObject;
-import ultimategdbot.util.Settings;
 
 public class SetupCommand extends CoreCommand {
 	
@@ -28,18 +28,16 @@ public class SetupCommand extends CoreCommand {
 		super("setup", rolesRequired);
 	}
 
-	private Map<Settings, String> settings = new HashMap<>();
 	private GuildSettingsDAO gsdao = new GuildSettingsDAO();
-	private GuildSettingsAsObject gso;
+	private GuildSettings settings;
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		this.gso = new GuildSettingsAsObject(gsdao.findOrCreate(event.getGuild().getLongID()));
+		this.settings = gsdao.findOrCreate(event.getGuild().getLongID());
 		
 		// Whether the user typed the command with or without args
 		if (args.size() == 0) {
-			refreshSettingsMap(gso);
-			AppTools.sendMessage(event.getChannel(), settingsMapAsString());
+			AppTools.sendMessage(event.getChannel(), settingsAsString());
 		} else {
 			if (!triggerSubCommand(args.get(0), event, args.subList(1, args.size())))
 				throw new CommandFailedException(this);
@@ -47,30 +45,20 @@ public class SetupCommand extends CoreCommand {
 	}
 	
 	/**
-	 * Fills the map with the up-to-date guild settings information
-	 * 
-	 * @param gso - Object providing guild settings info
+	 * Gives a String representation of the current settings.
+	 * @return String containing the formatted settings info
 	 */
-	private void refreshSettingsMap(GuildSettingsAsObject gso) {
-		// Settings as objects
-		IRole gdeventsSubRole = gso.getGdEventsSubscriberRole();
-		IChannel gdeventsChannel = gso.getGdEventsAnnouncementChannel();
+	private String settingsAsString() {
+		String message = "**__Bot settings for this server:__**\n";
 		
-		// Adding them to the map after converting them as String
-		settings.put(Settings.GDEVENTS_SUBSCRIBER_ROLE, gdeventsSubRole == null ? "Undefined" : gdeventsSubRole.getName());
-		settings.put(Settings.GDEVENTS_ANNOUNCEMENTS_CHANNEL, gdeventsChannel == null ? "Undefined" : gdeventsChannel.getName());
-	}
-	
-	/**
-	 * Gives a String representation of the settings map.
-	 * @return String containing the formatted map info
-	 */
-	private String settingsMapAsString() {
-		String message = "**Bot settings for this server:**\n";
 		message += "```\n";
-		for (Entry<Settings, String> entry : settings.entrySet())
-			message += entry.getKey().toString() + " : " + entry.getValue() + "\n";
-		message += "```\n";
+		
+		for (GuildSetting<?> setting : settings) {
+			message += setting + ": " + setting.valueToString() + "\n";
+		}
+		
+		message += "```\n\n";
+		
 		message += "Run `" + Main.CMD_PREFIX + "help setup` for details" + "\n";
 		
 		return message;
@@ -87,22 +75,18 @@ public class SetupCommand extends CoreCommand {
 	@Override
 	protected Map<String, Command> initSubCommandMap() {
 		Map<String, Command> subCommandMap = new HashMap<>();
-		subCommandMap.put("edit", new SetupEditSubCommand(this));
+		subCommandMap.put("set", new SetupSetSubCommand(this));
 		subCommandMap.put("reset", new SetupResetSubCommand(this));
 		subCommandMap.put("info", new SetupInfoSubCommand(this));
 		return subCommandMap;
-	}
-
-	public Map<Settings, String> getSettings() {
-		return settings;
 	}
 
 	public GuildSettingsDAO getGsdao() {
 		return gsdao;
 	}
 
-	public GuildSettingsAsObject getGso() {
-		return gso;
+	public GuildSettings getSettings() {
+		return settings;
 	}
 
 	@Override
@@ -113,8 +97,9 @@ public class SetupCommand extends CoreCommand {
 
 	@Override
 	public String[] getExamples() {
-		String[] res = { "", "edit " + Settings.values()[0].toString() + " #bot-announcements", 
-				"info " + Settings.values()[1].toString(), "reset " + Settings.values()[0].toString() };
+		String[] res = { "", "set " + settings.getSetting(ChannelAwardedLevelsSetting.class) + " #bot-announcements", 
+				"info " + settings.getSetting(RoleAwardedLevelsSetting.class),
+				"reset " + settings.getSetting(ChannelBotAnnouncementsSetting.class) };
 		return res;
 	}
 }

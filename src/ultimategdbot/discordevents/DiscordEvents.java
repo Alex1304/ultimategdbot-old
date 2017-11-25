@@ -18,7 +18,7 @@ public class DiscordEvents {
 		GuildSettings gs = gsdao.find(event.getGuild().getLongID());
 
 		if (gs == null) {
-			gs = new GuildSettings(event.getGuild().getLongID(), 0, 0);
+			gs = new GuildSettings(event.getGuild());
 			sendWelcomeMessage(event.getGuild());
 			gsdao.insert(gs); // Database insertion of the guild
 		}

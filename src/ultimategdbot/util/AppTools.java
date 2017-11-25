@@ -117,6 +117,11 @@ public abstract class AppTools {
 	 * in less than 10 seconds.
 	 */
 	public static IMessage sendMessage(IChannel channel, String message, EmbedObject embed) {
+		try {
+			// This 1 millisecond break will guarantee that every call of this method within the same
+			// thread will generate a different timestamp for each message.
+			Thread.sleep(1);
+		} catch (InterruptedException e) {}
 		long currTime = System.currentTimeMillis();
 		
 		RequestBuffer.request(() -> {

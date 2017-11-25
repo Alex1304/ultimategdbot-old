@@ -9,21 +9,22 @@ import ultimategdbot.commands.Command;
 import ultimategdbot.commands.SubCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
+import ultimategdbot.exceptions.InvalidValueException;
 import ultimategdbot.guildsettings.GuildSetting;
 import ultimategdbot.guildsettings.GuildSettingNames;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 
-public class SetupResetSubCommand extends SubCommand<SetupCommand> {
-
-	public SetupResetSubCommand(SetupCommand parentCommand) {
+public class SetupSetSubCommand extends SubCommand<SetupCommand> {
+	
+	public SetupSetSubCommand(SetupCommand parentCommand) {
 		super(parentCommand);
 	}
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		if (args.size() != 1)
+		if (args.size() < 2)
 			throw new CommandFailedException(this.getParentCommand());
 		
 		GuildSettingsDAO gsdao = this.getParentCommand().getGsdao();
@@ -35,10 +36,14 @@ public class SetupResetSubCommand extends SubCommand<SetupCommand> {
 					+ Main.CMD_PREFIX + this.getParentCommand().getName() + " without arguments to see the list "
 					+ "of settings");
 		
-		settings.getSetting(targetSettingClass).resetValue();
+		try {
+			settings.getSetting(targetSettingClass).setParsedValue(AppTools.concatCommandArgs(args.subList(1, args.size())));
+		} catch (InvalidValueException e) {
+			throw new CommandFailedException(e.getMessage());
+		}
 
 		gsdao.update(settings);
-		AppTools.sendMessage(event.getChannel(), ":white_check_mark: The setting `" + args.get(0) + "` has been reset!");
+		AppTools.sendMessage(event.getChannel(), ":white_check_mark: Settings updated!");
 	}
 
 	@Override

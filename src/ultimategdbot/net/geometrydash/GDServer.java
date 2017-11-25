@@ -15,7 +15,7 @@ import ultimategdbot.util.GDMessageBodyEncoder;
 
 /**
  * Connection with Geometry Dash official servers is managed here
- * Contains utility levels to interact with the game
+ * Contains utility methods to interact with the game
  * 
  * @author Alex1304
  *
