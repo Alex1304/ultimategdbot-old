@@ -67,7 +67,7 @@ public class SetupCommand extends CoreCommand {
 	@Override
 	public String getHelp() {
 		return "Without arguments, displays the current bot settings for this server.\n"
-				+ "The `edit` keyword allows you to edit a field\n"
+				+ "The `set` keyword allows you to assign a new value to a field\n"
 				+ "The `info` keyword displays detailed info on a specific field\n"
 				+ "The `reset` keyword resets a field to its default value";
 	}
@@ -91,7 +91,7 @@ public class SetupCommand extends CoreCommand {
 
 	@Override
 	public String[] getSyntax() {
-		String[] res = { "", "edit <setting_name> <new_value>", "info|reset <setting_name>" };
+		String[] res = { "", "set <setting_name> <new_value>", "info|reset <setting_name>" };
 		return res;
 	}
 

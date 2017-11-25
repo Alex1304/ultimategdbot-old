@@ -9,6 +9,10 @@ import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
+import ultimategdbot.guildsettings.ChannelBotAnnouncementsSetting;
+import ultimategdbot.guildsettings.TagEveryoneOnBotAnnouncementSetting;
+import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
@@ -20,9 +24,15 @@ public class AnnouncementCommand extends CoreCommand {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
+		final GuildSettingsDAO gsdao = new GuildSettingsDAO();
+		
 		Main.DISCORD_ENV.getClient().getGuilds().forEach(g -> {
-			AppTools.sendMessage(AppTools.findDefaultBotChannelForGuild(g), "[Announcement by the bot developer] "
-					+ AppTools.concatCommandArgs(args));
+			GuildSettings settings = gsdao.findOrCreate(g.getLongID());
+			boolean tagEveryone = settings.getSetting(TagEveryoneOnBotAnnouncementSetting.class).getValue();
+			
+			AppTools.sendMessage(settings.getSetting(ChannelBotAnnouncementsSetting.class).getValue(),
+					"[Announcement by the bot developer] " + AppTools.concatCommandArgs(args)
+					+ (tagEveryone ? "\n\n@everyone" : ""));
 		});
 		
 		AppTools.sendMessage(event.getChannel(), ":white_check_mark: Announcement sent to all guilds!");

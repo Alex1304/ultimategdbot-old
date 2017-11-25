@@ -11,12 +11,12 @@ public abstract class GuildSetting<T> {
 
 	public GuildSetting(IGuild guild, String info, T value) {
 		this.info = info;
-		this.guild = guild;
+
+		if (guild == null)
+			return;
 		
-		if (value != null)
-			this.value = value;
-		else
-			this.value = defaultValue();
+		this.guild = guild;
+		this.value = (value != null) ? value : defaultValue();
 	}
 	
 	public String getInfo() {
