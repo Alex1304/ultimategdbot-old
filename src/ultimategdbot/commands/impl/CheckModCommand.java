@@ -11,6 +11,8 @@ import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.exceptions.RawDataMalformedException;
+import ultimategdbot.gdevents.users.UserModdedGDEvent;
+import ultimategdbot.gdevents.users.UserUnmoddedGDEvent;
 import ultimategdbot.net.database.dao.GDModlistDAO;
 import ultimategdbot.net.database.dao.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
@@ -51,14 +53,14 @@ public class CheckModCommand extends CoreCommand {
 				response += Emoji.FAILED + " Failed. Nothing found.";
 				if (knownMods.contains(user)) {
 					gdmldao.delete(user);
-					// TODO: GD event: unmod
+					Main.GD_EVENT_DISPATCHER.dispatch(new UserUnmoddedGDEvent(user));
 				}
 			}
 			else {
 				response += Emoji.SUCCESS + " Success! Access granted : " + user.getRole().toString();
 				if (!knownMods.contains(user)) {
 					gdmldao.insert(user);
-					// TODO: GD event MOD?
+					Main.GD_EVENT_DISPATCHER.dispatch(new UserModdedGDEvent(user));
 				}
 			}
 			

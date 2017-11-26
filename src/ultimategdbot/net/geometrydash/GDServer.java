@@ -55,7 +55,7 @@ public abstract class GDServer {
 				result += line + "\n";
 			}
 
-			return result;
+			return result.replaceAll("\n", "");
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public abstract class GDServer {
 	 */
 	public static String fetchNewAwardedLevels() throws IOException {
 		return sendRequest("getGJLevels21.php",
-				"gameVersion=21&binaryVersion=33&gdw=0&type=11&str=&diff=-&len=-&page=0&total=0"
+				"gameVersion=21&binaryVersion=34&gdw=0&type=11&str=&diff=-&len=-&page=0&total=0"
 				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
 				+ "&secret=" + SECRET);
 	}
@@ -77,7 +77,7 @@ public abstract class GDServer {
 	 */
 	public static String fetchMostRecentLevels() throws IOException {
 		return sendRequest("getGJLevels21.php",
-				"gameVersion=21&binaryVersion=33&gdw=0&type=4&str=&diff=-&len=-&page=0&total=9999"
+				"gameVersion=21&binaryVersion=34&gdw=0&type=4&str=&diff=-&len=-&page=0&total=9999"
 				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
 				+ "&secret=" + SECRET);
 	}
@@ -89,14 +89,14 @@ public abstract class GDServer {
 	 */
 	public static String fetchLevelByNameOrID(String levelNameOrID) throws IOException {
 		return sendRequest("getGJLevels21.php",
-				"gameVersion=21&binaryVersion=33&gdw=0&type=0&str=" + URLEncoder.encode(levelNameOrID, "UTF-8") + "&diff=-&len=-&page=0&total=0"
+				"gameVersion=21&binaryVersion=34&gdw=0&type=0&str=" + URLEncoder.encode(levelNameOrID, "UTF-8") + "&diff=-&len=-&page=0&total=0"
 				+ "&uncompleted=0&onlyCompleted=0&featured=0&original=0&twoPlayer=0&coins=0&epic=0"
 				+ "&secret=" + SECRET);
 	}
 	
 	public static String sendMessageFromBotToGDUser(long recipientAccountID, String subject, String body) throws IOException, InvalidCharacterException {
 		return sendRequest("uploadGJMessage20.php",
-				"gameVersion=21&binaryVersion=33&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp="
+				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp="
 				+ AppParams.GD_ACCOUNT_GJP + "&toAccountID=" + recipientAccountID + "&subject="
 				+ new String(Base64.getUrlEncoder().encode(subject.getBytes())) + "&body="
 				+ GDMessageBodyEncoder.encode(body) + "&secret=" + SECRET);
@@ -104,13 +104,24 @@ public abstract class GDServer {
 	
 	public static String fetchUsersByNameOrID(String userNameOrID) throws IOException {
 		return sendRequest("getGJUsers20.php",
-				"gameVersion=21&binaryVersion=33&gdw=0&type=0&str=" + URLEncoder.encode(userNameOrID, "UTF-8") + "&page=0&total=0"
+				"gameVersion=21&binaryVersion=34&gdw=0&type=0&str=" + URLEncoder.encode(userNameOrID, "UTF-8") + "&page=0&total=0"
 				+ "&secret=" + SECRET);
 	}
 	
 	public static String fetchUserProfile(long accountID) throws IOException {
 		return sendRequest("getGJUserInfo20.php",
-				"gameVersion=21&binaryVersion=33&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp=" + AppParams.GD_ACCOUNT_GJP
+				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp=" + AppParams.GD_ACCOUNT_GJP
 				+ "&targetAccountID=" + accountID + "&secret=" + SECRET);
+	}
+	
+	public static String fetchTimelyLevel(boolean daily) throws IOException {
+		return sendRequest("downloadGJLevel22.php",
+				"gameVersion=21&binaryVersion=34&gdw=0&levelID=" + (daily ? "-1" : "-2") + "&secret=" + SECRET);
+	}
+	
+	public static String fetchTimelyLevelCooldown(boolean daily) throws IOException {
+		return sendRequest("getGJDailyLevel.php",
+				"gameVersion=21&binaryVersion=34&gdw=0&accountID=7753855&gjp=fgYGAgJ0c3d9Yg==&secret=Wmfd2893gb7&weekly="
+				+ (daily ? "0" : "1"));
 	}
 }

@@ -1,5 +1,6 @@
-package ultimategdbot.gdevents;
+package ultimategdbot.gdevents.listeners;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,9 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.handle.obj.IUser;
+import ultimategdbot.exceptions.RawDataMalformedException;
+import ultimategdbot.gdevents.GDEvent;
 import ultimategdbot.gdevents.handler.GDEventHandler;
 import ultimategdbot.gdevents.levels.LastAwardedDeletedGDEvent;
 import ultimategdbot.gdevents.levels.LastAwardedStateChangedGDEvent;
@@ -16,19 +20,23 @@ import ultimategdbot.guildsettings.ChannelAwardedLevelsSetting;
 import ultimategdbot.guildsettings.RoleAwardedLevelsSetting;
 import ultimategdbot.net.database.dao.GDLevelDAO;
 import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.dao.UserSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
+import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDLevel;
+import ultimategdbot.net.geometrydash.GDUser;
+import ultimategdbot.net.geometrydash.GDUserFactory;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.GDUtils;
 
 /**
- * Utility class to manage event listeners related to levels inthe Awarded section
+ * Utility class to manage event listeners related to levels in the Awarded section
  * of Geometry Dash.
  * 
  * @author Alex1304
  *
  */
-public class AwardedLevelListeners {
+public abstract class AwardedLevelListeners {
 	
 	/**
 	 * Contains the notification messages sent for the latest awarded level.
@@ -84,6 +92,21 @@ public class AwardedLevelListeners {
 							(roleAwardedLevelsSub != null ? roleAwardedLevelsSub.mention() + " " : "")
 									+ message,
 							levelEmbed);
+					
+					try {
+						GDUser creator = GDUserFactory.buildGDUserFromNameOrDiscordTag(level.getCreator());
+						if (creator != null) {
+							UserSettings us = new UserSettingsDAO().findByGDUserID(creator.getAccountID());
+							if (us != null) {
+								IUser discordUser = guild.getUserByID(us.getUserID());
+								if (discordUser != null) {
+									AppTools.sendMessage(channelAwardedLevels, "Congratulations " + discordUser.mention()
+											+ "for getting your level rated !");
+								}
+							}
+						}
+					} catch (RawDataMalformedException | IOException e) {
+					}
 				}
 				notifMessageOfLastAwardedForEachGuild.add(lastMessage);
 			} else {

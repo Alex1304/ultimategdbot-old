@@ -1,5 +1,6 @@
 package ultimategdbot.net.geometrydash;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public abstract class GDLevelFactory {
 	 * @return new instance of GDLevel
 	 */
 	public static GDLevel buildGDLevelFirstSearchResult(String rawData) throws RawDataMalformedException {
-		return buildGDLevelSearchedByFilter(rawData, 0);
+		return buildGDLevelSearchedByFilter(rawData, 0, false);
 	}
 	
 	/**
@@ -64,10 +65,10 @@ public abstract class GDLevelFactory {
 	 * @throws RawDataMalformedException if the raw data syntax is invalid
 	 * @throws IndexOutOfBoundsException if the index given doesn't point to a search item.
 	 */
-	public static GDLevel buildGDLevelSearchedByFilter(String rawData, int index) throws RawDataMalformedException, IndexOutOfBoundsException {
+	public static GDLevel buildGDLevelSearchedByFilter(String rawData, int index, boolean download) throws RawDataMalformedException, IndexOutOfBoundsException {
 		try {
 			Map<Integer, String> structuredLvlInfo = GDUtils.structureRawData(cutOneLevel(cutLevelInfoPart(rawData), index));
-			Map<Long, String> structuredCreatorsInfo = structureCreatorsInfo(cutCreatorInfoPart(rawData));
+			Map<Long, String> structuredCreatorsInfo = structureCreatorsInfo(cutCreatorInfoPart(rawData, download));
 
 			// Determines the difficulty of the level
 			Difficulty lvlDiff = difficultyByValue.get(Integer.parseInt(structuredLvlInfo.get(9)));
@@ -91,8 +92,24 @@ public abstract class GDLevelFactory {
 				Length.values()[Integer.parseInt(structuredLvlInfo.get(15))]
 			);
 		} catch (NullPointerException|IllegalArgumentException e) {
+			System.err.println(rawData);
+			e.printStackTrace();
 			throw new RawDataMalformedException();
 		}
+	}
+	
+	/**
+	 * Returns a GDLevel instance representing either the Daily or the Weekly
+	 * level, depending on the given boolean
+	 * 
+	 * @param daily
+	 *            - whether the Daily level will be built or the Weekly demon.
+	 * @return GDLevel instance representing the requested timely level
+	 * @throws IOException 
+	 * @throws RawDataMalformedException 
+	 */
+	public static GDLevel buildTimelyLevel(boolean daily) throws RawDataMalformedException, IOException {
+		return buildGDLevelSearchedByFilter(GDServer.fetchTimelyLevel(daily), 0, true);
 	}
 	
 	/**
@@ -107,7 +124,7 @@ public abstract class GDLevelFactory {
 		List<GDLevel> levelList = new ArrayList<>();
 		
 		for (int i = 0 ; i < cutLevelInfoPart(rawData).split("\\|").length ; i++) {
-			levelList.add(buildGDLevelSearchedByFilter(rawData, i));
+			levelList.add(buildGDLevelSearchedByFilter(rawData, i, false));
 		}
 		
 		return levelList;
@@ -116,15 +133,27 @@ public abstract class GDLevelFactory {
 	// The private methods below are used to make the code of the public methods clearer
 	
 	private static String cutLevelInfoPart(String rawData) {
-		return rawData.split("#")[0];
+		try {
+			return rawData.split("#")[0];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "";
+		}
 	}
 	
-	private static String cutCreatorInfoPart(String rawData) {
-		return rawData.split("#")[1];
+	private static String cutCreatorInfoPart(String rawData, boolean download) {
+		try {
+			return rawData.split("#")[download ? 3 : 1];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "";
+		}
 	}
-	
+
 	private static String cutOneLevel(String levelInfoPartRD, int index) {
-		return levelInfoPartRD.split("\\|")[index];
+		try {
+			return levelInfoPartRD.split("\\|")[index];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "";
+		}
 	}
 	
 	private static Map<Long, String> structureCreatorsInfo(String creatorsInfoRD) {

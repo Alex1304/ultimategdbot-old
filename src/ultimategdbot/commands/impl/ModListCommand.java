@@ -41,11 +41,11 @@ public class ModListCommand extends CoreCommand {
 			AppTools.sendMessage(event.getChannel(), responseElders + "\n" + responseMods);
 		else
 			if (AppTools.sendMessage(Main.DISCORD_ENV.getClient().getOrCreatePMChannel(event.getAuthor()),
-					responseElders + "\n" + responseMods) != null)
+					responseElders + "\n" + responseMods) != null) {
 				if (!event.getChannel().isPrivate())
 					AppTools.sendMessage(event.getChannel(), event.getAuthor().mention()
 							+ ", check your private messages!");
-			else
+			} else
 				AppTools.sendMessage(event.getChannel(), event.getAuthor().mention()
 					+ ", I was unable to send the response to your private messages. Make sure you "
 					+ "didn't disable them and that you didn't block me. Alternatively, you can ask "

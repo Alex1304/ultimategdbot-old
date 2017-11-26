@@ -27,29 +27,12 @@ public class CommandThread extends KillableThread {
 	
 	@Override
 	public void run(KillableThread thisThread) throws ThreadKilledException {
-		KillableThread typingKeepAlive = new KillableThread((thread) -> {
-			while (!thread.isKilled()) {
-				try {
-					if (!event.getChannel().getTypingStatus())
-						RequestBuffer.request(() -> event.getChannel().setTypingStatus(true));
-					
-						Thread.sleep(20000);
-				} catch (InterruptedException|RuntimeException e) {
-				}
-			}
-			
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-			}
-			RequestBuffer.request(() -> event.getChannel().setTypingStatus(false));
-		}, "typing_keep_alive");
 
 		try {
 			if (COMMAND_MAP.containsKey(cmdName)) {
 				if (BotRoles.isGrantedAll(event.getAuthor(), event.getChannel(),
 						COMMAND_MAP.get(cmdName).getRolesRequired())) {
-					typingKeepAlive.start();
+					RequestBuffer.request(() -> event.getChannel().setTypingStatus(true));
 					COMMAND_MAP.get(cmdName).runCommand(event, args);
 				}
 				else
@@ -76,7 +59,10 @@ public class CommandThread extends KillableThread {
 							+ "```\n");
 			e.printStackTrace();
 		} finally {
-			typingKeepAlive.kill();
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {}
+			RequestBuffer.request(() -> event.getChannel().setTypingStatus(false));
 		}
 	}
 

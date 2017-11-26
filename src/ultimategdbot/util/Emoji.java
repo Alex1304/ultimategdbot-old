@@ -3,7 +3,7 @@ package ultimategdbot.util;
 public enum Emoji {
 	STAR("<:Star:376445841885495316>"),
 	DEMON("<:Demon:376444770186166273>"),
-	MODERATOR("<:Moderator:376444770542944257>"),
+	MODERATOR("<:Moderator:384407303329415169>"),
 	PLAY("<:Play:364096635019722764>"),
 	LENGTH("<:Length:364077721565003786>"),
 	DOWNLOADS("<:Downloads:364076905130885122>"),
@@ -19,7 +19,8 @@ public enum Emoji {
 	TWITCH("<:Twitch:376469536653836302>"),
 	TWITTER("<:Twitter:376469544480407563>"),
 	FAILED("<:Failed:380497778251399179>"),
-	SUCCESS("<:Success:380497765777801216>");
+	SUCCESS("<:Success:380497765777801216>"),
+	ELDER_MODERATOR("<:ElderModerator:384407303069368332>");
 	
 	private String code;
 	

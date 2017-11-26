@@ -6,8 +6,9 @@ import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import ultimategdbot.commands.DiscordCommandHandler;
 import ultimategdbot.discordevents.DiscordEvents;
-import ultimategdbot.gdevents.AwardedLevelListeners;
 import ultimategdbot.gdevents.dispatcher.GDEventDispatcher;
+import ultimategdbot.gdevents.listeners.AwardedLevelListeners;
+import ultimategdbot.gdevents.listeners.GDModeratorsListeners;
 import ultimategdbot.loops.LoopRequestNewAwardedLevels;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.KillableThreadManager;
@@ -64,6 +65,7 @@ public class Main {
 		
 		// Registering Geometry Dash events
 		GD_EVENT_DISPATCHER.addAllListeners(AwardedLevelListeners.getListeners());
+		GD_EVENT_DISPATCHER.addAllListeners(GDModeratorsListeners.getListeners());
 		
 		// Let's start!
 		DISCORD_ENV.client.login();

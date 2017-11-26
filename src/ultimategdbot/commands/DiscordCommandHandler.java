@@ -19,6 +19,7 @@ import ultimategdbot.commands.impl.BotMessageCommand;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.CheckModCommand;
 import ultimategdbot.commands.impl.CompareCommand;
+import ultimategdbot.commands.impl.DailyCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
 import ultimategdbot.commands.impl.HelpCommand;
 import ultimategdbot.commands.impl.InviteCommand;
@@ -75,9 +76,7 @@ public class DiscordCommandHandler {
 		registerCommand(new ModListCommand(EnumSet.of(BotRoles.SERVER_ADMIN)));
 		
 		// Beta-testers commands
-		registerCommand(new ServerCountCommand(EnumSet.of(BotRoles.USER)));
-		registerCommand(new ModListCommand(EnumSet.of(BotRoles.USER)));
-		registerCommand(new CheckModCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new DailyCommand(EnumSet.of(BotRoles.BETA_TESTER)));
 		
 		// Public commands
 		registerCommand(new PingCommand(EnumSet.of(BotRoles.USER)));
@@ -88,6 +87,9 @@ public class DiscordCommandHandler {
 		registerCommand(new CompareCommand(EnumSet.of(BotRoles.USER)));
 		registerCommand(new AccountCommand(EnumSet.of(BotRoles.USER)));
 		registerCommand(new ProfileCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new ServerCountCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new ModListCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new CheckModCommand(EnumSet.of(BotRoles.USER)));
 	}
 	
 	private void registerCommand(CoreCommand cmd) {

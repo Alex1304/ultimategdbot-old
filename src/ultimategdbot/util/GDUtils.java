@@ -1,5 +1,7 @@
 package ultimategdbot.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -186,22 +188,28 @@ public abstract class GDUtils {
 			+ Emoji.CREATOR_POINTS + "  " + user.getCreatorPoints() + "\n", false);
 		
 		String mod = "";
-		if (user.getRole() != GDRole.USER)
-			mod = Emoji.MODERATOR + "  **" + user.getRole() + "**\n";
+		if (user.getRole() == GDRole.MODERATOR)
+			mod = Emoji.MODERATOR + "  **" + user.getRole().toString().replaceAll("_", " ") + "**\n";
+		else if (user.getRole() == GDRole.ELDER_MODERATOR)
+			mod = Emoji.ELDER_MODERATOR + "  **" + user.getRole().toString().replaceAll("_", " ") + "**\n";
 		
-		eb.appendField("───────────────────", mod
-				+ Emoji.GLOBAL_RANK + "  **Global Rank:** "
-				+ (user.getGlobalRank() == 0 ? "*Unranked*" : user.getGlobalRank()) + "\n"
-				+ Emoji.YOUTUBE + "  **Youtube:** "
-					+ (user.getYoutube().isEmpty() ? "*not provided*" : "[Open link](https://www.youtube.com/channel/"
-					+ user.getYoutube() + ")") + "\n"
-				+ Emoji.TWITCH + "  **Twitch:** "
-					+ (user.getTwitch().isEmpty() ? "*not provided*" : "["  + user.getTwitch()
-					+ "](http://www.twitch.tv/" + user.getTwitch() + ")") + "\n"
-				+ Emoji.TWITTER + "  **Twitter:** "
-					+ (user.getTwitter().isEmpty() ? "*not provided*" : "[@" + user.getTwitter() + "]"
-					+ "(http://www.twitter.com/" + user.getTwitter() + ")"),
-				false);
+		try {
+			eb.appendField("───────────────────", mod
+					+ Emoji.GLOBAL_RANK + "  **Global Rank:** "
+					+ (user.getGlobalRank() == 0 ? "*Unranked*" : user.getGlobalRank()) + "\n"
+					+ Emoji.YOUTUBE + "  **Youtube:** "
+						+ (user.getYoutube().isEmpty() ? "*not provided*" : "[Open link](https://www.youtube.com/channel/"
+						+ URLEncoder.encode(user.getYoutube(), "UTF-8") + ")") + "\n"
+					+ Emoji.TWITCH + "  **Twitch:** "
+						+ (user.getTwitch().isEmpty() ? "*not provided*" : "["  + user.getTwitch()
+						+ "](http://www.twitch.tv/" + URLEncoder.encode(user.getTwitch(), "UTF-8") + ")") + "\n"
+					+ Emoji.TWITTER + "  **Twitter:** "
+						+ (user.getTwitter().isEmpty() ? "*not provided*" : "[@" + user.getTwitter() + "]"
+						+ "(http://www.twitter.com/" + URLEncoder.encode(user.getTwitter(), "UTF-8") + ")"),
+					false);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		
 		eb.withFooterText("PlayerID: " + user.getPlayerID() + " | " + "AccountID: " + user.getAccountID());
 		
