@@ -64,8 +64,8 @@ public class GuildSettings implements Iterable<GuildSetting<?>> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> GuildSetting<T> getSetting(Class<? extends GuildSetting<T>> settingClass) {
-		return (GuildSetting<T>) settings.get(settingClass);
+	public <T extends GuildSetting<?>> T getSetting(Class<T> settingClass) {
+		return (T) settings.get(settingClass);
 	}
 	
 	public long getLongIDForIDLinkedObjectSetting(Class<? extends GuildSetting<? extends IIDLinkedObject>> settingClass) {
