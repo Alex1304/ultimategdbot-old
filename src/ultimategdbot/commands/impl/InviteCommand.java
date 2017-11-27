@@ -29,11 +29,14 @@ public class InviteCommand extends CoreCommand {
 		
 		bib.withPermissions(EnumSet.of(
 				Permissions.SEND_MESSAGES,
+				Permissions.READ_MESSAGE_HISTORY,
 				Permissions.MANAGE_SERVER,
+				Permissions.MENTION_EVERYONE,
 				Permissions.MANAGE_ROLES,
 				Permissions.READ_MESSAGES));
 		AppTools.sendMessage(event.getChannel(), "Add me to your server using this link (make sure "
-				+ "to authorize me all of the listed permissions so I can work properly on your server!):\n"
+				+ "to authorize me all of the listed permissions so I can work properly on your server, "
+				+ "except 'Manage server' and 'Mention everyone' which are optional):\n"
 				+ bib.build());
 	}
 

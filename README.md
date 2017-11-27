@@ -5,14 +5,16 @@ Geometry Dash related tools for Discord
 The bot is online with 95% average uptime!
 
 # Implemented features
-* Simple command handling system
-* Get notified when a new level gets rated on Geometry Dash!
+* Get notified when a new event happens on Geometry Dash! (new Daily level/Weekly demon, new awarded levels, new moderators...)
+* Search for any level and compare the featured ones to each other!
+* Link your GD account with your Discord and display your stats with a simple command!
+* View the full list of Geometry Dash moderators!
+
 
 # Upcoming Features
 * Level requests management system for Discord servers
 * Server leaderboards
 * Megacollabs management tools
-* Profile stats and level info
 * More in the future...
 
 # Contribute
