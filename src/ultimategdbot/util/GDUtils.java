@@ -1,5 +1,6 @@
 package ultimategdbot.util;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.net.geometrydash.Difficulty;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDRole;
+import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.net.geometrydash.GDUser;
 
 /**
@@ -232,5 +234,25 @@ public abstract class GDUtils {
 			result[i] = resultList.get(i);
 		
 		return new String(result);
+	}
+	
+	public static int fetchCurrentTimelyID(boolean daily) throws IOException {
+		String dailyInfo = GDServer.fetchTimelyLevelCooldown(daily);
+		return Integer.parseInt(dailyInfo.split("\\|")[0]) - (daily ? 0 : 100000);
+	}
+	
+	public static String fetchNextTimelyCooldown(boolean daily) throws IOException {
+		String dailyInfo = GDServer.fetchTimelyLevelCooldown(daily);
+		long result = Long.parseLong(dailyInfo.split("\\|")[1]);
+		
+		long days = result / (24*60*60);
+		long hours = (result / (60*60)) % 24;
+		long minutes = (result / 60) % 60;
+		long seconds = result % 60;
+		
+		return (days == 0 ? "" : days + " days ")
+				+ (hours == 0 ? "" : hours + " hours ")
+				+ (minutes == 0 ? "" : minutes + " minutes ")
+				+ (seconds == 0 ? "" : seconds + " seconds ");
 	}
 }

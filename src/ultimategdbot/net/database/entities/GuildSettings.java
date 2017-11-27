@@ -12,9 +12,11 @@ import ultimategdbot.app.Main;
 import ultimategdbot.guildsettings.ChannelAwardedLevelsSetting;
 import ultimategdbot.guildsettings.ChannelBotAnnouncementsSetting;
 import ultimategdbot.guildsettings.ChannelGdModeratorsSetting;
+import ultimategdbot.guildsettings.ChannelTimelyLevelsSetting;
 import ultimategdbot.guildsettings.GuildSetting;
 import ultimategdbot.guildsettings.RoleAwardedLevelsSetting;
 import ultimategdbot.guildsettings.RoleGdModeratorsSetting;
+import ultimategdbot.guildsettings.RoleTimelyLevelsSetting;
 import ultimategdbot.guildsettings.TagEveryoneOnBotAnnouncementSetting;
 
 public class GuildSettings implements Iterable<GuildSetting<?>> {
@@ -23,7 +25,7 @@ public class GuildSettings implements Iterable<GuildSetting<?>> {
 	private IGuild guild;
 	
 	public GuildSettings(IGuild guild) {
-		this(guild, null, null, null, null, null, null);
+		this(guild, null, null, null, null, null, null, null, null);
 	}
 
 	public GuildSettings(long guildID) {
@@ -32,7 +34,7 @@ public class GuildSettings implements Iterable<GuildSetting<?>> {
 
 	public GuildSettings(IGuild guild, IChannel channelAwardedLevels, IChannel channelGDModerators,
 			IChannel channelBotAnnouncements, IRole roleAwardedLevels, IRole roleGDModerators,
-			Boolean tagEveryoneOnBotAnnouncement) {
+			Boolean tagEveryoneOnBotAnnouncement, IChannel channelTimelyLevels, IRole roleTimelyLevels) {
 		this.settings = new TreeMap<>((o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
 		this.guild = guild;
 		
@@ -45,6 +47,8 @@ public class GuildSettings implements Iterable<GuildSetting<?>> {
 		settings.put(RoleAwardedLevelsSetting.class, new RoleAwardedLevelsSetting(guild, roleAwardedLevels));
 		settings.put(RoleGdModeratorsSetting.class, new RoleGdModeratorsSetting(guild, roleGDModerators));
 		settings.put(TagEveryoneOnBotAnnouncementSetting.class, new TagEveryoneOnBotAnnouncementSetting(guild, tagEveryoneOnBotAnnouncement));
+		settings.put(ChannelTimelyLevelsSetting.class, new ChannelTimelyLevelsSetting(guild, channelTimelyLevels));
+		settings.put(RoleTimelyLevelsSetting.class, new RoleTimelyLevelsSetting(guild, roleTimelyLevels));
 	}
 
 	public IGuild getGuild() {

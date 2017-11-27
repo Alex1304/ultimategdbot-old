@@ -107,7 +107,7 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 					thisThread.kill();
 				}
 			} else
-				System.out.println("Client not ready, trying again in " + REQUEST_COOLDOWN_SECONDS + " seconds...");
+				System.out.println(thisThread.getName() + ": Client not ready, trying again in " + REQUEST_COOLDOWN_SECONDS + " seconds...");
 			try {
 				Thread.sleep(REQUEST_COOLDOWN_SECONDS * 1000);
 			} catch (InterruptedException e) {

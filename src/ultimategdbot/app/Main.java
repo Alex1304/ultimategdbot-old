@@ -9,7 +9,9 @@ import ultimategdbot.discordevents.DiscordEvents;
 import ultimategdbot.gdevents.dispatcher.GDEventDispatcher;
 import ultimategdbot.gdevents.listeners.AwardedLevelListeners;
 import ultimategdbot.gdevents.listeners.GDModeratorsListeners;
+import ultimategdbot.gdevents.listeners.TimelyLevelListeners;
 import ultimategdbot.loops.LoopRequestNewAwardedLevels;
+import ultimategdbot.loops.LoopRequestNewTimelyLevels;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.KillableThreadManager;
 
@@ -66,6 +68,7 @@ public class Main {
 		// Registering Geometry Dash events
 		GD_EVENT_DISPATCHER.addAllListeners(AwardedLevelListeners.getListeners());
 		GD_EVENT_DISPATCHER.addAllListeners(GDModeratorsListeners.getListeners());
+		GD_EVENT_DISPATCHER.addAllListeners(TimelyLevelListeners.getListeners());
 		
 		// Let's start!
 		DISCORD_ENV.client.login();
@@ -79,6 +82,7 @@ public class Main {
 		
 		// Registering other threads
 		THREADS.addThread("loop_newawarded", new LoopRequestNewAwardedLevels());
+		THREADS.addThread("loop_timely", new LoopRequestNewTimelyLevels());
 		THREADS.addThread("fetch_hierarchy_info", (thread) -> {
 			while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {}
 			

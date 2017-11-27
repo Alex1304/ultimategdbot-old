@@ -50,8 +50,14 @@ CREATE TABLE `gd_level` (
 
 CREATE TABLE `guild_settings` (
   `guild_id` bigint(20) NOT NULL,
-  `gdevent_awarded_subscriber_roleid` bigint(20) NOT NULL,
-  `gdevent_awarded_subscriber_channelid` bigint(20) NOT NULL
+  `role_awarded_levels` bigint(20) NOT NULL DEFAULT '0',
+  `channel_awarded_levels` bigint(20) NOT NULL DEFAULT '0',
+  `role_gd_moderators` bigint(20) NOT NULL DEFAULT '0',
+  `channel_gd_moderators` bigint(20) NOT NULL DEFAULT '0',
+  `channel_bot_announcements` bigint(20) NOT NULL DEFAULT '0',
+  `tag_everyone_on_bot_announcement` tinyint(1) NOT NULL DEFAULT '0',
+  `channel_timely_levels` bigint(20) NOT NULL DEFAULT '0',
+  `role_timely_levels` bigint(20) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -73,6 +79,14 @@ CREATE TABLE `user_settings` (
 
 CREATE TABLE `gd_mod_list` (
   `account_id` int(11) NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Structure de la table `timely_level`
+--
+
+CREATE TABLE `timely_level` (
+  `id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -102,6 +116,12 @@ ALTER TABLE `user_settings`
 --
 ALTER TABLE `gd_mod_list`
   ADD PRIMARY KEY (`account_id`);
+
+--
+-- Index pour la table `timely_level`
+--
+ALTER TABLE `timely_level`
+  ADD PRIMARY KEY (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

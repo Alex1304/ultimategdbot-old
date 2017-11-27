@@ -14,6 +14,8 @@ public abstract class GuildSettingNames {
 		SETTING_NAMES.put(new RoleAwardedLevelsSetting(null, null).toString(), RoleAwardedLevelsSetting.class);
 		SETTING_NAMES.put(new RoleGdModeratorsSetting(null, null).toString(), RoleGdModeratorsSetting.class);
 		SETTING_NAMES.put(new TagEveryoneOnBotAnnouncementSetting(null, null).toString(), TagEveryoneOnBotAnnouncementSetting.class);
+		SETTING_NAMES.put(new ChannelTimelyLevelsSetting(null, null).toString(), ChannelTimelyLevelsSetting.class);
+		SETTING_NAMES.put(new RoleTimelyLevelsSetting(null, null).toString(), RoleTimelyLevelsSetting.class);
 	}
 	
 	public static Class<? extends GuildSetting<?>> get(String name) {

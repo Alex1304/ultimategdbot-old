@@ -11,8 +11,10 @@ import ultimategdbot.app.Main;
 import ultimategdbot.guildsettings.ChannelAwardedLevelsSetting;
 import ultimategdbot.guildsettings.ChannelBotAnnouncementsSetting;
 import ultimategdbot.guildsettings.ChannelGdModeratorsSetting;
+import ultimategdbot.guildsettings.ChannelTimelyLevelsSetting;
 import ultimategdbot.guildsettings.RoleAwardedLevelsSetting;
 import ultimategdbot.guildsettings.RoleGdModeratorsSetting;
+import ultimategdbot.guildsettings.RoleTimelyLevelsSetting;
 import ultimategdbot.guildsettings.TagEveryoneOnBotAnnouncementSetting;
 import ultimategdbot.net.database.DatabaseConnection;
 import ultimategdbot.net.database.entities.GuildSettings;
@@ -23,7 +25,7 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 	public boolean insert(GuildSettings obj) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
-					"INSERT INTO guild_settings VALUES (?, ?, ?, ?, ?, ?, ?)");
+					"INSERT INTO guild_settings VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			
 			ps.setLong(1, obj.getGuild().getLongID());
 			ps.setLong(2, obj.getLongIDForIDLinkedObjectSetting(RoleAwardedLevelsSetting.class));
@@ -32,6 +34,8 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 			ps.setLong(5, obj.getLongIDForIDLinkedObjectSetting(ChannelGdModeratorsSetting.class));
 			ps.setLong(6, obj.getLongIDForIDLinkedObjectSetting(ChannelBotAnnouncementsSetting.class));
 			ps.setBoolean(7, obj.getSetting(TagEveryoneOnBotAnnouncementSetting.class).getValue());
+			ps.setLong(8, obj.getLongIDForIDLinkedObjectSetting(ChannelTimelyLevelsSetting.class));
+			ps.setLong(9, obj.getLongIDForIDLinkedObjectSetting(RoleTimelyLevelsSetting.class));
 			return ps.execute();
 			
 		} catch (SQLException e) {
@@ -47,14 +51,17 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 					"UPDATE guild_settings SET channel_awarded_levels = ?"
 					+ ", channel_gd_moderators = ?, channel_bot_announcements = ?"
 					+ ", role_awarded_levels = ?, role_gd_moderators = ?"
-					+ ", tag_everyone_on_bot_announcement = ? WHERE guild_id = ?");
+					+ ", tag_everyone_on_bot_announcement = ?, channel_timely_levels = ?"
+					+ ", role_timely_levels = ? WHERE guild_id = ?");
 			ps.setLong(1, obj.getLongIDForIDLinkedObjectSetting(ChannelAwardedLevelsSetting.class));
 			ps.setLong(2, obj.getLongIDForIDLinkedObjectSetting(ChannelGdModeratorsSetting.class));
 			ps.setLong(3, obj.getLongIDForIDLinkedObjectSetting(ChannelBotAnnouncementsSetting.class));
 			ps.setLong(4, obj.getLongIDForIDLinkedObjectSetting(RoleAwardedLevelsSetting.class));
 			ps.setLong(5, obj.getLongIDForIDLinkedObjectSetting(RoleGdModeratorsSetting.class));
 			ps.setBoolean(6, obj.getSetting(TagEveryoneOnBotAnnouncementSetting.class).getValue());
-			ps.setLong(7, obj.getGuild().getLongID());
+			ps.setLong(7, obj.getLongIDForIDLinkedObjectSetting(ChannelTimelyLevelsSetting.class));
+			ps.setLong(8, obj.getLongIDForIDLinkedObjectSetting(RoleTimelyLevelsSetting.class));
+			ps.setLong(9, obj.getGuild().getLongID());
 			return ps.execute();
 			
 		} catch (SQLException e) {
@@ -94,7 +101,9 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 						guild.getChannelByID(result.getLong("channel_bot_announcements")),
 						guild.getRoleByID(result.getLong("role_awarded_levels")),
 						guild.getRoleByID(result.getLong("role_gd_moderators")),
-						result.getBoolean("tag_everyone_on_bot_announcement"));
+						result.getBoolean("tag_everyone_on_bot_announcement"),
+						guild.getChannelByID(result.getLong("channel_timely_levels")),
+						guild.getRoleByID(result.getLong("role_timely_levels")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -118,7 +127,9 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 						guild.getChannelByID(result.getLong("channel_bot_announcements")),
 						guild.getRoleByID(result.getLong("role_awarded_levels")),
 						guild.getRoleByID(result.getLong("role_gd_moderators")),
-						result.getBoolean("tag_everyone_on_bot_announcement")));
+						result.getBoolean("tag_everyone_on_bot_announcement"),
+						guild.getChannelByID(result.getLong("channel_timely_levels")),
+						guild.getRoleByID(result.getLong("role_timely_levels"))));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -33,6 +33,7 @@ import ultimategdbot.commands.impl.ServerCountCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.commands.impl.ShutdownCommand;
 import ultimategdbot.commands.impl.UpdateModListCommand;
+import ultimategdbot.commands.impl.WeeklyCommand;
 import ultimategdbot.util.BotRoles;
 
 /**
@@ -76,7 +77,6 @@ public class DiscordCommandHandler {
 		registerCommand(new ModListCommand(EnumSet.of(BotRoles.SERVER_ADMIN)));
 		
 		// Beta-testers commands
-		registerCommand(new DailyCommand(EnumSet.of(BotRoles.BETA_TESTER)));
 		
 		// Public commands
 		registerCommand(new PingCommand(EnumSet.of(BotRoles.USER)));
@@ -90,6 +90,8 @@ public class DiscordCommandHandler {
 		registerCommand(new ServerCountCommand(EnumSet.of(BotRoles.USER)));
 		registerCommand(new ModListCommand(EnumSet.of(BotRoles.USER)));
 		registerCommand(new CheckModCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new DailyCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new WeeklyCommand(EnumSet.of(BotRoles.USER)));
 	}
 	
 	private void registerCommand(CoreCommand cmd) {
