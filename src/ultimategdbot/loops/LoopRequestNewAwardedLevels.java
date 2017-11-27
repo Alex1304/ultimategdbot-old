@@ -2,6 +2,7 @@ package ultimategdbot.loops;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ultimategdbot.app.Main;
@@ -71,6 +72,8 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 							newAwardedLevels.add(awardedLevels.get(i));
 							i++;
 						}
+						
+						Collections.reverse(newAwardedLevels);
 						
 						List<GDLevel> levelsAlreadyInDB = gdldao.findAll();
 						newAwardedLevels.removeIf(level -> levelsAlreadyInDB.contains(level));
