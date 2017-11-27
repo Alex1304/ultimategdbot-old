@@ -28,7 +28,8 @@ public class DiscordEvents {
 	public void onGuildLeft(GuildLeaveEvent event) {
 		GuildSettingsDAO gsdao = new GuildSettingsDAO();
 		GuildSettings gs = gsdao.find(event.getGuild().getLongID());
-		gsdao.delete(gs);
+		if (gs != null)
+			gsdao.delete(gs);
 		System.out.println("Guild left");
 	}
 

@@ -92,8 +92,6 @@ public abstract class GDLevelFactory {
 				Length.values()[Integer.parseInt(structuredLvlInfo.get(15))]
 			);
 		} catch (NullPointerException|IllegalArgumentException e) {
-			System.err.println(rawData);
-			e.printStackTrace();
 			throw new RawDataMalformedException();
 		}
 	}
