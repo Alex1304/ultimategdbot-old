@@ -29,6 +29,7 @@ public class InviteCommand extends CoreCommand {
 		
 		bib.withPermissions(EnumSet.of(
 				Permissions.SEND_MESSAGES,
+				Permissions.EMBED_LINKS,
 				Permissions.READ_MESSAGE_HISTORY,
 				Permissions.MANAGE_SERVER,
 				Permissions.MENTION_EVERYONE,

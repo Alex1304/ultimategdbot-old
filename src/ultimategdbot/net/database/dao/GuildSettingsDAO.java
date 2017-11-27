@@ -72,10 +72,14 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 
 	@Override
 	public boolean delete(GuildSettings obj) {
+		return deleteByID(obj.getGuild().getLongID());
+	}
+	
+	public boolean deleteByID(long id) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
 					"DELETE FROM guild_settings WHERE guild_id = ?");
-			ps.setLong(1, obj.getGuild().getLongID());
+			ps.setLong(1, id);
 			return ps.execute();
 			
 		} catch (SQLException e) {
@@ -95,15 +99,18 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 			ResultSet result = ps.executeQuery();
 			if (result.first()) {
 				IGuild guild = Main.DISCORD_ENV.getClient().getGuildByID(id);
-				gs = new GuildSettings(guild,
-						guild.getChannelByID(result.getLong("channel_awarded_levels")),
-						guild.getChannelByID(result.getLong("channel_gd_moderators")),
-						guild.getChannelByID(result.getLong("channel_bot_announcements")),
-						guild.getRoleByID(result.getLong("role_awarded_levels")),
-						guild.getRoleByID(result.getLong("role_gd_moderators")),
-						result.getBoolean("tag_everyone_on_bot_announcement"),
-						guild.getChannelByID(result.getLong("channel_timely_levels")),
-						guild.getRoleByID(result.getLong("role_timely_levels")));
+				if (guild == null)
+					deleteByID(id);
+				else
+					gs = new GuildSettings(guild,
+							guild.getChannelByID(result.getLong("channel_awarded_levels")),
+							guild.getChannelByID(result.getLong("channel_gd_moderators")),
+							guild.getChannelByID(result.getLong("channel_bot_announcements")),
+							guild.getRoleByID(result.getLong("role_awarded_levels")),
+							guild.getRoleByID(result.getLong("role_gd_moderators")),
+							result.getBoolean("tag_everyone_on_bot_announcement"),
+							guild.getChannelByID(result.getLong("channel_timely_levels")),
+							guild.getRoleByID(result.getLong("role_timely_levels")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -121,15 +128,18 @@ public class GuildSettingsDAO implements DAO<GuildSettings> {
 					.createStatement().executeQuery("SELECT * FROM guild_settings");
 			while (result.next()) {
 				IGuild guild = Main.DISCORD_ENV.getClient().getGuildByID(result.getLong("guild_id"));
-				gsList.add(new GuildSettings(guild,
-						guild.getChannelByID(result.getLong("channel_awarded_levels")),
-						guild.getChannelByID(result.getLong("channel_gd_moderators")),
-						guild.getChannelByID(result.getLong("channel_bot_announcements")),
-						guild.getRoleByID(result.getLong("role_awarded_levels")),
-						guild.getRoleByID(result.getLong("role_gd_moderators")),
-						result.getBoolean("tag_everyone_on_bot_announcement"),
-						guild.getChannelByID(result.getLong("channel_timely_levels")),
-						guild.getRoleByID(result.getLong("role_timely_levels"))));
+				if (guild == null)
+					deleteByID(result.getLong("guild_id"));
+				else
+					gsList.add(new GuildSettings(guild,
+							guild.getChannelByID(result.getLong("channel_awarded_levels")),
+							guild.getChannelByID(result.getLong("channel_gd_moderators")),
+							guild.getChannelByID(result.getLong("channel_bot_announcements")),
+							guild.getRoleByID(result.getLong("role_awarded_levels")),
+							guild.getRoleByID(result.getLong("role_gd_moderators")),
+							result.getBoolean("tag_everyone_on_bot_announcement"),
+							guild.getChannelByID(result.getLong("channel_timely_levels")),
+							guild.getRoleByID(result.getLong("role_timely_levels"))));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
