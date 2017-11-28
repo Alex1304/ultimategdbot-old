@@ -5,6 +5,15 @@ import java.util.List;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.exceptions.CommandFailedException;
 
+/**
+ * This overlay ensures that only one instance of the command is running at once.
+ * If someone attempts to execute this command while someone else is already running
+ * it, a CommandFailedException will be thrown and same will happen for everyone else
+ * until the command is not running anymore.
+ * 
+ * @author Alex1304
+ *
+ */
 public class SingleRunningCommand extends EmbeddedCoreCommand {
 	
 	private boolean running = false;

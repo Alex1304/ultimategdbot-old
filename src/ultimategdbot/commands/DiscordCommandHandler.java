@@ -12,7 +12,6 @@ import java.util.Map;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.app.Main;
-import ultimategdbot.app.PlayingCommand;
 import ultimategdbot.commands.impl.AccountCommand;
 import ultimategdbot.commands.impl.AnnouncementCommand;
 import ultimategdbot.commands.impl.BotMessageCommand;
@@ -27,6 +26,7 @@ import ultimategdbot.commands.impl.KillCommand;
 import ultimategdbot.commands.impl.LevelCommand;
 import ultimategdbot.commands.impl.ModListCommand;
 import ultimategdbot.commands.impl.PingCommand;
+import ultimategdbot.commands.impl.PlayingCommand;
 import ultimategdbot.commands.impl.ProfileCommand;
 import ultimategdbot.commands.impl.RestartCommand;
 import ultimategdbot.commands.impl.ServerCountCommand;
@@ -37,7 +37,9 @@ import ultimategdbot.commands.impl.WeeklyCommand;
 import ultimategdbot.util.BotRoles;
 
 /**
- * Bot commands are handled here, using the Discord API based on events
+ * Bot commands are handled here, using the Discord API based on events.
+ * When a message received event is dispatched, it will trigger a command if
+ * the text matches with a command name.
  * 
  * @author Alex1304
  *
@@ -50,7 +52,7 @@ public class DiscordCommandHandler {
 	public static final Map<String, CoreCommand> COMMAND_MAP = new HashMap<>();
 
 	/**
-	 * Constructor
+	 * Constructor. Loads the command map.
 	 */
 	public DiscordCommandHandler() {
 		loadCommandMap();
@@ -94,14 +96,19 @@ public class DiscordCommandHandler {
 		registerCommand(new WeeklyCommand(EnumSet.of(BotRoles.USER)));
 	}
 	
+	/**
+	 * Puts a command into the map, associated by name
+	 * @param cmd
+	 */
 	private void registerCommand(CoreCommand cmd) {
 		COMMAND_MAP.put(cmd.getName(), cmd);
 	}
 
 	/**
-	 * Handles messages sent in the guild and execute commands
+	 * Handles messages sent in the guild and launches a command thread
+	 * if the text matches with command prefix + name.
 	 * 
-	 * @param event
+	 * @param event - MessageReceivedEvent dispatched by Discord
 	 */
 	@EventSubscriber
 	public void onMessageReceived(MessageReceivedEvent event) {
@@ -123,6 +130,13 @@ public class DiscordCommandHandler {
 		Main.THREADS.startIfNew(generateThreadName(event));
 	}
 	
+	/**
+	 * Generates the command thread name and makes it so the generated name is unique.
+	 * It mainly uses the message and channel snowflake IDs to perform that.
+	 * 
+	 * @param event - Discord message received event
+	 * @return the generated name
+	 */
 	public static String generateThreadName(MessageReceivedEvent event) {
 		return "command_m" + event.getMessageID() + "_c" + event.getChannel().getLongID()
 		+ "_a" + event.getAuthor().getLongID();

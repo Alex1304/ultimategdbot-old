@@ -16,7 +16,7 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.KillableThreadManager;
 
 /**
- * Main class of the program Contains everything required for the bot to work
+ * Main class of the program. Contains everything required for the bot to work
  * 
  * @author Alex1304
  *
@@ -28,11 +28,29 @@ public class Main {
 	 */
 	public static final String CMD_PREFIX = "u!";
 	
+	/**
+	 * Whether the bot is running in a test environment
+	 */
 	private static boolean testEnv = false;
 	
+	/**
+	 * Object containing Discord environment info (client, main guild, etc)
+	 */
 	public static final DiscordEnvironment DISCORD_ENV = new DiscordEnvironment();
+	
+	/**
+	 * Customized thread management to have control over all threads running in the program.
+	 */
 	public static final KillableThreadManager THREADS = new KillableThreadManager();
+	
+	/**
+	 * Dispatcher for Geometry Dash specific events.
+	 */
 	public static final GDEventDispatcher GD_EVENT_DISPATCHER = new GDEventDispatcher();
+	
+	/**
+	 * Permanent Discord invite link to the official bot development server.
+	 */
 	public static final String BETA_TESTERS_GUILD_INVITE_LINK = "https://discord.gg/VpVdKvg";
 
 	public static void main(String[] args) {
@@ -40,10 +58,10 @@ public class Main {
 	}
 
 	/**
-	 * Starts the program Creates the client, registers events and then logs in
+	 * Starts the program. Creates the client, registers events and then logs in
 	 * the client.
 	 * 
-	 * @param test - Tells whether you are running in test environment
+	 * @param test - Tells whether the bot should be running in test environment
 	 */
 	public static void launch(boolean test) {
 		if (!AppParams.checkEnvVariables()) {
@@ -74,6 +92,9 @@ public class Main {
 		DISCORD_ENV.client.login();
 	}
 	
+	/**
+	 * Loads and starts the main threads of the bot
+	 */
 	private static void registerThreads() {
 		// Registering threads that are ONLY supposed to run in test environment
 		if (isTestEnvironment()) {
