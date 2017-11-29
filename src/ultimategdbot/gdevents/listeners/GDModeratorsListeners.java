@@ -19,8 +19,18 @@ import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.GDUtils;
 
+/**
+ * Utility class to manage event listeners related to GD Moderators.
+ * 
+ * @author Alex1304
+ *
+ */
 public abstract class GDModeratorsListeners {
 
+	/**
+	 * Builds a list of listeners and returns it
+	 * @return a list of GD event listeners.
+	 */
 	public static List<GDEventHandler<? extends GDEvent>> getListeners() {
 		List<GDEventHandler<? extends GDEvent>> listeners = new ArrayList<>();
 		
@@ -37,6 +47,17 @@ public abstract class GDModeratorsListeners {
 		return listeners;
 	}
 	
+	/**
+	 * Sends a message to all guilds in the channel specified in the "channel
+	 * gd moderators" guild setting.
+	 * 
+	 * @param message
+	 *            - the message to send
+	 * @param level
+	 *            - the newly awarded level it's supposed to announce
+	 * @param levelEmbed
+	 *            - the embed containing level info
+	 */
 	private static void notifySubscribers(String message, GDUser user, EmbedObject embed) {
 		List<GuildSettings> guilds = new GuildSettingsDAO().findAll();
 		
@@ -60,10 +81,22 @@ public abstract class GDModeratorsListeners {
 		});
 	}
 	
+	/**
+	 * Constructs the announcement embed for the new moderator
+	 * 
+	 * @param user - the modded user
+	 * @return the embed that will be sent to guilds
+	 */
 	private static EmbedObject userModdedEmbed(GDUser user) {
 		return GDUtils.buildEmbedForGDUser("User modded!", "https://i.imgur.com/zY61GDD.png", user);
 	}
 	
+	/**
+	 * Constructs the announcement embed for the ex-moderator
+	 * 
+	 * @param user - the unmodded user
+	 * @return the embed that will be sent to guilds
+	 */
 	private static EmbedObject userUnmoddedEmbed(GDUser user) {
 		return GDUtils.buildEmbedForGDUser("User unmodded...", "https://i.imgur.com/X53HV7d.png", user);
 	}

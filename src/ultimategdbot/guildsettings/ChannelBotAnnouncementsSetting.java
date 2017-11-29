@@ -4,6 +4,12 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import ultimategdbot.util.AppTools;
 
+/**
+ * The channel where the bot is supposed to send important announcements from the dev
+ * 
+ * @author Alex1304
+ *
+ */
 public class ChannelBotAnnouncementsSetting extends ChannelSetting {
 
 	public ChannelBotAnnouncementsSetting(IGuild guild, IChannel value) {

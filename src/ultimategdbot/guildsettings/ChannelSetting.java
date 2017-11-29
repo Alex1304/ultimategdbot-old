@@ -5,6 +5,12 @@ import sx.blah.discord.handle.obj.IGuild;
 import ultimategdbot.exceptions.InvalidValueException;
 import ultimategdbot.util.AppTools;
 
+/**
+ * Guild setting which value is a Discord channel
+ * 
+ * @author Alex1304
+ *
+ */
 public abstract class ChannelSetting extends GuildSetting<IChannel> {
 
 	public ChannelSetting(IGuild guild, String info, IChannel value) {

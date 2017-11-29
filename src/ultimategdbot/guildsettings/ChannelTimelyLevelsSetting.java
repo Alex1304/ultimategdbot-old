@@ -3,6 +3,13 @@ package ultimategdbot.guildsettings;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 
+/**
+ * The channel where the bot is supposed to announce new Daily levels and Weekly
+ * demons
+ * 
+ * @author Alex1304
+ *
+ */
 public class ChannelTimelyLevelsSetting extends ChannelSetting {
 
 	public ChannelTimelyLevelsSetting(IGuild guild, IChannel value) {

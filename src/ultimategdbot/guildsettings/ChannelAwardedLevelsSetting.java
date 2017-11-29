@@ -3,6 +3,12 @@ package ultimategdbot.guildsettings;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 
+/**
+ * The channel where the bot is supposed to announce new awarded levels
+ * 
+ * @author Alex1304
+ *
+ */
 public class ChannelAwardedLevelsSetting extends ChannelSetting {
 
 	public ChannelAwardedLevelsSetting(IGuild guild, IChannel value) {

@@ -26,6 +26,13 @@ import ultimategdbot.net.geometrydash.GDUserFactory;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.GDUtils;
 
+/**
+ * Utility class to manage event listeners related to Daily levels and Weekly
+ * demons.
+ * 
+ * @author Alex1304
+ *
+ */
 public abstract class TimelyLevelListeners {
 	
 	/**
@@ -48,6 +55,17 @@ public abstract class TimelyLevelListeners {
 		return listeners;
 	}
 	
+	/**
+	 * Sends a message to all guilds in the channel specified in the "channel
+	 * timely levels" guild setting.
+	 * 
+	 * @param message
+	 *            - the message to send
+	 * @param level
+	 *            - the newly awarded level it's supposed to announce
+	 * @param levelEmbed
+	 *            - the embed containing level info
+	 */
 	private static void notifySubscribers(String message, GDLevel level, EmbedObject levelEmbed, boolean daily) {
 		List<GuildSettings> gsList = new GuildSettingsDAO().findAll();
 

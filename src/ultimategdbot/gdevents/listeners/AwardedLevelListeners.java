@@ -76,6 +76,17 @@ public abstract class AwardedLevelListeners {
 		return listeners;
 	}
 	
+	/**
+	 * Sends a message to all guilds in the channel specified in the "channel
+	 * awarded levels" guild setting.
+	 * 
+	 * @param message
+	 *            - the message to send
+	 * @param level
+	 *            - the newly awarded level it's supposed to announce
+	 * @param levelEmbed
+	 *            - the embed containing level info
+	 */
 	private static void notifySubscribers(String message, GDLevel level, EmbedObject levelEmbed) {
 		List<GuildSettings> gsList = new GuildSettingsDAO().findAll();
 		notifMessageOfLastAwardedForEachGuild.clear();
@@ -116,10 +127,22 @@ public abstract class AwardedLevelListeners {
 		}
 	}
 	
+	/**
+	 * Constructs the announcement embed for the new awarded level
+	 * 
+	 * @param level - the new awarded level
+	 * @return the embed that will be sent to guilds
+	 */
 	private static EmbedObject newAwardedLevelEmbed(GDLevel level) {
 		return GDUtils.buildEmbedForGDLevel("New rated level!", "https://i.imgur.com/asoMj1W.png", level);
 	}
 	
+	/**
+	 * Constructs the announcement embed for the unrated level
+	 * 
+	 * @param level - the unrated level
+	 * @return the embed that will be sent to guilds
+	 */
 	private static EmbedObject unratedLevelEmbed(GDLevel level) {
 		return GDUtils.buildEmbedForGDLevel("Level unrated...", "https://i.imgur.com/fPECXUz.png", level);
 	}

@@ -3,6 +3,12 @@ package ultimategdbot.guildsettings;
 import sx.blah.discord.handle.obj.IGuild;
 import ultimategdbot.exceptions.InvalidValueException;
 
+/**
+ * Guild setting which value is a boolean.
+ * 
+ * @author Alex1304
+ *
+ */
 public abstract class BooleanSetting extends GuildSetting<Boolean> {
 
 	public BooleanSetting(IGuild guild, String info, Boolean value) {

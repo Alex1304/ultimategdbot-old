@@ -3,6 +3,13 @@ package ultimategdbot.exceptions;
 import ultimategdbot.app.Main;
 import ultimategdbot.guildsettings.GuildSetting;
 
+/**
+ * Extension of {@link CommandFailedException}, it's thrown when the command
+ * depends on one or several guild settings that are not yet provided.
+ * 
+ * @author Alex1304
+ *
+ */
 public class SettingsNotProvidedException extends CommandFailedException {
 	
 	private static final long serialVersionUID = 8691754542478563040L;

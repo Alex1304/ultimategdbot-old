@@ -3,6 +3,15 @@ package ultimategdbot.guildsettings;
 import sx.blah.discord.handle.obj.IGuild;
 import ultimategdbot.exceptions.InvalidValueException;
 
+/**
+ * Represents one setting in the guild settings. It associates a value and is
+ * attached to one guild.
+ * 
+ * @author Alex1304
+ *
+ * @param <T>
+ *            - The type of the value
+ */
 public abstract class GuildSetting<T> {
 	
 	protected String info;
