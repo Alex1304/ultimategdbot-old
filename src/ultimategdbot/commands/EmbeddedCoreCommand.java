@@ -2,6 +2,15 @@ package ultimategdbot.commands;
 
 import java.util.Map;
 
+/**
+ * Adds extra verifications to the command before running it.
+ * More generally used to perform a certain action before, after, 
+ * or instead of the action that the original command was supposed to
+ * perform.
+ * 
+ * @author Alex1304
+ *
+ */
 public abstract class EmbeddedCoreCommand extends CoreCommand {
 	
 	protected CoreCommand cmd;

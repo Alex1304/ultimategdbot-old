@@ -1,4 +1,4 @@
-package ultimategdbot.app;
+package ultimategdbot.commands.impl;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -6,14 +6,21 @@ import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.RequestBuffer;
+import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Command that allows the user to edit the Playing status of the bot.
+ * 
+ * @author Alex1304
+ *
+ */
 public class PlayingCommand extends CoreCommand {
-
+	
 	public PlayingCommand(EnumSet<BotRoles> rolesRequired) {
 		super("playing", rolesRequired);
 	}

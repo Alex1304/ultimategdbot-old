@@ -7,6 +7,13 @@ import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.net.database.dao.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 
+/**
+ * Will run the command only if the user has a Geometry Dash account linked.
+ * Will throw a CommandFailedException if it isn't the case.
+ * 
+ * @author Alex1304
+ *
+ */
 public class GDAccountLinkedRequiredCommand extends EmbeddedCoreCommand {
 
 	public GDAccountLinkedRequiredCommand(CoreCommand cmd) {

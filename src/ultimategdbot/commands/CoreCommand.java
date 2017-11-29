@@ -6,6 +6,8 @@ import ultimategdbot.util.BotRoles;
 
 /**
  * Core commands are commands directly triggered by users, generally using a prefix.
+ * Those commands are supposed to show up in the help menu, and don't have any
+ * parent command.
  * 
  * @author Alex1304
  *
@@ -42,7 +44,7 @@ public abstract class CoreCommand extends AbstractCommand {
 	public abstract String[] getExamples();
 	
 	/**
-	 * Get {@link CoreCommand} name
+	 * Get the name of the command
 	 * 
 	 * @return String name
 	 */
@@ -51,9 +53,9 @@ public abstract class CoreCommand extends AbstractCommand {
 	}
 	
 	/**
-	 * Get {@link EnumSet} rolesRequired
+	 * Gets the {@link EnumSet} of roles required to run this command
 	 * 
-	 * @return EnumSet<BotRoles> the roles required to execute this command
+	 * @return EnumSet<BotRoles> the roles required
 	 */
 	public EnumSet<BotRoles> getRolesRequired() {
 		return rolesRequired;

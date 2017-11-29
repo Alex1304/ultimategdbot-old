@@ -13,6 +13,15 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.KillableThread;
 
+/**
+ * Every command launched are executed in a separate thread.
+ * The implementation of {@link KillableThread} will permit to
+ * interrupt the process of the command at anytime, if the command
+ * implementation regularly checks for the killed state of the thread.
+ * 
+ * @author Alex1304
+ *
+ */
 public class CommandThread extends KillableThread {
 	
 	private MessageReceivedEvent event;
@@ -25,6 +34,11 @@ public class CommandThread extends KillableThread {
 		this.cmdName = cmdName;
 	}
 	
+	/**
+	 * At the initialization of the command thread, it will check if the user who launched
+	 * the command has the correct permissions to execute it before actually launching it.
+	 * All exceptions thrown during command runtime are ultimately catched here.
+	 */
 	@Override
 	public void run(KillableThread thisThread) throws ThreadKilledException {
 

@@ -5,6 +5,13 @@ import java.util.List;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.exceptions.CommandFailedException;
 
+/**
+ * Checks if the command is executed in Discord private messages before running the command.
+ * Will throw a CommandFailedException if it isn't the case.
+ * 
+ * @author Alex1304
+ *
+ */
 public class DMOnlyCommand extends EmbeddedCoreCommand {
 
 	public DMOnlyCommand(CoreCommand cmd) {

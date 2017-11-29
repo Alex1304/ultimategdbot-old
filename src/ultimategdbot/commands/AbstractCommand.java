@@ -6,12 +6,23 @@ import java.util.Map;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.exceptions.CommandFailedException;
 
+/**
+ * Basic implementation of the Command interface. Simple commands could simply extend this class?
+ * 
+ * @author Alex1304
+ *
+ */
 public abstract class AbstractCommand implements Command {
 	
+	/**
+	 * Map of sub-commands, associated with their alias
+	 */
 	private Map<String, Command> subCommandMap;
 	
+	/**
+	 * Initializes the map of sub-commands.
+	 */
 	public AbstractCommand() {
-		super();
 		this.subCommandMap = initSubCommandMap();
 	}
 	
@@ -35,7 +46,12 @@ public abstract class AbstractCommand implements Command {
 		else
 			return false;
 	}
-
+	
+	/**
+	 * Setter for subCommandMap
+	 * 
+	 * @param subCommandMap
+	 */
 	public void setSubCommandMap(Map<String, Command> subCommandMap) {
 		if (subCommandMap == null)
 			this.subCommandMap = subCommandMap;
