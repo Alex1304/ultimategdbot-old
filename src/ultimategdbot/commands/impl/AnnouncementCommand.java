@@ -16,6 +16,13 @@ import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Allows the user to send an announcement message to all guilds, in the channel specified in
+ * the guild settings. Should be administrator only.
+ * 
+ * @author Alex1304
+ *
+ */
 public class AnnouncementCommand extends CoreCommand {
 
 	public AnnouncementCommand(EnumSet<BotRoles> rolesRequired) {

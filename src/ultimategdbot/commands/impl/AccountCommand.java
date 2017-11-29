@@ -16,6 +16,12 @@ import ultimategdbot.commands.impl.subcommands.UnlinkAccountSubCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Command that allows the user to link / unlink his Geometry Dash account
+ * 
+ * @author Alex1304
+ *
+ */
 public class AccountCommand extends CoreCommand {
 
 	public AccountCommand(EnumSet<BotRoles> rolesRequired) {

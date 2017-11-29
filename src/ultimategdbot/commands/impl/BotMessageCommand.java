@@ -17,6 +17,12 @@ import ultimategdbot.net.geometrydash.GDUserFactory;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * This command allows the user to send a message using the bot through the private messaging system in Geometry Dash.
+ * 
+ * @author amiranda
+ *
+ */
 public class BotMessageCommand extends CoreCommand {
 
 	public BotMessageCommand(EnumSet<BotRoles> rolesRequired) {

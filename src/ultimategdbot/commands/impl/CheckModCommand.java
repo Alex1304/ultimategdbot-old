@@ -24,6 +24,14 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.Emoji;
 
+/**
+ * Allows the user to check Moderator access for a specific Geometry Dash account.
+ * The command can be run without arguments if the user is linked to a GD accout ;
+ * it will then check mod access for the GD account he is linked to.
+ * 
+ * @author Alex1304
+ *
+ */
 public class CheckModCommand extends CoreCommand {
 
 	public CheckModCommand(EnumSet<BotRoles> rolesRequired) {
