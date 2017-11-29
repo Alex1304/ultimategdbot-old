@@ -16,6 +16,12 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.GDUtils;
 
+/**
+ * Displays the current Daily level on Geometry Dash
+ * 
+ * @author Alex1304
+ *
+ */
 public class DailyCommand extends CoreCommand {
 
 	public DailyCommand(EnumSet<BotRoles> rolesRequired) {

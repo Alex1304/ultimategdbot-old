@@ -15,6 +15,14 @@ import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Fetches the full list of Geometry Dash moderators from the local database and
+ * sends it in the user's private messages. Server administrators can display the
+ * list directly in chat by prefixing the command name with "public".
+ * 
+ * @author Alex1304
+ *
+ */
 public class ModListCommand extends CoreCommand {
 
 	public ModListCommand(EnumSet<BotRoles> rolesRequired) {

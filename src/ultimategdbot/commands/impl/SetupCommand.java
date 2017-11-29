@@ -22,6 +22,14 @@ import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Allows server administrators to configure the bot in the server.
+ * Notification channels, event subscriber roles, and other settings
+ * can be edited using this command.
+ * 
+ * @author Alex1304
+ *
+ */
 public class SetupCommand extends CoreCommand {
 	
 	public SetupCommand(EnumSet<BotRoles> rolesRequired) {

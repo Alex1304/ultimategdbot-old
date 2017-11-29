@@ -20,6 +20,16 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.GDUtils;
 
+/**
+ * Allows the user to view the profile of any user in Geometry Dash.
+ * If the user has a Geometry Dash account linked, he can run this command
+ * without arguments to display his own profile.
+ * GD user profiles contains info about stars, demons, coins, diamonds, creator points,
+ * global rank, and other detailed in-game user data.
+ * 
+ * @author Alex1304
+ *
+ */
 public class ProfileCommand extends CoreCommand {
 
 	public ProfileCommand(EnumSet<BotRoles> rolesRequired) {

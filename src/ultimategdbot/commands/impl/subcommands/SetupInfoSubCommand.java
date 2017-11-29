@@ -14,6 +14,12 @@ import ultimategdbot.guildsettings.GuildSettingNames;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 
+/**
+ * Displays the info for a specific setting in bot server setup
+ * 
+ * @author Alex1304
+ *
+ */
 public class SetupInfoSubCommand extends SubCommand<SetupCommand> {
 
 	public SetupInfoSubCommand(SetupCommand parentCommand) {

@@ -12,6 +12,12 @@ import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Displays the total amount of guilds the bot is operating on.
+ * 
+ * @author Alex1304
+ *
+ */
 public class ServerCountCommand extends CoreCommand {
 
 	public ServerCountCommand(EnumSet<BotRoles> rolesRequired) {

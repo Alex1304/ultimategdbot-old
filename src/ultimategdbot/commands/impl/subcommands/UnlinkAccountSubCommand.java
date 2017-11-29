@@ -13,6 +13,14 @@ import ultimategdbot.net.database.dao.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.util.AppTools;
 
+/**
+ * Allows the user to unlink his Geometry Dash account.
+ * Generates a short confirmation code sent directly in chat so the user
+ * can confirm his action
+ * 
+ * @author alexandre
+ *
+ */
 public class UnlinkAccountSubCommand extends SubCommand<AccountCommand> {
 	
 	private static final int UNLINK_CONFIRM_TOKEN_LENGTH = 5;

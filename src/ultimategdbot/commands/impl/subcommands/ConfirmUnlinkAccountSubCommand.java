@@ -13,6 +13,12 @@ import ultimategdbot.net.database.dao.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.util.AppTools;
 
+/**
+ * Confirms the unlink action with a code sent directly in chat
+ * 
+ * @author Alex1304
+ *
+ */
 public class ConfirmUnlinkAccountSubCommand extends SubCommand<AccountCommand> {
 
 	public ConfirmUnlinkAccountSubCommand(AccountCommand parentCommand) {

@@ -15,6 +15,12 @@ import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * This command is used to display help info for all commands registered in the app.
+ * 
+ * @author Alex1304
+ *
+ */
 public class HelpCommand extends CoreCommand {
 
 	public HelpCommand(EnumSet<BotRoles> rolesRequired) {

@@ -27,6 +27,9 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<excludes>
+						<exclude>src/tests/*</exclude>
+					</excludes>
 				</configuration>
 				<executions>
 					<execution>
@@ -60,6 +63,11 @@
 		    <groupId>mysql</groupId>
 		    <artifactId>mysql-connector-java</artifactId>
 		    <version>5.1.6</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-simple</artifactId>
+		    <version>1.7.25</version>
 		</dependency>
 	</dependencies>
 

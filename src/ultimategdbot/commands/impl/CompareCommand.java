@@ -19,6 +19,13 @@ import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Allows the user to compare the score of two featured levels in order to determine
+ * which one is higher placed in the Featured levels section of Geometry Dash.
+ * 
+ * @author Alex1304
+ *
+ */
 public class CompareCommand extends CoreCommand {
 
 	public CompareCommand(EnumSet<BotRoles> rolesRequired) {

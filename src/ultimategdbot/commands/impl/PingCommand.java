@@ -13,7 +13,8 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
 /**
- * Ping command
+ * Used to check if the bot is correctly responding to commands. Displays the bot response time in
+ * milliseconds.
  * 
  * @author Alex1304
  *

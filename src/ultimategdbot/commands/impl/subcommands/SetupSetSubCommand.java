@@ -16,6 +16,12 @@ import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 
+/**
+ * Assign an new value to a specific field in bot server setup
+ * 
+ * @author alexandre
+ *
+ */
 public class SetupSetSubCommand extends SubCommand<SetupCommand> {
 	
 	public SetupSetSubCommand(SetupCommand parentCommand) {

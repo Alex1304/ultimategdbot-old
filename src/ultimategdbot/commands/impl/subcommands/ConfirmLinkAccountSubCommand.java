@@ -17,6 +17,12 @@ import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.net.geometrydash.GDUserFactory;
 import ultimategdbot.util.AppTools;
 
+/**
+ * Confirms account linking using a confirmation code sent to the user's GD account.
+ * 
+ * @author Alex1304
+ *
+ */
 public class ConfirmLinkAccountSubCommand extends SubCommand<AccountCommand> {
 
 	public ConfirmLinkAccountSubCommand(AccountCommand parentCommand) {

@@ -16,6 +16,12 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.GDUtils;
 
+/**
+ * Displays the current Weekly demon on Geometry Dash
+ * 
+ * @author Alex1304
+ *
+ */
 public class WeeklyCommand extends CoreCommand {
 
 	public WeeklyCommand(EnumSet<BotRoles> rolesRequired) {

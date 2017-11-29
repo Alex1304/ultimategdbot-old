@@ -15,6 +15,12 @@ import ultimategdbot.net.database.dao.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 
+/**
+ * Allows to reset a specific setting field in bot server setup
+ * 
+ * @author alexandre
+ *
+ */
 public class SetupResetSubCommand extends SubCommand<SetupCommand> {
 
 	public SetupResetSubCommand(SetupCommand parentCommand) {

@@ -23,6 +23,20 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.ProgressMessage;
 
+/**
+ * This command will permit granted users to update the Geometry Dash
+ * moderator database. It scans through a specified range of accountIDs
+ * and checks for each of them whether the GD Moderator badge is present.
+ * It uses multiple threads to gain time and performance.
+ * If it's the case, then the user will show up in the result message and
+ * will be added to the database if not already. Same for the opposite : 
+ * if a user is present in the mod database but hasn't the mod badge in-game,
+ * he will be removed from the database. In both cases, a user mod/unmod GD event
+ * will be dispatched for each change made on the database.
+ * 
+ * @author Alex1304
+ *
+ */
 public class UpdateModListCommand extends CoreCommand {
 	
 	private static final int DEFAULT_THREAD_COUNT = 100;

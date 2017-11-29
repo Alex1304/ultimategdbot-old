@@ -11,6 +11,12 @@ import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Turns the bot off by terminating the whole process.
+ * 
+ * @author Alex1304
+ *
+ */
 public class ShutdownCommand extends CoreCommand {
 
 	public ShutdownCommand(EnumSet<BotRoles> rolesRequired) {

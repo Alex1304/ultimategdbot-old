@@ -18,6 +18,14 @@ import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.net.geometrydash.GDUserFactory;
 import ultimategdbot.util.AppTools;
 
+/**
+ * Generates a confirmation code and sends it to the requested GD user.
+ * The command will fail if it hasn't permissions to send private messages
+ * through GD to this user.
+ * 
+ * @author Alex1304
+ *
+ */
 public class LinkAccountSubCommand extends SubCommand<AccountCommand> {
 	
 	private static final String LINK_MESSAGE_SUBJECT = "Discord account link confirmation";

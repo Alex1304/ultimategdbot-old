@@ -15,6 +15,12 @@ import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Shows the bot invite link to the user.
+ * 
+ * @author Alex1304
+ *
+ */
 public class InviteCommand extends CoreCommand {
 
 	public InviteCommand(EnumSet<BotRoles> rolesRequired) {

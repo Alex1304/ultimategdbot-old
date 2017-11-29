@@ -14,6 +14,13 @@ import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * This command allows the user to interrupt the process of a long-running command,
+ * by invoking the kill method of the {@link KillableThread} associated with the command.
+ * 
+ * @author Alex1304
+ *
+ */
 public class KillCommand extends CoreCommand {
 
 	public KillCommand(EnumSet<BotRoles> rolesRequired) {

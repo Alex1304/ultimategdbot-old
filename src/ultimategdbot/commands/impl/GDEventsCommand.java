@@ -18,6 +18,13 @@ import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Allows the user to subscribe to any Geometry Dash events.
+ * The subscriber roles must be configured in the server previously.
+ * 
+ * @author Alex1304
+ *
+ */
 public class GDEventsCommand extends CoreCommand {
 
 	public GDEventsCommand(EnumSet<BotRoles> rolesRequired) {

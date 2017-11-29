@@ -17,6 +17,15 @@ import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.GDUtils;
 
+/**
+ * Allows the user to search for any level on Geometry Dash. It displays
+ * the name, the creator, the difficulty, the ID, the description, and
+ * other detailed information about the searched level. The command will
+ * display a proper error message if it failed to find the requested level.
+ * 
+ * @author Alex1304
+ *
+ */
 public class LevelCommand extends CoreCommand {
 
 	public LevelCommand(EnumSet<BotRoles> rolesRequired) {

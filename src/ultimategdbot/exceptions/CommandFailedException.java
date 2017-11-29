@@ -4,8 +4,14 @@ import ultimategdbot.app.Main;
 import ultimategdbot.commands.CoreCommand;
 
 /**
- * Exception thrown when someone is triggering a command which he is not allowed to use
- * (for example a random user trying to execute a superadmin-only command)
+ * Exception thrown when the command is unable to perform the desired action.
+ * Can be thrown in the following cases:
+ * <ul>
+ * <li>the user doesn't have the required permissions (for
+ * example a random user trying to execute a superadmin-only command)</li>
+ * <li>the arguments given to the command are invalid</li>
+ * <li>a problem occurs when trying to fetch the requested resource</li>
+ * </ul>
  * 
  * @author Alex1304
  *

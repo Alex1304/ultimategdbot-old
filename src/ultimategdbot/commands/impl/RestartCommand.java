@@ -11,6 +11,14 @@ import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 
+/**
+ * Command used to restart the bot.
+ * It will launch a new instance of the application using the original JAR file,
+ * and then it will kill the current process.
+ * 
+ * @author Alex1304
+ *
+ */
 public class RestartCommand extends CoreCommand {
 
 	public RestartCommand(EnumSet<BotRoles> rolesRequired) {
