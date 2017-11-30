@@ -14,8 +14,9 @@ import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.KillableThread;
 
 /**
+ * Every command are launched in a separate thread.
  * 
- * @author alexandre
+ * @author Alex1304
  *
  */
 public class CommandThread extends KillableThread {
