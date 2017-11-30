@@ -8,6 +8,12 @@ import java.util.List;
 
 import ultimategdbot.net.database.DatabaseConnection;
 
+/**
+ * DAO that manages timely levels by their IDs
+ * 
+ * @author Alex1304
+ *
+ */
 public class TimelyLevelDAO implements DAO<Long> {
 
 	@Override

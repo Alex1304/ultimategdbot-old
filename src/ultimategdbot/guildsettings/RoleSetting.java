@@ -5,6 +5,12 @@ import sx.blah.discord.handle.obj.IRole;
 import ultimategdbot.exceptions.InvalidValueException;
 import ultimategdbot.util.AppTools;
 
+/**
+ * Guild setting which value is a Discord role
+ * 
+ * @author Alex1304
+ *
+ */
 public abstract class RoleSetting extends GuildSetting<IRole> {
 
 	public RoleSetting(IGuild guild, String info, IRole value) {

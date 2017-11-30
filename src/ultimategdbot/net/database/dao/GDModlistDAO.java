@@ -13,6 +13,12 @@ import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.net.geometrydash.GDUserFactory;
 
+/**
+ * DAO that manages GD moderator users
+ * 
+ * @author Alex1304
+ *
+ */
 public class GDModlistDAO implements DAO<GDUser> {
 
 	@Override

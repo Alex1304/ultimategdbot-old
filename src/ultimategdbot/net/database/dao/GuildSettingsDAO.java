@@ -19,6 +19,12 @@ import ultimategdbot.guildsettings.TagEveryoneOnBotAnnouncementSetting;
 import ultimategdbot.net.database.DatabaseConnection;
 import ultimategdbot.net.database.entities.GuildSettings;
 
+/**
+ * DAO that manages guild settings
+ * 
+ * @author Alex1304
+ *
+ */
 public class GuildSettingsDAO implements DAO<GuildSettings> {
 
 	@Override

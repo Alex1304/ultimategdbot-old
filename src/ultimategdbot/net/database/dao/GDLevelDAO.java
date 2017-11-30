@@ -12,6 +12,12 @@ import ultimategdbot.net.geometrydash.Difficulty;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.Length;
 
+/**
+ * DAO that manages GD levels
+ * 
+ * @author Alex1304
+ *
+ */
 public class GDLevelDAO implements DAO<GDLevel> {
 
 	@Override
