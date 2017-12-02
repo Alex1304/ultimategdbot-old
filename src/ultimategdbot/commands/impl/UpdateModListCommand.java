@@ -116,7 +116,7 @@ public class UpdateModListCommand extends CoreCommand {
 				process.join();
 			} catch (InterruptedException e) {
 				for (GDModeratorFinder t : threads)
-					t.stopThread();
+					t.kill();
 				throw new CommandFailedException("Interrupted by user.");
 			}
 		}

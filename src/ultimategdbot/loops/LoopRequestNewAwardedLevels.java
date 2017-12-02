@@ -75,9 +75,6 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 						
 						Collections.reverse(newAwardedLevels);
 						
-						List<GDLevel> levelsAlreadyInDB = gdldao.findAll();
-						newAwardedLevels.removeIf(level -> levelsAlreadyInDB.contains(level));
-						
 						if (checkForStateChange(awardedLevels.get(0)))
 							Main.GD_EVENT_DISPATCHER.dispatch(new LastAwardedStateChangedGDEvent(awardedLevels.get(0)));
 

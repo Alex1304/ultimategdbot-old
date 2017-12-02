@@ -132,7 +132,7 @@ public abstract class GDUtils {
 						+ Emoji.LENGTH + " " + lvl.getLength().toString().toUpperCase(), false);
 		
 		if (lvl.isFeatured())
-			eb.appendField("Featured", "Score: " + lvl.getFeatured(), false);
+			eb.appendField("Featured", "Score: " + lvl.getFeaturedScore(), false);
 		
 		eb.withFooterText("Level ID: " + lvl.getId());
 		

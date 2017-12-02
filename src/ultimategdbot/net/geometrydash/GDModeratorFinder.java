@@ -1,20 +1,24 @@
 package ultimategdbot.net.geometrydash;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 import ultimategdbot.commands.impl.UpdateModListCommand;
 import ultimategdbot.exceptions.RawDataMalformedException;
+import ultimategdbot.util.KillableThread;
 
-public class GDModeratorFinder extends Thread {
+/**
+ * This class does the 
+ * 
+ * @author alexandre
+ *
+ */
+public class GDModeratorFinder extends KillableThread {
 	
 	private long beginAccountID;
 	private long endAccountID;
 	private Consumer<GDUser> actionOnModeratorFound;
 	private static final int NB_MAX_ATTEMPTS = 3;
-	private boolean stopped = false;
 	
 	public GDModeratorFinder(long beginAccountID, long endAccountID, Consumer<GDUser> actionOnModeratorFound) {
 		this.beginAccountID = beginAccountID;
@@ -23,8 +27,8 @@ public class GDModeratorFinder extends Thread {
 	}
 
 	@Override
-	public void run() {
-		for (long i = beginAccountID ; !stopped && i <= endAccountID ; i++) {
+	public void run(KillableThread thisThread) {
+		for (long i = beginAccountID ; !thisThread.isKilled() && i <= endAccountID ; i++) {
 			GDUser user = fetchOneUser(i);
 			if (user != null && user.getRole() != GDRole.USER)
 				actionOnModeratorFound.accept(user);
@@ -53,20 +57,4 @@ public class GDModeratorFinder extends Thread {
 		
 		return result;
 	}
-	
-	public static List<GDUser> filterUsersByRole(List<GDUser> targetList, GDRole role) {
-		List<GDUser> res = new ArrayList<>();
-		
-		res.forEach(user -> {
-			if (user.getRole() == role)
-				res.add(user);
-		});
-		
-		return res;
-	}
-	
-	public void stopThread() {
-		stopped = true;
-	}
-
 }
