@@ -9,6 +9,12 @@ import java.util.List;
 import ultimategdbot.net.database.DatabaseConnection;
 import ultimategdbot.net.database.entities.UserSettings;
 
+/**
+ * DAO that manages user settings
+ * 
+ * @author Alex1304
+ *
+ */
 public class UserSettingsDAO implements DAO<UserSettings> {
 
 	@Override

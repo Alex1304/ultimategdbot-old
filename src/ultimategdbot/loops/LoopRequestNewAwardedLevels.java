@@ -75,9 +75,6 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 						
 						Collections.reverse(newAwardedLevels);
 						
-						List<GDLevel> levelsAlreadyInDB = gdldao.findAll();
-						newAwardedLevels.removeIf(level -> levelsAlreadyInDB.contains(level));
-						
 						if (checkForStateChange(awardedLevels.get(0)))
 							Main.GD_EVENT_DISPATCHER.dispatch(new LastAwardedStateChangedGDEvent(awardedLevels.get(0)));
 
@@ -135,6 +132,19 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 		return !lastLevelRecorded.stateEquals(level);
 	}
 	
+	/**
+	 * Searches for a level and returns immediately the result as a GDLevel
+	 * instance.
+	 * 
+	 * @param levelNameOrID
+	 *            - the name or ID of the level to search
+	 * @return GDLevel instance of the first found level
+	 * @throws IOException
+	 *             if there was a problem when communicating with Geometry Dash
+	 *             servers
+	 * @throws RawDataMalformedException
+	 *             if the level couldn't be found or is corrupted
+	 */
 	private GDLevel quickLevelSearch(String levelNameOrID) throws IOException, RawDataMalformedException {
 		return GDLevelFactory.buildGDLevelFirstSearchResult(GDServer.fetchLevelByNameOrID(levelNameOrID));
 	}

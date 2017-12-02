@@ -3,6 +3,12 @@ package ultimategdbot.guildsettings;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 
+/**
+ * The role that the bot is supposed to mention where there are new Geometry Dash moderators
+ * 
+ * @author Alex1304
+ *
+ */
 public class RoleGdModeratorsSetting extends RoleSetting {
 
 	public RoleGdModeratorsSetting(IGuild guild, IRole value) {

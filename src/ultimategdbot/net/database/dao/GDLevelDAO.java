@@ -12,6 +12,12 @@ import ultimategdbot.net.geometrydash.Difficulty;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.Length;
 
+/**
+ * DAO that manages GD levels
+ * 
+ * @author Alex1304
+ *
+ */
 public class GDLevelDAO implements DAO<GDLevel> {
 
 	@Override
@@ -20,7 +26,7 @@ public class GDLevelDAO implements DAO<GDLevel> {
 			PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(
 					"INSERT INTO gd_level VALUES (now(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setLong(1, obj.getId());
-			ps.setInt(2, obj.getFeatured());
+			ps.setInt(2, obj.getFeaturedScore());
 			ps.setBoolean(3, obj.isEpic());
 			ps.setString(4, obj.getName());
 			ps.setString(5, obj.getCreator());
@@ -46,7 +52,7 @@ public class GDLevelDAO implements DAO<GDLevel> {
 					"UPDATE gd_level SET featured = ?, is_epic = ?, name = ?, creator = ?"
 					+ ", description = ?, difficulty = ?, demon_difficulty = ?"
 					+ ", stars = ?, downloads = ?, likes = ?, length = ? WHERE level_id = ?");
-			ps.setInt(1, obj.getFeatured());
+			ps.setInt(1, obj.getFeaturedScore());
 			ps.setBoolean(2, obj.isEpic());
 			ps.setString(3, obj.getName());
 			ps.setString(4, obj.getCreator());

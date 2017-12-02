@@ -2,6 +2,13 @@ package ultimategdbot.guildsettings;
 
 import sx.blah.discord.handle.obj.IGuild;
 
+/**
+ * Whether the bot is supposed to tag everyone in the guild
+ * when there is a new announcement from the bot developer.
+ * 
+ * @author Alex1304
+ *
+ */
 public class TagEveryoneOnBotAnnouncementSetting extends BooleanSetting {
 
 	public TagEveryoneOnBotAnnouncementSetting(IGuild guild, Boolean value) {

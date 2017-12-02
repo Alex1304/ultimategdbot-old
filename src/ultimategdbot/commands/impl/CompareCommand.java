@@ -14,7 +14,6 @@ import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDLevelFactory;
-import ultimategdbot.net.geometrydash.GDLevelFeaturedScoreComparator;
 import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
@@ -50,7 +49,8 @@ public class CompareCommand extends CoreCommand {
 			if (!level1.isFeatured() || !level2.isFeatured())
 				throw new CommandFailedException("Both levels must either be featured or epic!");
 
-			SortedSet<GDLevel> sl = new TreeSet<>(new GDLevelFeaturedScoreComparator());
+			SortedSet<GDLevel> sl = new TreeSet<>((o1, o2) -> o1.getFeaturedScore() != o2.getFeaturedScore()
+					? o2.getFeaturedScore() - o1.getFeaturedScore() : (int) o2.getId() - (int) o1.getId());
 			sl.add(level1);
 			if (!sl.add(level2))
 				throw new CommandFailedException("Cannot compare a level to itself!");
@@ -59,7 +59,7 @@ public class CompareCommand extends CoreCommand {
 			message += levelSummary(level1) + "\n";
 			message += levelSummary(level2) + "\n";
 			message += "\n";
-			if (level1.getFeatured() == level2.getFeatured())
+			if (level1.getFeaturedScore() == level2.getFeaturedScore())
 				message += "As you can see, the score of both levels are identical. In that case, "
 						+ "levels are sorted by their ID. ";
 			message += "Therefore, " + sl.first().toString() + " is higher placed than "
@@ -74,7 +74,7 @@ public class CompareCommand extends CoreCommand {
 	}
 
 	private String levelSummary(GDLevel level) {
-		return "<:Play:364096635019722764> " + level.toString() + " has a featured score of **" + level.getFeatured() + "**.";
+		return "<:Play:364096635019722764> " + level.toString() + " has a featured score of **" + level.getFeaturedScore() + "**.";
 	}
 
 	@Override
