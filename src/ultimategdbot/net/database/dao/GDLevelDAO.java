@@ -107,7 +107,8 @@ public class GDLevelDAO implements DAO<GDLevel> {
 					result.getBoolean("is_epic"),
 					result.getLong("downloads"),
 					result.getLong("likes"),
-					Length.values()[result.getShort("length")]
+					Length.values()[result.getShort("length")],
+					-1
 				);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -135,7 +136,8 @@ public class GDLevelDAO implements DAO<GDLevel> {
 						result.getBoolean("is_epic"),
 						result.getLong("downloads"),
 						result.getLong("likes"),
-						Length.values()[result.getShort("length")]));
+						Length.values()[result.getShort("length")],
+						-1));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -163,7 +165,8 @@ public class GDLevelDAO implements DAO<GDLevel> {
 					result.getBoolean("is_epic"),
 					result.getLong("downloads"),
 					result.getLong("likes"),
-					Length.values()[result.getShort("length")]
+					Length.values()[result.getShort("length")],
+					-1
 				);
 			}
 		} catch (SQLException e) {

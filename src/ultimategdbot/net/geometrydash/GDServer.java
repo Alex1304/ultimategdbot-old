@@ -94,6 +94,11 @@ public abstract class GDServer {
 				+ "&secret=" + SECRET);
 	}
 	
+	public static String downloadLevel(long levelID) throws IOException {
+		return sendRequest("downloadGJLevel22.php",
+			"gameVersion=21&binaryVersion=34&gdw=0&levelID=" + levelID + "&secret=" + SECRET);
+	}
+	
 	public static String sendMessageFromBotToGDUser(long recipientAccountID, String subject, String body) throws IOException, InvalidCharacterException {
 		return sendRequest("uploadGJMessage20.php",
 				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp="
@@ -115,8 +120,7 @@ public abstract class GDServer {
 	}
 	
 	public static String fetchTimelyLevel(boolean daily) throws IOException {
-		return sendRequest("downloadGJLevel22.php",
-				"gameVersion=21&binaryVersion=34&gdw=0&levelID=" + (daily ? "-1" : "-2") + "&secret=" + SECRET);
+		return downloadLevel(daily ? -1 : -2);
 	}
 	
 	public static String fetchTimelyLevelCooldown(boolean daily) throws IOException {

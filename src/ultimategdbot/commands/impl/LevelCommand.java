@@ -58,7 +58,7 @@ public class LevelCommand extends CoreCommand {
 
 	@Override
 	public String[] getSyntax() {
-		String[] res = { "<name_or_id>" };
+		String[] res = { "[<name_or_id>]" };
 		return res;
 	}
 

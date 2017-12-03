@@ -40,6 +40,7 @@ public interface Command {
 	
 	/**
 	 * Triggers a subcommand by giving its name
+	 * 
 	 * @param cmdName - The name of the sub-command to trigger
 	 * @param event - the Discord event info provided by the parent core command
 	 * @param args - arguments to give to the subcommand
