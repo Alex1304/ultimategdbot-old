@@ -9,6 +9,13 @@ import sx.blah.discord.util.PermissionUtils;
 import ultimategdbot.app.AppParams;
 import ultimategdbot.app.Main;
 
+/**
+ * Represents the different role levels for bot commands.
+ * Role hierarchy is also defined here.
+ * 
+ * @author Alex1304
+ *
+ */
 public enum BotRoles {
 	SUPERADMIN((user, channel) -> user.getLongID() == AppParams.SUPERADMIN_ID),
 	MODERATOR((user, channel) -> user.getRolesForGuild(Main.DISCORD_ENV.getOfficialDevGuild())
@@ -18,6 +25,9 @@ public enum BotRoles {
 			.contains(Main.DISCORD_ENV.getBetaTestersRole())),
 	USER((user, channel) -> true);
 	
+	/**
+	 * Defines extended roles for each role.
+	 */
 	static {
 		SUPERADMIN.setExtendedRoles(EnumSet.of(MODERATOR, SERVER_ADMIN, BETA_TESTER, USER));
 		MODERATOR.setExtendedRoles(EnumSet.of(SERVER_ADMIN, BETA_TESTER, USER));
@@ -26,22 +36,51 @@ public enum BotRoles {
 		USER.setExtendedRoles(EnumSet.noneOf(BotRoles.class));
 	}
 	
+	/**
+	 * Predicate that determines whether a user is granted to this role
+	 */
 	private PredicateUserChannel conditionForUserToBeGranted;
 	
+	/**
+	 * Constructs the enum item with the predicate provided.
+	 * 
+	 * @param conditionForUserToBeGranted
+	 *            - predicate that determines whether a user is granted to this role
+	 */
 	private BotRoles(PredicateUserChannel conditionForUserToBeGranted) {
 		this.conditionForUserToBeGranted = conditionForUserToBeGranted;
 	}
 	
+	/**
+	 * The set of roles that this role extends.
+	 */
 	private EnumSet<BotRoles> extendedRoles;
-
+	
+	/**
+	 * Gets the extended roles
+	 * 
+	 * @return EnumSet of roles
+	 */
 	public EnumSet<BotRoles> getExtendedRoles() {
 		return extendedRoles;
 	}
-
+	
+	/**
+	 * Sets the extended roles
+	 * 
+	 * @param EnumSet of roles
+	 */
 	public void setExtendedRoles(EnumSet<BotRoles> extendedRoles) {
 		this.extendedRoles = extendedRoles;
 	}
 	
+	/**
+	 * Returns the set of all roles which the user is granted in the specified channel.
+	 * 
+	 * @param user - The user to get roles from
+	 * @param channel - The specific channel where the "is granted" predicate is tested
+	 * @return EnumSet of roles the user is granted 
+	 */
 	public static EnumSet<BotRoles> botRolesForUserInChannel(IUser user, IChannel channel) {
 		EnumSet<BotRoles> botRoles = EnumSet.noneOf(BotRoles.class);
 		

@@ -31,6 +31,8 @@ public abstract class GDServer {
 	 * @param webpage relative URL to the page
 	 * @param urlParams Content of the POST request
 	 * @return server response as String
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
 	 */
 	public static String sendRequest(String webpage, String urlParams) throws IOException {
 			HttpURLConnection con;
@@ -60,8 +62,10 @@ public abstract class GDServer {
 	
 	/**
 	 * Fetches the latest awarded levels
+	 * 
 	 * @return server response as String
-	 * @throws IOException 
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
 	 */
 	public static String fetchNewAwardedLevels() throws IOException {
 		return sendRequest("getGJLevels21.php",
@@ -73,7 +77,8 @@ public abstract class GDServer {
 	/**
 	 * Fetches the latest uploaded levels
 	 * @return server response as String
-	 * @throws IOException 
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
 	 */
 	public static String fetchMostRecentLevels() throws IOException {
 		return sendRequest("getGJLevels21.php",
@@ -85,7 +90,8 @@ public abstract class GDServer {
 	/**
 	 * Fetches the first level corresponding to the given name
 	 * @return server response as String
-	 * @throws IOException 
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
 	 */
 	public static String fetchLevelByNameOrID(String levelNameOrID) throws IOException {
 		return sendRequest("getGJLevels21.php",
@@ -94,6 +100,22 @@ public abstract class GDServer {
 				+ "&secret=" + SECRET);
 	}
 	
+	/**
+	 * Sends a message from the bot account which ID is specified in
+	 * {@link AppParams}.
+	 * 
+	 * @param recipientAccountID
+	 *            - the ID of the account to send the message to.
+	 * @param subject
+	 *            - the message subject
+	 * @param body
+	 *            - the message body
+	 * @return server response as String
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
+	 * @throws InvalidCharacterException
+	 *             if the message body contains invalid characters.
+	 */
 	public static String sendMessageFromBotToGDUser(long recipientAccountID, String subject, String body) throws IOException, InvalidCharacterException {
 		return sendRequest("uploadGJMessage20.php",
 				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp="
@@ -102,26 +124,64 @@ public abstract class GDServer {
 				+ GDMessageBodyEncoder.encode(body) + "&secret=" + SECRET);
 	}
 	
+	/**
+	 * Fetches a user profile from user search results.
+	 * 
+	 * @param userNameOrID
+	 *            - the name or the playerID of the user to search for.
+	 * @return server response as String
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
+	 */
 	public static String fetchUsersByNameOrID(String userNameOrID) throws IOException {
 		return sendRequest("getGJUsers20.php",
 				"gameVersion=21&binaryVersion=34&gdw=0&type=0&str=" + URLEncoder.encode(userNameOrID, "UTF-8") + "&page=0&total=0"
 				+ "&secret=" + SECRET);
 	}
 	
+	/**
+	 * Fetches a user profile directly by accountID
+	 * 
+	 * @param accountID
+	 *            - the ID of the desired account
+	 * @return server response as String
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
+	 */
 	public static String fetchUserProfile(long accountID) throws IOException {
 		return sendRequest("getGJUserInfo20.php",
 				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp=" + AppParams.GD_ACCOUNT_GJP
 				+ "&targetAccountID=" + accountID + "&secret=" + SECRET);
 	}
 	
+	/**
+	 * Fetches the desired timely level.
+	 * 
+	 * @param daily
+	 *            - true if the desired timely level is the Daily one, false if it's
+	 *            the weekly.
+	 * @return server response as String
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
+	 */
 	public static String fetchTimelyLevel(boolean daily) throws IOException {
 		return sendRequest("downloadGJLevel22.php",
 				"gameVersion=21&binaryVersion=34&gdw=0&levelID=" + (daily ? "-1" : "-2") + "&secret=" + SECRET);
 	}
 	
-	public static String fetchTimelyLevelCooldown(boolean daily) throws IOException {
+	/**
+	 * Fetches timely level info (ID and cooldown before the next one).
+	 * 
+	 * @param daily
+	 *            - true if the desired timely level is the Daily one, false if it's
+	 *            the weekly.
+	 * @return server response as String
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
+	 */
+	public static String fetchTimelyLevelInfo(boolean daily) throws IOException {
 		return sendRequest("getGJDailyLevel.php",
-				"gameVersion=21&binaryVersion=34&gdw=0&accountID=7753855&gjp=fgYGAgJ0c3d9Yg==&secret=Wmfd2893gb7&weekly="
+				"gameVersion=21&binaryVersion=34&gdw=0&secret=Wmfd2893gb7&weekly="
 				+ (daily ? "0" : "1"));
 	}
 }

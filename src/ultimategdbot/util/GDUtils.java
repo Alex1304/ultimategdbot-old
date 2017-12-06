@@ -237,12 +237,12 @@ public abstract class GDUtils {
 	}
 	
 	public static int fetchCurrentTimelyID(boolean daily) throws IOException {
-		String dailyInfo = GDServer.fetchTimelyLevelCooldown(daily);
+		String dailyInfo = GDServer.fetchTimelyLevelInfo(daily);
 		return Integer.parseInt(dailyInfo.split("\\|")[0]) - (daily ? 0 : 100000);
 	}
 	
 	public static String fetchNextTimelyCooldown(boolean daily) throws IOException {
-		String dailyInfo = GDServer.fetchTimelyLevelCooldown(daily);
+		String dailyInfo = GDServer.fetchTimelyLevelInfo(daily);
 		long result = Long.parseLong(dailyInfo.split("\\|")[1]);
 		
 		long days = result / (24*60*60);

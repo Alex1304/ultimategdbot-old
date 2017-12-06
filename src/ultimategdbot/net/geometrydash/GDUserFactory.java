@@ -11,8 +11,23 @@ import ultimategdbot.net.database.dao.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.util.GDUtils;
 
+/**
+ * Utility class to build {@link GDUser} instances.
+ * 
+ * @author Alex1304
+ *
+ */
 public abstract class GDUserFactory {
 	
+	/**
+	 * Builds a GDUser instance by parsing the profile raw data.
+	 * 
+	 * @param rawData
+	 *            - user profile data returned by Geometry Dash servers.
+	 * @return the built GDUser instance
+	 * @throws RawDataMalformedException
+	 *             - if the raw data given couldn't be parsed.
+	 */
 	public static GDUser buildGDUserFromProfileRawData(String rawData) throws RawDataMalformedException {
 		GDUser user = null;
 		
@@ -40,6 +55,16 @@ public abstract class GDUserFactory {
 		return user;
 	}
 	
+	/**
+	 * Searches for the desired user by name or playerID, and returns the
+	 * corresponding accountID if found.
+	 * 
+	 * @param gdNameOrPlayerID
+	 *            - user name or playerID
+	 * @return the accountID of the searched user, or -1 if not found.
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
+	 */
 	public static long findAccountIDForGDUser(String gdNameOrPlayerID) throws IOException {
 		String userSearchResultsRD = GDServer.fetchUsersByNameOrID(gdNameOrPlayerID);
 		List<String> searchResultList = new ArrayList<>(Arrays.asList(userSearchResultsRD.split("#")[0].split("\\|")));
@@ -68,19 +93,34 @@ public abstract class GDUserFactory {
 		
 		return result;
 	}
-
+	
+	/**
+	 * If the name provided refers to a Discord user with a Geometry Dash account
+	 * linked, it will build the user of linked account. If the name provided is a
+	 * GD username, it will simply search for it and build the corresponding user
+	 * instance.
+	 * 
+	 * @param name
+	 *            - The name or the Discord tag of user to build
+	 * @return the desired user instance
+	 * @throws RawDataMalformedException
+	 *             if the server returns corrupted data when fetching user profile,
+	 *             usually happens when the user couldn't be found
+	 * @throws IOException
+	 *             if a problem occurs while connecting to GD servers
+	 */
 	public static GDUser buildGDUserFromNameOrDiscordTag(String name) throws RawDataMalformedException, IOException {
 		long accountID = -1;
 		if (name.trim().matches("<@!?[0-9]+>")) {
 			long userID = Long.parseLong(name.trim().replaceAll("<@!?", "").replace(">", ""));
 			UserSettings us = new UserSettingsDAO().find(userID);
 			if (us == null || !us.isLinkActivated())
-				return null;
-			
-			accountID = us.getGdUserID();
+				accountID = -1;
+			else
+				accountID = us.getGdUserID();
 		} else
-			accountID = GDUserFactory.findAccountIDForGDUser(name.replace('_', ' '));
+			accountID = findAccountIDForGDUser(name.replace('_', ' '));
 		
-		return GDUserFactory.buildGDUserFromProfileRawData(GDServer.fetchUserProfile(accountID));
+		return buildGDUserFromProfileRawData(GDServer.fetchUserProfile(accountID));
 	}
 }

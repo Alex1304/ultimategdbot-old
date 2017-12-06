@@ -8,18 +8,44 @@ import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.util.KillableThread;
 
 /**
- * This class does the 
+ * Scans user profiles in the specified range of accountIDs and performs an
+ * action when a moderator is found.
  * 
- * @author alexandre
+ * @author Alex1304
  *
  */
 public class GDModeratorFinder extends KillableThread {
 	
+	/**
+	 * Range beginning bound of accountIDs
+	 */
 	private long beginAccountID;
+	
+	/**
+	 * Range end bound of accountIDs
+	 */
 	private long endAccountID;
+	
+	/**
+	 * Action to perform when a moderator is found
+	 */
 	private Consumer<GDUser> actionOnModeratorFound;
+	
+	/**
+	 * Max attempt count to fetch a user profile again if it fails.
+	 */
 	private static final int NB_MAX_ATTEMPTS = 3;
 	
+	/**
+	 * Constructs a new instance with all fields provided?
+	 * 
+	 * @param beginAccountID
+	 *            - range beginning bound of accountIDs
+	 * @param endAccountID
+	 *            - Range end bound of accountIDs
+	 * @param actionOnModeratorFound
+	 *            - action to perform when a moderator is found
+	 */
 	public GDModeratorFinder(long beginAccountID, long endAccountID, Consumer<GDUser> actionOnModeratorFound) {
 		this.beginAccountID = beginAccountID;
 		this.endAccountID = endAccountID;
@@ -36,6 +62,12 @@ public class GDModeratorFinder extends KillableThread {
 		}
 	}
 	
+	/**
+	 * Fetches one user profile. Attempts to fetch it again NB_AX_ATTEMPTS times if failed.
+	 * 
+	 * @param accountID - The accountID of the profile to fetch
+	 * @return the GDUser instance corresponding to the fetched profile.
+	 */
 	private GDUser fetchOneUser(long accountID) {
 		GDUser result = null;
 		
