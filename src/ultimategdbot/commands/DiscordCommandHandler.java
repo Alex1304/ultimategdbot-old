@@ -23,6 +23,7 @@ import ultimategdbot.commands.impl.GDEventsCommand;
 import ultimategdbot.commands.impl.HelpCommand;
 import ultimategdbot.commands.impl.InviteCommand;
 import ultimategdbot.commands.impl.KillCommand;
+import ultimategdbot.commands.impl.LeaderboardCommand;
 import ultimategdbot.commands.impl.LevelCommand;
 import ultimategdbot.commands.impl.LevelPassCommand;
 import ultimategdbot.commands.impl.ModListCommand;
@@ -81,6 +82,7 @@ public class DiscordCommandHandler {
 		
 		// Beta-testers commands
 		registerCommand(new LevelPassCommand(EnumSet.of(BotRoles.BETA_TESTER)));
+		registerCommand(new LeaderboardCommand(EnumSet.of(BotRoles.BETA_TESTER)));
 		
 		// Public commands
 		registerCommand(new PingCommand(EnumSet.of(BotRoles.USER)));

@@ -95,19 +95,14 @@ public class GDLevelPassEncoder {
 	 * @param pass
 	 *            - the passcode to format.
 	 * @return the formatted code as String.
-	 * @throws IllegalArgumentException
+	 * @throws NumberFormatException
 	 *             if the input isn't a valid level passcode.
 	 */
 	public static String format(int pass) {
-		String result = "" + pass;
+		if ((pass + "").length() > LEVEL_PASSWORD_MAX_LENGTH)
+			throw new NumberFormatException();
 		
-		if (result.length() > LEVEL_PASSWORD_MAX_LENGTH)
-			throw new IllegalArgumentException("The input isn't a valid level passcode.");
-		
-		while (result.length() < LEVEL_PASSWORD_MAX_LENGTH)
-			result = "0" + result;
-		
-		return result;
+		return AppTools.normalizeNumber(pass, LEVEL_PASSWORD_MAX_LENGTH, '0');
 	}
 	
 //	Some testing

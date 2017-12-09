@@ -6,7 +6,7 @@ package ultimategdbot.net.geometrydash;
  * @author Alex1304
  *
  */
-public class GDUser {
+public class GDUser implements Comparable<GDUser> {
 	
 	/**
 	 * User's nickname
@@ -280,5 +280,20 @@ public class GDUser {
 		if (accountID != other.accountID)
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "ID = " + accountID + " ; name = " + name + " ; stars = " + stars + "\n";
+	}
+
+	/**
+	 * Used to sort users by their name.
+	 * 
+	 * @see {@link Comparable#compareTo(Object)}
+	 */
+	@Override
+	public int compareTo(GDUser o) {
+		return name.compareTo(o.name);
 	}
 }

@@ -1,5 +1,12 @@
 package ultimategdbot.net.database.entities;
 
+import java.io.IOException;
+
+import ultimategdbot.exceptions.RawDataMalformedException;
+import ultimategdbot.net.geometrydash.GDServer;
+import ultimategdbot.net.geometrydash.GDUser;
+import ultimategdbot.net.geometrydash.GDUserFactory;
+
 /**
  * User settings entity. It mainly deals with account linking with Geometry Dash
  * and confirmation token storing.
@@ -31,6 +38,11 @@ public class UserSettings {
 	private String confirmationToken;
 	
 	/**
+	 * Instance of {@link GDUser} associated with the accountID of this object
+	 */
+	private GDUser gdUserInstance;
+	
+	/**
 	 * Constructs an instance of UserSettings by specifying every single attribute.
 	 * 
 	 * @param userID - Discord user ID
@@ -43,6 +55,22 @@ public class UserSettings {
 		this.gdUserID = gdUserID;
 		this.linkActivated = linkActivated;
 		this.confirmationToken = confirmationToken;
+		this.gdUserInstance = null;
+	}
+	
+	/**
+	 * If {@link UserSettings#getGDUserInstance()} is null, this method tries to create the instance again.
+	 */
+	private void findInstanceIfNull() {
+		if (this.gdUserInstance != null)
+			return;
+			
+		try {
+			this.gdUserInstance = GDUserFactory.buildGDUserFromProfileRawData(
+					GDServer.fetchUserProfile(gdUserID));
+		} catch (RawDataMalformedException | IOException e) {
+			this.gdUserInstance = null;
+		}
 	}
 	
 	/**
@@ -106,6 +134,16 @@ public class UserSettings {
 	 */
 	public void setConfirmationToken(String confirmationToken) {
 		this.confirmationToken = confirmationToken;
+	}
+	
+	/**
+	 * Gets the GDUser instance corresponding to the accountID of this object.
+	 * 
+	 * @return GDUser instance, or null if the user with this accountID couldn't be found.
+	 */
+	public GDUser getGDUserInstance() {
+		findInstanceIfNull();
+		return gdUserInstance;
 	}
 	
 }

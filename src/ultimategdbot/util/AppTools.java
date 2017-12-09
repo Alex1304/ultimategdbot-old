@@ -380,4 +380,24 @@ public abstract class AppTools {
 		}
 	}
 	
+	/**
+	 * Builds a String representing an integer value with a specific amount of digits,
+	 * mising digits are filled with the specified char. For example, {@code normalizeNumber(12, 6)}
+	 * will return the String "000012", with string length equal to 6. The value is directly returned
+	 * as String if the number of digits of the value is greater than n.
+	 * 
+	 * @param val - the value to normalize
+	 * @param n - the number of digits the normalized value should have
+	 * @param c - the character to fill the normalized value with
+	 * @return the normalized value as String
+	 */
+	public static String normalizeNumber(int val, int n, char c) {
+		String result = "" + val;
+		
+		while (result.length() < n)
+			result = c + result;
+		
+		return result;
+	}
+	
 }

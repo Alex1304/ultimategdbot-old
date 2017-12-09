@@ -123,7 +123,6 @@ public abstract class GDLevelFactory {
 				pass
 			);
 		} catch (NullPointerException|IllegalArgumentException e) {
-			e.printStackTrace();
 			throw new RawDataMalformedException();
 		}
 	}
