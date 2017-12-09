@@ -70,6 +70,12 @@ public class GDLevel {
 	private Length length;
 	
 	/**
+	 * The passcode to copy the level in-game.
+	 * -1 if it's not copyable, -2 if the copy requires no passcode.
+	 */
+	private int pass;
+	
+	/**
 	 * Constructs an instance of GDLevel by providing all of its attributes at
 	 * once.
 	 * 
@@ -98,10 +104,15 @@ public class GDLevel {
 	 *            - amount of likes for the level
 	 * @param length
 	 *            - the length of the level
+	 * @param pass
+	 *            - the passcode to copy the level in-game. -1 if it's not
+	 *            copyable, -2 if the copy requires no passcode.
+	 * @throws IllegalArgumentException
+	 *             if the argument {@code pass} &lt; -2
 	 */
 	public GDLevel(long id, String name, String creator, String description, Difficulty difficulty,
 			DemonDifficulty demonDifficulty, short stars, int featuredScore, boolean epic, long downloads,
-			long likes, Length length) {
+			long likes, Length length, int pass) {
 		this.id = id;
 		this.name = name;
 		this.creator = creator;
@@ -114,6 +125,7 @@ public class GDLevel {
 		this.downloads = downloads;
 		this.likes = likes;
 		this.length = length;
+		this.setPass(pass);
 	}
 	
 	/**
@@ -180,15 +192,6 @@ public class GDLevel {
 	}
 	
 	/**
-	 * Whether the level is featured.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isFeatured() {
-		return featuredScore > 0;
-	}
-	
-	/**
 	 * Gets the featured score of the level, or a value &lt;= 0 if not featured
 	 * 
 	 * @return int
@@ -234,11 +237,167 @@ public class GDLevel {
 	}
 	
 	/**
+	 * Gets the passcode to copy the level in-game.
+	 * 
+	 * @return -1 if not copyable, -2 if free to copy, int otherwise.
+	 */
+	public int getPass() {
+		return pass;
+	}
+
+	/**
+	 * Sets the name of the level
+	 *
+	 * @param name - String
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Sets the name of the creator who created this level
+	 *
+	 * @param creator - String
+	 */
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	/**
+	 * Sets the level description
+	 *
+	 * @param description - String
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * Sets the level difficulty
+	 *
+	 * @param difficulty - Difficulty
+	 */
+	public void setDifficulty(Difficulty difficulty) {
+		this.difficulty = difficulty;
+	}
+
+	/**
+	 * Sets the type of Demon difficulty
+	 *
+	 * @param demonDifficulty - DemonDifficulty
+	 */
+	public void setDemonDifficulty(DemonDifficulty demonDifficulty) {
+		this.demonDifficulty = demonDifficulty;
+	}
+
+	/**
+	 * Sets the number of stars assigned to the level
+	 *
+	 * @param stars - short
+	 */
+	public void setStars(short stars) {
+		this.stars = stars;
+	}
+
+	/**
+	 * Sets the featured score of the level, or a value &lt;= 0 if not featured
+	 *
+	 * @param featuredScore - int
+	 */
+	public void setFeaturedScore(int featuredScore) {
+		this.featuredScore = featuredScore;
+	}
+
+	/**
+	 * Sets whether the level is marked as Epic
+	 *
+	 * @param epic - boolean
+	 */
+	public void setEpic(boolean epic) {
+		this.epic = epic;
+	}
+
+	/**
+	 * Sets the amount of downloads for the level
+	 *
+	 * @param downloads - long
+	 */
+	public void setDownloads(long downloads) {
+		this.downloads = downloads;
+	}
+
+	/**
+	 * Sets the amount of likes for the level
+	 *
+	 * @param likes - long
+	 */
+	public void setLikes(long likes) {
+		this.likes = likes;
+	}
+
+	/**
+	 * Sets the length of the level
+	 *
+	 * @param length - Length
+	 */
+	public void setLength(Length length) {
+		this.length = length;
+	}
+
+	/**
+	 * Sets he passcode to copy the level in-game. -1 if it's not copyable, -2
+	 * if the copy requires no passcode.
+	 *
+	 * @param pass
+	 *            - int
+	 * @throws IllegalArgumentException
+	 *             if the argument &lt; -2
+	 */
+	public void setPass(int pass) {
+		if (pass < -2)
+			throw new IllegalArgumentException();
+		this.pass = pass;
+	}
+	
+	/**
+	 * Whether the level is featured.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isFeatured() {
+		return featuredScore > 0;
+	}
+	
+	/**
 	 * Whether the level is Awarded, i.e the amount of stars is greater than 0.
-	 * @return
+	 * 
+	 * @return boolean
 	 */
 	public boolean isAwarded() {
 		return stars > 0;
+	}
+	
+	/**
+	 * Whether the level is copyable
+	 * 
+	 * @return boolean
+	 */
+	public boolean isCopyable() {
+		return pass != -1;
+	}
+	
+	/**
+	 * Whether the level requires a passcode to be copied.
+	 * If the method {@link GDLevel#isCopyable()} returns false,
+	 * then this method should return false as well.
+	 * 
+	 * @return boolean
+	 */
+	public boolean requiresPasscode() {
+		if (!isCopyable())
+			return false;
+		
+		return pass >= 0;
 	}
 	
 	@Override

@@ -37,7 +37,7 @@ public class SetupCommand extends CoreCommand {
 	}
 
 	private GuildSettingsDAO gsdao = new GuildSettingsDAO();
-	private GuildSettings settings;
+	private volatile GuildSettings settings;
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
@@ -57,6 +57,9 @@ public class SetupCommand extends CoreCommand {
 	 * @return String containing the formatted settings info
 	 */
 	private String settingsAsString() {
+		if (settings == null)
+			return "";
+		
 		String message = "**__Bot settings for this server:__**\n";
 		
 		message += "```\n";
@@ -105,9 +108,9 @@ public class SetupCommand extends CoreCommand {
 
 	@Override
 	public String[] getExamples() {
-		String[] res = { "", "set " + settings.getSetting(ChannelAwardedLevelsSetting.class) + " #bot-announcements", 
-				"info " + settings.getSetting(RoleAwardedLevelsSetting.class),
-				"reset " + settings.getSetting(ChannelBotAnnouncementsSetting.class) };
+		String[] res = { "", "set " + new ChannelAwardedLevelsSetting(null, null) + " #bot-announcements", 
+				"info " + new RoleAwardedLevelsSetting(null, null),
+				"reset " + new ChannelBotAnnouncementsSetting(null, null) };
 		return res;
 	}
 }

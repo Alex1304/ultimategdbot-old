@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import ultimategdbot.exceptions.RawDataMalformedException;
+import ultimategdbot.util.GDLevelPassEncoder;
 import ultimategdbot.util.GDUtils;
 
 /**
@@ -56,6 +57,17 @@ public abstract class GDLevelFactory {
 	
 	/**
 	 * Reads the rawdata and return an instance of GDLevel corresponding to the requested level.
+	 * This method is intended for directly downloaded levels.
+	 * 
+	 * @param rawData - urlencoded String of the level info
+	 * @return new instance of GDLevel
+	 */
+	public static GDLevel buildDownloadedGDLevel(String rawData) throws RawDataMalformedException {
+		return buildGDLevelSearchedByFilter(rawData, 0, true);
+	}
+	
+	/**
+	 * Reads the rawdata and return an instance of GDLevel corresponding to the requested level.
 	 * When searching for a level using filters, several search results can show up (up to 10 per page).
 	 * So it's necessary to provide which result item is the requested level.
 	 * 
@@ -65,9 +77,11 @@ public abstract class GDLevelFactory {
 	 * @throws RawDataMalformedException if the raw data syntax is invalid
 	 * @throws IndexOutOfBoundsException if the index given doesn't point to a search item.
 	 */
-	public static GDLevel buildGDLevelSearchedByFilter(String rawData, int index, boolean download) throws RawDataMalformedException, IndexOutOfBoundsException {
+	public static GDLevel buildGDLevelSearchedByFilter(String rawData, int index, boolean download)
+			throws RawDataMalformedException, IndexOutOfBoundsException {
 		try {
-			Map<Integer, String> structuredLvlInfo = GDUtils.structureRawData(cutOneLevel(cutLevelInfoPart(rawData), index));
+			Map<Integer, String> structuredLvlInfo = GDUtils
+					.structureRawData(cutOneLevel(cutLevelInfoPart(rawData), index));
 			Map<Long, String> structuredCreatorsInfo = structureCreatorsInfo(cutCreatorInfoPart(rawData, download));
 
 			// Determines the difficulty of the level
@@ -76,11 +90,27 @@ public abstract class GDLevelFactory {
 				lvlDiff = Difficulty.AUTO;
 			if (structuredLvlInfo.get(17).equals("1"))
 				lvlDiff = Difficulty.DEMON;
+			
+			// Level copy passcode (only if download)
+			int pass = -1;
+			if (download) {
+				if (structuredLvlInfo.get(27).equals("0"))
+					pass = -1;
+				else if (structuredLvlInfo.get(27).equals("Aw=="))
+					pass = -2;
+				else
+					pass = GDLevelPassEncoder.decode(structuredLvlInfo.get(27));
+			}
+			
+			// Level creator info
+			String creator = "-";
+			if (structuredCreatorsInfo != null && structuredLvlInfo.containsKey(6))
+				creator = structuredCreatorsInfo.get(Long.parseLong(structuredLvlInfo.get(6)));
 		
 			return new GDLevel(
 				Long.parseLong(structuredLvlInfo.get(1)),
 				structuredLvlInfo.get(2),
-				structuredCreatorsInfo.get(Long.parseLong(structuredLvlInfo.get(6))),
+				creator,
 				new String(Base64.getUrlDecoder().decode(structuredLvlInfo.get(3))),
 				lvlDiff,
 				demonDifficultyByValue.get(Integer.parseInt(structuredLvlInfo.get(43))),
@@ -89,9 +119,11 @@ public abstract class GDLevelFactory {
 				structuredLvlInfo.get(42).equals("1"),
 				Long.parseLong(structuredLvlInfo.get(10)),
 				Long.parseLong(structuredLvlInfo.get(14)),
-				Length.values()[Integer.parseInt(structuredLvlInfo.get(15))]
+				Length.values()[Integer.parseInt(structuredLvlInfo.get(15))],
+				pass
 			);
 		} catch (NullPointerException|IllegalArgumentException e) {
+			e.printStackTrace();
 			throw new RawDataMalformedException();
 		}
 	}
@@ -155,6 +187,9 @@ public abstract class GDLevelFactory {
 	}
 	
 	private static Map<Long, String> structureCreatorsInfo(String creatorsInfoRD) {
+		if (creatorsInfoRD.isEmpty())
+			return null;
+		
 		String[] arrayCreatorsRD = creatorsInfoRD.split("\\|");
 		Map<Long, String> structuredCreatorslInfo = new HashMap<>();
 		

@@ -100,6 +100,11 @@ public abstract class GDServer {
 				+ "&secret=" + SECRET);
 	}
 	
+	public static String downloadLevel(long levelID) throws IOException {
+		return sendRequest("downloadGJLevel22.php",
+			"gameVersion=21&binaryVersion=34&gdw=0&levelID=" + levelID + "&secret=" + SECRET);
+	}
+	
 	/**
 	 * Sends a message from the bot account which ID is specified in
 	 * {@link AppParams}.
@@ -165,8 +170,7 @@ public abstract class GDServer {
 	 *             if a problem occurs while connecting to GD servers
 	 */
 	public static String fetchTimelyLevel(boolean daily) throws IOException {
-		return sendRequest("downloadGJLevel22.php",
-				"gameVersion=21&binaryVersion=34&gdw=0&levelID=" + (daily ? "-1" : "-2") + "&secret=" + SECRET);
+		return downloadLevel(daily ? -1 : -2);
 	}
 	
 	/**
