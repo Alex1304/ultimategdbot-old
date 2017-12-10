@@ -9,7 +9,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
-import ultimategdbot.commands.impl.subcommands.ConfirmLinkAccountSubCommand;
+import ultimategdbot.commands.impl.subcommands.ActivateAccountSubCommand;
 import ultimategdbot.commands.impl.subcommands.ConfirmUnlinkAccountSubCommand;
 import ultimategdbot.commands.impl.subcommands.LinkAccountSubCommand;
 import ultimategdbot.commands.impl.subcommands.UnlinkAccountSubCommand;
@@ -37,21 +37,23 @@ public class AccountCommand extends CoreCommand {
 	@Override
 	public String getHelp() {
 		return "Allows you to link your Geometry Dash account with your Discord account.\n"
-				+ "First, you have to provide the GD account username you want to link. Then, "
-				+ "a private message will be sent to the provided GD account containing a confirmation "
-				+ "code. Once you've received this message, go back to Discord and use the command "
-				+ "`" + Main.CMD_PREFIX + getName() + " " + getSyntax()[2] + "`";
+				+ "First, you have to provide the GD account username you want to link using"
+				+ " `" + Main.CMD_PREFIX + name + " link <gd_username>`. Then, "
+				+ "you will be invited to send a specific message to the bot account "
+				+ "('UltimateGDBot' in-game). "
+				+ "After that, you can use the following command to activate the link:"
+				+ "`" + Main.CMD_PREFIX + getName() + " activate`, and you're good to go!";
 	}
 
 	@Override
 	public String[] getSyntax() {
-		String[] syn = { "link <gd_username>", "unlink", "confirmlink|confirmunlink <confirmation_code>" };
+		String[] syn = { "link <gd_username>", "unlink", "activate", "confirmunlink" };
 		return syn;
 	}
 
 	@Override
 	public String[] getExamples() {
-		String[] ex = { "link Alex1304", "confirmlink 9s7Px8Av", "unlink Alex1304" };
+		String[] ex = { "link Alex1304", "confirmlink", "unlink" };
 		return ex;
 	}
 
@@ -60,7 +62,7 @@ public class AccountCommand extends CoreCommand {
 		Map<String, Command> map = new HashMap<>();
 		map.put("link", new LinkAccountSubCommand(this));
 		map.put("unlink", new UnlinkAccountSubCommand(this));
-		map.put("confirmlink", new ConfirmLinkAccountSubCommand(this));
+		map.put("activate", new ActivateAccountSubCommand(this));
 		map.put("confirmunlink", new ConfirmUnlinkAccountSubCommand(this));
 		return map;
 	}

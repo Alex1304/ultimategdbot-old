@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import ultimategdbot.app.AppParams;
 import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.net.database.dao.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
@@ -18,6 +19,38 @@ import ultimategdbot.util.GDUtils;
  *
  */
 public abstract class GDUserFactory {
+	
+	/**
+	 * The GDUser instance representing the bot in-game.
+	 */
+	private static GDUser botUser = initBotUser();
+	
+	/**
+	 * Initializes the bot user instance by searching for its profile in-game using the accountID
+	 * provided in {@link AppParams}. If nothing is found or if it failed to connect to GD servers,
+	 * null is returned.
+	 * 
+	 * @return GDUser
+	 */
+	private static GDUser initBotUser() {
+		try {
+			return buildGDUserFromProfileRawData(GDServer.fetchUserProfile(AppParams.GD_ACCOUNT_ID));
+		} catch (RawDataMalformedException | IOException e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Gets the GDUser instance representing the bot in-game
+	 * 
+	 * @return GDUser
+	 */
+	public static GDUser getBotUserInstance() {
+		if (botUser == null)
+			botUser = initBotUser();
+		
+		return botUser;
+	}
 	
 	/**
 	 * Builds a GDUser instance by parsing the profile raw data.

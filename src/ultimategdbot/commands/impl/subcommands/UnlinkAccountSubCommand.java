@@ -42,8 +42,7 @@ public class UnlinkAccountSubCommand extends SubCommand<AccountCommand> {
 		usdao.update(us);
 		
 		AppTools.sendMessage(event.getChannel(), ":warning: Are you sure you want to unlink your Geometry Dash account? "
-				+ "If so, run `" + Main.CMD_PREFIX + getParentCommand().getName() + " "
-				+ getParentCommand().getSyntax()[2].replace("confirmlink|", "").replace("<confirmation_code>", token)
+				+ "If so, run `" + Main.CMD_PREFIX + getParentCommand().getName() + " confirmunlink " + token
 				+ "` to confirm your action.");
 	}
 

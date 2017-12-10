@@ -81,8 +81,6 @@ public class DiscordCommandHandler {
 		registerCommand(new ModListCommand(EnumSet.of(BotRoles.SERVER_ADMIN)));
 		
 		// Beta-testers commands
-		registerCommand(new LevelPassCommand(EnumSet.of(BotRoles.BETA_TESTER)));
-		registerCommand(new LeaderboardCommand(EnumSet.of(BotRoles.BETA_TESTER)));
 		
 		// Public commands
 		registerCommand(new PingCommand(EnumSet.of(BotRoles.USER)));
@@ -98,6 +96,8 @@ public class DiscordCommandHandler {
 		registerCommand(new CheckModCommand(EnumSet.of(BotRoles.USER)));
 		registerCommand(new DailyCommand(EnumSet.of(BotRoles.USER)));
 		registerCommand(new WeeklyCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new LevelPassCommand(EnumSet.of(BotRoles.USER)));
+		registerCommand(new ServerOnlyCommand(new LeaderboardCommand(EnumSet.of(BotRoles.USER))));
 	}
 	
 	/**

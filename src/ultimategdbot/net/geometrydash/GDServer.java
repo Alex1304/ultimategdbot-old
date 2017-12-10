@@ -188,4 +188,16 @@ public abstract class GDServer {
 				"gameVersion=21&binaryVersion=34&gdw=0&secret=Wmfd2893gb7&weekly="
 				+ (daily ? "0" : "1"));
 	}
+	
+	public static String fetchBotPrivateMessages() throws IOException {
+		return sendRequest("getGJMessages20.php",
+				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID
+				+ "&gjp=" + AppParams.GD_ACCOUNT_GJP + "&page=0&total=0&secret=" + SECRET);
+	}
+	
+	public static String downloadBotPrivateMessageByID(long messageID) throws IOException {
+		return sendRequest("downloadGJMessage20.php",
+				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID
+				+ "&gjp=" + AppParams.GD_ACCOUNT_GJP + "&messageID=" + messageID + "&secret=" + SECRET);
+	}
 }
