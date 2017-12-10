@@ -1,1 +1,1 @@
-worker: java $JAVA_OPTS -jar target/ultimategdbot-2.2-jar-with-dependencies.jar
+worker: java $JAVA_OPTS -jar target/ultimategdbot-2.3-jar-with-dependencies.jar
