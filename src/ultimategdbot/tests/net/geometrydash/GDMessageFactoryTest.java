@@ -1,4 +1,4 @@
-package ultimategdbot.tests;
+package ultimategdbot.tests.net.geometrydash;
 
 import static org.junit.Assert.*;
 
