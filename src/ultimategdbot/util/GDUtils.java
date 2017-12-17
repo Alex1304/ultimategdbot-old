@@ -236,13 +236,42 @@ public abstract class GDUtils {
 		return new String(result);
 	}
 	
+	/**
+	 * Fetches the ID of the current Daily level (if true is given), or Weekly
+	 * demon (if false is given).
+	 * 
+	 * @param daily
+	 *            - whether the desired level is the Daily level or Weekly demon
+	 * @return the ID of the current Daily/Weekly, or -1 if no level is
+	 *         available at this time
+	 * @throws IOException
+	 *             if not able to connect to Geometry Dash servers.
+	 */
 	public static int fetchCurrentTimelyID(boolean daily) throws IOException {
 		String dailyInfo = GDServer.fetchTimelyLevelInfo(daily);
+		
+		if (dailyInfo.isEmpty())
+			return -1;
+		
 		return Integer.parseInt(dailyInfo.split("\\|")[0]) - (daily ? 0 : 100000);
 	}
 	
+	/**
+	 * Returns the time remaining before the next Daily (if true is given) or
+	 * next Weekly (if false is given).
+	 * 
+	 * @param daily
+	 *            - whether the desired level is the Daily level or Weekly demon
+	 * @return the time remaining formatted as "x days x hours x minutes x
+	 *         seconds", or "(indefinite time)" if the info could not be found.
+	 * @throws IOException
+	 *             if not able to connect to Geometry Dash servers.
+	 */
 	public static String fetchNextTimelyCooldown(boolean daily) throws IOException {
 		String dailyInfo = GDServer.fetchTimelyLevelInfo(daily);
+		if (dailyInfo.isEmpty())
+			return "(indefinite time)";
+		
 		long result = Long.parseLong(dailyInfo.split("\\|")[1]);
 		
 		long days = result / (24*60*60);
