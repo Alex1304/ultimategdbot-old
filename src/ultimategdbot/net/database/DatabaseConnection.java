@@ -49,8 +49,7 @@ public class DatabaseConnection {
 			return conn;
 		} catch (Exception e) {
 			e.printStackTrace();
-			AppTools.sendDebugPMToSuperadmin(
-					"Failed to create a connection instance to the database: " + "`" + e.getLocalizedMessage() + "`");
+			System.exit(2);
 		}
 
 		return null;

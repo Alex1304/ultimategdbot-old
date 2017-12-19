@@ -4,6 +4,7 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.RequestBuffer;
 import ultimategdbot.commands.DiscordCommandHandler;
 import ultimategdbot.discordevents.DiscordEvents;
 import ultimategdbot.gdevents.dispatcher.GDEventDispatcher;
@@ -111,8 +112,12 @@ public class Main {
 				System.err.println("Unable to load users and roles necessary for the bot to work. "
 						+ "Please make sure you have provided the correct hierarchy info in AppParams.java");
 				System.exit(1);
-			} else
-				System.out.println("Hierarchy info successfully fetched!");
+			}
+			
+			System.out.println("Hierarchy info successfully fetched!");
+			RequestBuffer.request(() -> 
+				DISCORD_ENV.client.changePlayingText("Geometry Dash | " + CMD_PREFIX + "help")
+			);
 		});
 		
 		THREADS.startAllNew();
