@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import ultimategdbot.exceptions.RawDataMalformedException;
-import ultimategdbot.util.GDLevelPassEncoder;
+import ultimategdbot.util.GDLevelPassCipher;
 import ultimategdbot.util.GDUtils;
 
 /**
@@ -99,7 +99,7 @@ public abstract class GDLevelFactory {
 				else if (structuredLvlInfo.get(27).equals("Aw=="))
 					pass = -2;
 				else
-					pass = GDLevelPassEncoder.decode(structuredLvlInfo.get(27));
+					pass = GDLevelPassCipher.decode(structuredLvlInfo.get(27));
 			}
 			
 			// Level creator info

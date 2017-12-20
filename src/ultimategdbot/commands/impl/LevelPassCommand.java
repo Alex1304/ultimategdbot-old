@@ -15,7 +15,7 @@ import ultimategdbot.net.geometrydash.GDLevelFactory;
 import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
-import ultimategdbot.util.GDLevelPassEncoder;
+import ultimategdbot.util.GDLevelPassCipher;
 
 public class LevelPassCommand extends CoreCommand {
 
@@ -37,7 +37,7 @@ public class LevelPassCommand extends CoreCommand {
 			if (level.isCopyable()) {
 				if (level.requiresPasscode())
 					AppTools.sendMessage(event.getChannel(), "Copy passcode for level " + level + ":\n**"
-							+ GDLevelPassEncoder.format(level.getPass()) + "**");
+							+ GDLevelPassCipher.format(level.getPass()) + "**");
 				else
 					throw new CommandFailedException("This level doesn't require a password to be"
 							+ " copied!");
