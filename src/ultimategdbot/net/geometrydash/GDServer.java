@@ -11,7 +11,7 @@ import java.util.Base64;
 
 import ultimategdbot.app.AppParams;
 import ultimategdbot.exceptions.InvalidCharacterException;
-import ultimategdbot.util.GDMessageBodyEncoder;
+import ultimategdbot.util.GDMessageBodyCipher;
 
 /**
  * Connection with Geometry Dash official servers is managed here
@@ -126,7 +126,7 @@ public abstract class GDServer {
 				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp="
 				+ AppParams.GD_ACCOUNT_GJP + "&toAccountID=" + recipientAccountID + "&subject="
 				+ new String(Base64.getUrlEncoder().encode(subject.getBytes())) + "&body="
-				+ GDMessageBodyEncoder.encode(body) + "&secret=" + SECRET);
+				+ GDMessageBodyCipher.encode(body) + "&secret=" + SECRET);
 	}
 	
 	/**

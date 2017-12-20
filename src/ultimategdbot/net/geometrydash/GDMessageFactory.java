@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import ultimategdbot.exceptions.RawDataMalformedException;
-import ultimategdbot.util.GDMessageBodyEncoder;
+import ultimategdbot.util.GDMessageBodyCipher;
 import ultimategdbot.util.GDUtils;
 
 /**
@@ -63,7 +63,7 @@ public abstract class GDMessageFactory {
 					Long.parseLong(structuredRD.get(2)),
 					GDRole.USER, "", "");
 			
-			String body = structuredRD.containsKey(5) ? GDMessageBodyEncoder.decode(structuredRD.get(5)) : "";
+			String body = structuredRD.containsKey(5) ? GDMessageBodyCipher.decode(structuredRD.get(5)) : "";
 			
 			result = new GDMessage(Long.parseLong(structuredRD.get(1)),
 					sender,
