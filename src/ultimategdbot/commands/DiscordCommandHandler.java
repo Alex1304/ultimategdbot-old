@@ -18,6 +18,7 @@ import ultimategdbot.commands.impl.BotMessageCommand;
 import ultimategdbot.commands.impl.ChangeBotUsernameCommand;
 import ultimategdbot.commands.impl.CheckModCommand;
 import ultimategdbot.commands.impl.CompareCommand;
+import ultimategdbot.commands.impl.DBSelectCommand;
 import ultimategdbot.commands.impl.DailyCommand;
 import ultimategdbot.commands.impl.GDEventsCommand;
 import ultimategdbot.commands.impl.HelpCommand;
@@ -75,6 +76,7 @@ public class DiscordCommandHandler {
 		registerCommand(new ShutdownCommand(EnumSet.of(BotRoles.MODERATOR)));
 		registerCommand(new KillCommand(EnumSet.of(BotRoles.MODERATOR)));
 		registerCommand(new PlayingCommand(EnumSet.of(BotRoles.MODERATOR)));
+		registerCommand(new DBSelectCommand(EnumSet.of(BotRoles.MODERATOR)));
 		
 		// Server admin commands
 		registerCommand(new ServerOnlyCommand(new SetupCommand(EnumSet.of(BotRoles.SERVER_ADMIN))));
