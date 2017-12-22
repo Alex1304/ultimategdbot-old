@@ -10,7 +10,8 @@ import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.gdevents.levels.LastAwardedDeletedGDEvent;
 import ultimategdbot.gdevents.levels.LastAwardedStateChangedGDEvent;
 import ultimategdbot.gdevents.levels.NewAwardedGDEvent;
-import ultimategdbot.net.database.dao.GDLevelDAO;
+import ultimategdbot.net.database.dao.impl.AwardedLevelDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDLevelFactory;
 import ultimategdbot.net.geometrydash.GDServer;
@@ -40,10 +41,10 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 							GDServer.fetchMostRecentLevels() :
 							GDServer.fetchNewAwardedLevels();
 							
-					GDLevelDAO gdldao = new GDLevelDAO();
+					AwardedLevelDAO gdldao = DAOFactory.getAwardedLevelDAO();
 
 					try {
-						// Convert the raw data given by the server into GDLevel
+						// Converts the raw data given by the server into GDLevel
 						// objects
 						List<GDLevel> awardedLevels = GDLevelFactory.buildAllGDLevelsSearchResults(awardedLevelsRD);
 						List<GDLevel> newAwardedLevels = new ArrayList<>();
@@ -52,12 +53,14 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 						if (lastLevelRecorded == null) {
 							lastLevelRecorded = gdldao.findLastAwarded();
 							// Checks if this level still exists on GD. If not, the level is deleted from the DB.
-							try {
-								quickLevelSearch(lastLevelRecorded.getId() + "");
-							} catch (RawDataMalformedException e) {
-								if (!lastLevelRecorded.equals(awardedLevels.get(0))) {
-									gdldao.delete(lastLevelRecorded);
-									lastLevelRecorded = null;
+							if (lastLevelRecorded != null) {
+								try {
+									quickLevelSearch(lastLevelRecorded.getId() + "");
+								} catch (RawDataMalformedException e) {
+									if (!lastLevelRecorded.equals(awardedLevels.get(0))) {
+										gdldao.delete(lastLevelRecorded);
+										lastLevelRecorded = null;
+									}
 								}
 							}
 							

@@ -15,7 +15,8 @@ import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.gdevents.users.UserModdedGDEvent;
 import ultimategdbot.gdevents.users.UserUnmoddedGDEvent;
-import ultimategdbot.net.database.dao.GDModlistDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.GDModlistDAO;
 import ultimategdbot.net.geometrydash.GDModeratorFinder;
 import ultimategdbot.net.geometrydash.GDRole;
 import ultimategdbot.net.geometrydash.GDUser;
@@ -122,7 +123,7 @@ public class UpdateModListCommand extends CoreCommand {
 		}
 		
 		// Database update
-		GDModlistDAO gdmldao = new GDModlistDAO();
+		GDModlistDAO gdmldao = DAOFactory.getGDModlistDAO();
 		List<GDUser> usersAlreadyInDB = gdmldao.findAll();
 		for (GDUser user : usersAlreadyInDB)
 			if (!RESULT.contains(user) && user.getRole() == GDRole.USER) {

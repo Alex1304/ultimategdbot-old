@@ -13,8 +13,9 @@ import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.gdevents.users.UserModdedGDEvent;
 import ultimategdbot.gdevents.users.UserUnmoddedGDEvent;
-import ultimategdbot.net.database.dao.GDModlistDAO;
-import ultimategdbot.net.database.dao.UserSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.GDModlistDAO;
+import ultimategdbot.net.database.dao.impl.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDRole;
 import ultimategdbot.net.geometrydash.GDServer;
@@ -53,20 +54,19 @@ public class CheckModCommand extends CoreCommand {
 			if (user == null)
 				throw new CommandFailedException("This user isn't linked to any Geometry Dash account.");
 			
-			GDModlistDAO gdmldao = new GDModlistDAO();
-			List<GDUser> knownMods = gdmldao.findAll();
+			GDModlistDAO gdmldao = DAOFactory.getGDModlistDAO();
 			
 			String response = "__Checking mod access for user **" + user.getName() + "**:__\n";
 			if (user.getRole() == GDRole.USER) {
 				response += Emoji.FAILED + " Failed. Nothing found.";
-				if (knownMods.contains(user)) {
+				if (gdmldao.find(user.getAccountID()) != null) {
 					gdmldao.delete(user);
 					Main.GD_EVENT_DISPATCHER.dispatch(new UserUnmoddedGDEvent(user));
 				}
 			}
 			else {
 				response += Emoji.SUCCESS + " Success! Access granted : " + user.getRole().toString();
-				if (!knownMods.contains(user)) {
+				if (gdmldao.find(user.getAccountID()) == null) {
 					gdmldao.insert(user);
 					Main.GD_EVENT_DISPATCHER.dispatch(new UserModdedGDEvent(user));
 				}

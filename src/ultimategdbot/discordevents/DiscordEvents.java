@@ -6,7 +6,7 @@ import sx.blah.discord.handle.impl.events.guild.GuildLeaveEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import ultimategdbot.app.Main;
-import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 

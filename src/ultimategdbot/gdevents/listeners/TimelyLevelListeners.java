@@ -16,8 +16,9 @@ import ultimategdbot.gdevents.levels.NewDailyLevelGDEvent;
 import ultimategdbot.gdevents.levels.NewWeeklyDemonGDEvent;
 import ultimategdbot.guildsettings.ChannelTimelyLevelsSetting;
 import ultimategdbot.guildsettings.RoleTimelyLevelsSetting;
-import ultimategdbot.net.database.dao.GuildSettingsDAO;
-import ultimategdbot.net.database.dao.UserSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
+import ultimategdbot.net.database.dao.impl.UserSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDLevel;
@@ -67,7 +68,7 @@ public abstract class TimelyLevelListeners {
 	 *            - the embed containing level info
 	 */
 	private static void notifySubscribers(String message, GDLevel level, EmbedObject levelEmbed, boolean daily) {
-		List<GuildSettings> gsList = new GuildSettingsDAO().findAll();
+		List<GuildSettings> gsList = new GuildSettingsDAO().findAllWithChannelTimelyLevelsSetup();
 
 		for (GuildSettings gs : gsList) {
 			IGuild guild = gs.getGuild();
@@ -84,7 +85,7 @@ public abstract class TimelyLevelListeners {
 					try {
 						GDUser creator = GDUserFactory.buildGDUserFromNameOrDiscordTag(level.getCreator());
 						if (creator != null) {
-							UserSettings us = new UserSettingsDAO().findByGDUserID(creator.getAccountID());
+							UserSettings us = DAOFactory.getUserSettingsDAO().findByGDUserID(creator.getAccountID());
 							if (us != null) {
 								IUser discordUser = guild.getUserByID(us.getUserID());
 								if (discordUser != null) {
@@ -94,11 +95,13 @@ public abstract class TimelyLevelListeners {
 							}
 						}
 					} catch (RawDataMalformedException | IOException e) {
+						AppTools.sendDebugPMToSuperadmin("Failed to announce Timely level to user: " + e.getLocalizedMessage());
+						e.printStackTrace();
 					}
 				}
 			} else {
 				System.err.println("[INFO] Guild deleted");
-				new GuildSettingsDAO().delete(gs);
+				DAOFactory.getGuildSettingsDAO().delete(gs);
 			}
 		}
 	}

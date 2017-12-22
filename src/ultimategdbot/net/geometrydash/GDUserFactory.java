@@ -8,7 +8,7 @@ import java.util.Map;
 
 import ultimategdbot.app.AppParams;
 import ultimategdbot.exceptions.RawDataMalformedException;
-import ultimategdbot.net.database.dao.UserSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.util.GDUtils;
 
@@ -146,7 +146,7 @@ public abstract class GDUserFactory {
 		long accountID = -1;
 		if (name.trim().matches("<@!?[0-9]+>")) {
 			long userID = Long.parseLong(name.trim().replaceAll("<@!?", "").replace(">", ""));
-			UserSettings us = new UserSettingsDAO().find(userID);
+			UserSettings us = DAOFactory.getUserSettingsDAO().find(userID);
 			if (us == null || !us.isLinkActivated())
 				accountID = -1;
 			else

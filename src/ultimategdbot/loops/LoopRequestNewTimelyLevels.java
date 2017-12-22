@@ -7,7 +7,8 @@ import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.exceptions.ThreadKilledException;
 import ultimategdbot.gdevents.levels.NewDailyLevelGDEvent;
 import ultimategdbot.gdevents.levels.NewWeeklyDemonGDEvent;
-import ultimategdbot.net.database.dao.TimelyLevelDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.TimelyLevelDAO;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDLevelFactory;
 import ultimategdbot.util.AppTools;
@@ -31,7 +32,7 @@ public class LoopRequestNewTimelyLevels implements KillableRunnable {
 		while (!thisThread.isKilled()) {
 			if (Main.DISCORD_ENV.getClient().isReady()) {
 				try {
-					TimelyLevelDAO tldao = new TimelyLevelDAO();
+					TimelyLevelDAO tldao = DAOFactory.getTimelyLevelDAO();
 					if (lastSeenDailyID == Integer.MAX_VALUE || lastSeenWeeklyID == Integer.MAX_VALUE) {
 						lastSeenDailyID = tldao.findLastTimely(true).intValue();
 						lastSeenWeeklyID = tldao.findLastTimely(false).intValue();

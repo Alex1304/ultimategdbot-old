@@ -11,7 +11,7 @@ import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.guildsettings.GuildSetting;
 import ultimategdbot.guildsettings.GuildSettingNames;
-import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 

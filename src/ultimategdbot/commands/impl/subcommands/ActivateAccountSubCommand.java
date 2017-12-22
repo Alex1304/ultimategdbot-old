@@ -12,7 +12,7 @@ import ultimategdbot.commands.SubCommand;
 import ultimategdbot.commands.impl.AccountCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.exceptions.RawDataMalformedException;
-import ultimategdbot.net.database.dao.UserSettingsDAO;
+import ultimategdbot.net.database.dao.impl.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDMessage;
 import ultimategdbot.net.geometrydash.GDMessageFactory;

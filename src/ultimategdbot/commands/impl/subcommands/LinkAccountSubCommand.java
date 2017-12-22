@@ -10,7 +10,7 @@ import ultimategdbot.commands.Command;
 import ultimategdbot.commands.SubCommand;
 import ultimategdbot.commands.impl.AccountCommand;
 import ultimategdbot.exceptions.CommandFailedException;
-import ultimategdbot.net.database.dao.UserSettingsDAO;
+import ultimategdbot.net.database.dao.impl.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDUserFactory;
 import ultimategdbot.util.AppTools;

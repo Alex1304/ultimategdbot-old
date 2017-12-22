@@ -18,9 +18,8 @@ import ultimategdbot.gdevents.levels.LastAwardedStateChangedGDEvent;
 import ultimategdbot.gdevents.levels.NewAwardedGDEvent;
 import ultimategdbot.guildsettings.ChannelAwardedLevelsSetting;
 import ultimategdbot.guildsettings.RoleAwardedLevelsSetting;
-import ultimategdbot.net.database.dao.GDLevelDAO;
-import ultimategdbot.net.database.dao.GuildSettingsDAO;
-import ultimategdbot.net.database.dao.UserSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDLevel;
@@ -55,7 +54,7 @@ public abstract class AwardedLevelListeners {
 			event.getLevelList().forEach(level -> {
 				notifySubscribers("A new level has just been rated on Geometry Dash!!!", level,
 						newAwardedLevelEmbed(level));
-				new GDLevelDAO().insert(level);
+				DAOFactory.getAwardedLevelDAO().insert(level);
 			});
 		}));
 		
@@ -63,7 +62,7 @@ public abstract class AwardedLevelListeners {
 		listeners.add(new GDEventHandler<>((LastAwardedDeletedGDEvent event) -> {
 			notifySubscribers("A level just got un-rated from Geometry Dash...", event.getLevel(),
 					unratedLevelEmbed(event.getLevel()));
-			new GDLevelDAO().delete(event.getLevel());
+			DAOFactory.getAwardedLevelDAO().delete(event.getLevel());
 		}));
 
 		// Code executed when the last known level experiences a state change on Geometry Dash
@@ -88,7 +87,7 @@ public abstract class AwardedLevelListeners {
 	 *            - the embed containing level info
 	 */
 	private static void notifySubscribers(String message, GDLevel level, EmbedObject levelEmbed) {
-		List<GuildSettings> gsList = new GuildSettingsDAO().findAll();
+		List<GuildSettings> gsList = new GuildSettingsDAO().findAllWithChannelAwardedLevelsSetup();
 		notifMessageOfLastAwardedForEachGuild.clear();
 
 		for (GuildSettings gs : gsList) {
@@ -107,7 +106,7 @@ public abstract class AwardedLevelListeners {
 					try {
 						GDUser creator = GDUserFactory.buildGDUserFromNameOrDiscordTag(level.getCreator());
 						if (creator != null) {
-							UserSettings us = new UserSettingsDAO().findByGDUserID(creator.getAccountID());
+							UserSettings us = DAOFactory.getUserSettingsDAO().findByGDUserID(creator.getAccountID());
 							if (us != null) {
 								IUser discordUser = guild.getUserByID(us.getUserID());
 								if (discordUser != null) {
@@ -117,12 +116,14 @@ public abstract class AwardedLevelListeners {
 							}
 						}
 					} catch (RawDataMalformedException | IOException e) {
+						AppTools.sendDebugPMToSuperadmin("Failed to announce Awarded level to user: " + e.getLocalizedMessage());
+						e.printStackTrace();
 					}
 				}
 				notifMessageOfLastAwardedForEachGuild.add(lastMessage);
 			} else {
 				System.err.println("[INFO] Guild deleted");
-				new GuildSettingsDAO().delete(gs);
+				DAOFactory.getGuildSettingsDAO().delete(gs);
 			}
 		}
 	}

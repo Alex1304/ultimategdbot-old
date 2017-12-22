@@ -11,7 +11,7 @@ import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.exceptions.RawDataMalformedException;
-import ultimategdbot.net.database.dao.UserSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDServer;
 import ultimategdbot.net.geometrydash.GDUser;
@@ -41,7 +41,7 @@ public class ProfileCommand extends CoreCommand {
 		try {
 			GDUser user;
 			if (args.isEmpty()) {
-				UserSettings us = new UserSettingsDAO().find(event.getAuthor().getLongID());
+				UserSettings us = DAOFactory.getUserSettingsDAO().find(event.getAuthor().getLongID());
 				if (us == null || !us.isLinkActivated())
 					throw new CommandFailedException("You are not yet linked to any Geometry Dash account.");
 				user = GDUserFactory.buildGDUserFromProfileRawData(GDServer.fetchUserProfile(us.getGdUserID()));

@@ -1,7 +1,7 @@
 package ultimategdbot.util.robtopsweakcrypto;
 
 /**
- * Implementation of the XOR Cipher encryption algorithm.
+ * Implementation of the XOR Cipher algorithm.
  * 
  * It's done by performing cyclically a XOR operation on the ASCII code of each character between the
  * message and a key.

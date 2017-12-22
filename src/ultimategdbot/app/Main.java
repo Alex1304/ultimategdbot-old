@@ -32,7 +32,7 @@ public class Main {
 	/**
 	 * Whether the bot is running in a test environment
 	 */
-	private static boolean testEnv = false;
+	private static boolean testEnv = true;
 	
 	/**
 	 * Object containing Discord environment info (client, main guild, etc)

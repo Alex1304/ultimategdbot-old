@@ -13,7 +13,8 @@ import ultimategdbot.gdevents.users.UserModdedGDEvent;
 import ultimategdbot.gdevents.users.UserUnmoddedGDEvent;
 import ultimategdbot.guildsettings.ChannelGdModeratorsSetting;
 import ultimategdbot.guildsettings.RoleGdModeratorsSetting;
-import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.util.AppTools;
@@ -59,7 +60,7 @@ public abstract class GDModeratorsListeners {
 	 *            - the embed containing level info
 	 */
 	private static void notifySubscribers(String message, GDUser user, EmbedObject embed) {
-		List<GuildSettings> guilds = new GuildSettingsDAO().findAll();
+		List<GuildSettings> guilds = new GuildSettingsDAO().findAllWithChannelGDModeratorsSetup();
 		
 		guilds.forEach(gs -> {
 			IGuild guild = gs.getGuild();
@@ -76,7 +77,7 @@ public abstract class GDModeratorsListeners {
 				
 			} else {
 				System.err.println("[INFO] Guild deleted");
-				new GuildSettingsDAO().delete(gs);
+				DAOFactory.getGuildSettingsDAO().delete(gs);
 			}
 		});
 	}

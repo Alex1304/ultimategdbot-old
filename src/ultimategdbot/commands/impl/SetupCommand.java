@@ -17,7 +17,8 @@ import ultimategdbot.guildsettings.ChannelAwardedLevelsSetting;
 import ultimategdbot.guildsettings.ChannelBotAnnouncementsSetting;
 import ultimategdbot.guildsettings.GuildSetting;
 import ultimategdbot.guildsettings.RoleAwardedLevelsSetting;
-import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
@@ -36,7 +37,7 @@ public class SetupCommand extends CoreCommand {
 		super("setup", rolesRequired);
 	}
 
-	private GuildSettingsDAO gsdao = new GuildSettingsDAO();
+	private GuildSettingsDAO gsdao = DAOFactory.getGuildSettingsDAO();
 	private volatile GuildSettings settings;
 
 	@Override

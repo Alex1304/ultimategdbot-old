@@ -20,7 +20,8 @@ import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.exceptions.RawDataMalformedException;
-import ultimategdbot.net.database.dao.UserSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.net.geometrydash.GDUserFactory;
@@ -51,7 +52,7 @@ public class LeaderboardCommand extends CoreCommand {
 		if (args.isEmpty() || !userComparators.containsKey(args.get(0)))
 			throw new CommandFailedException(this);
 		
-		UserSettingsDAO usdao = new UserSettingsDAO();
+		UserSettingsDAO usdao = DAOFactory.getUserSettingsDAO();
 		List<IUser> linkedUsers = event.getGuild().getUsers();
 		GDUser mentionnedUser = null;
 		UserSettings authorUserSettings = usdao.find(event.getAuthor().getLongID());

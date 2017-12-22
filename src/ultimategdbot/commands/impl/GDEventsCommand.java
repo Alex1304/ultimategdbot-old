@@ -13,7 +13,8 @@ import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.guildsettings.GuildSetting;
 import ultimategdbot.guildsettings.GuildSettingNames;
-import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
@@ -36,7 +37,7 @@ public class GDEventsCommand extends CoreCommand {
 		if (!args.isEmpty() && args.size() != 2)
 			throw new CommandFailedException(this);
 		
-		GuildSettingsDAO gsdao = new GuildSettingsDAO();
+		GuildSettingsDAO gsdao = DAOFactory.getGuildSettingsDAO();
 		GuildSettings settings = gsdao.findOrCreate(event.getGuild().getLongID());
 		
 		if (args.isEmpty()) {

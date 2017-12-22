@@ -9,7 +9,8 @@ import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
-import ultimategdbot.net.database.dao.GDModlistDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.GDModlistDAO;
 import ultimategdbot.net.geometrydash.GDRole;
 import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.util.AppTools;
@@ -34,7 +35,7 @@ public class ModListCommand extends CoreCommand {
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		String responseMods = "**__Moderators:__**\n", responseElders = "**__Elder Moderators:__**\n";
-		GDModlistDAO gdmldao = new GDModlistDAO();
+		GDModlistDAO gdmldao = DAOFactory.getGDModlistDAO();
 		List<GDUser> userlist = gdmldao.findAll();
 		Collections.sort(userlist, (o1, o2) -> o1.getName().compareTo(o2.getName()));
 		

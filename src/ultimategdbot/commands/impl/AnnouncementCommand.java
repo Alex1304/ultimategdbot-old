@@ -11,7 +11,8 @@ import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.guildsettings.ChannelBotAnnouncementsSetting;
 import ultimategdbot.guildsettings.TagEveryoneOnBotAnnouncementSetting;
-import ultimategdbot.net.database.dao.GuildSettingsDAO;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
+import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
@@ -31,7 +32,7 @@ public class AnnouncementCommand extends CoreCommand {
 
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
-		final GuildSettingsDAO gsdao = new GuildSettingsDAO();
+		final GuildSettingsDAO gsdao = DAOFactory.getGuildSettingsDAO();
 		
 		Main.DISCORD_ENV.getClient().getGuilds().forEach(g -> {
 			GuildSettings settings = gsdao.findOrCreate(g.getLongID());
