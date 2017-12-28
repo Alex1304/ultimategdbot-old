@@ -23,7 +23,7 @@ public class AppParams {
 	public static final String DB_USERNAME = System.getenv().get("DB_USERNAME");
 	public static final String DB_PASSWORD = System.getenv().get("DB_PASSWORD");
 	public static final String LOCAL_DB_HOST = "jdbc:mysql://localhost/ultimategdbot";
-	public static final String REMOTE_DB_HOST = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11211522";
+	public static final String REMOTE_DB_HOST = "jdbc:mysql://us-cdbr-iron-east-05.cleardb.net/heroku_1f8c3734368a235";
 	
 	// Geometry Dash bot account info
 	public static final long GD_ACCOUNT_ID = 7753855L;
