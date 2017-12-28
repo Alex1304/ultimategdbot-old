@@ -108,7 +108,18 @@ public class Main {
 		THREADS.addThread("fetch_hierarchy_info", (thread) -> {
 			while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {}
 			
-			if (!DISCORD_ENV.init()) {
+			int attempt = 1;
+			while (attempt <= 5 && !DISCORD_ENV.init()) {
+				System.out.println("Failed attempt " + attempt + " to fetch hierarchy info");
+				attempt++;
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (attempt >= 5) {
 				System.err.println("Unable to load users and roles necessary for the bot to work. "
 						+ "Please make sure you have provided the correct hierarchy info in AppParams.java");
 				System.exit(1);
