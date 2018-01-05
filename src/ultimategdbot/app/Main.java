@@ -65,16 +65,18 @@ public class Main {
 	 * @param test - Tells whether the bot should be running in test environment
 	 */
 	public static void launch(boolean test) {
+		testEnv = test;
+		System.out.println("Test environment? " + isTestEnvironment());
+		
 		if (!AppParams.checkEnvVariables()) {
 			System.err.println("You need to define all of the following system environnement variables for this "
 					+ "program to work:\n"
 					+ "BOT_TOKEN - Authentication token of the bot's Discord account\n"
 					+ "DB_USERNAME and DB_PASSWORD - Credentials to connect to database.\n"
 					+ "GD_ACCOUNT_GJP - The GJP of the Geometry Dash bot account.");
+			System.err.println("Defined environment variables: " + System.getenv().keySet());
 			return;
 		}
-		testEnv = test;
-		System.out.println("Test environment? " + isTestEnvironment());
 		// Building client
 		DISCORD_ENV.client = AppTools.createClient(AppParams.BOT_TOKEN, false);
 		
