@@ -68,7 +68,7 @@ public class DatabaseConnection {
 
 		try {
 			conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM guild_settings WHERE guild_id = -1");
+					.executeQuery("SELECT now()");
 		} catch (Exception e) {
 			AppTools.sendDebugPMToSuperadmin("Ping database failed: `" + e.getLocalizedMessage() + "`");
 			return false;
