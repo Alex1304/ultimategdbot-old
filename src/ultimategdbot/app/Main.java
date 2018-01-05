@@ -106,7 +106,12 @@ public class Main {
 		THREADS.addThread("loop_newawarded", new LoopRequestNewAwardedLevels());
 		THREADS.addThread("loop_timely", new LoopRequestNewTimelyLevels());
 		THREADS.addThread("fetch_hierarchy_info", (thread) -> {
-			while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {}
+			while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
+			}
 			
 			int attempt = 1;
 			while (attempt <= 5 && !DISCORD_ENV.init()) {

@@ -25,7 +25,7 @@ public class DiscordEvents {
 	private static List<GuildSettings> allGuildSettings = null;
 	
 	static {
-		loadAllGuildSettings();
+		new Thread(() -> loadAllGuildSettings()).start();
 	}
 	
 	/**
@@ -54,19 +54,29 @@ public class DiscordEvents {
 	@EventSubscriber
 	public void onGuildCreated(GuildCreateEvent event) {
 		new Thread(() -> {
+			while (allGuildSettings == null) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
+			}
+			
 			Optional<GuildSettings> optGS = allGuildSettings.stream()
 				.filter(gs -> event.getGuild().getLongID() == gs.getGuild().getLongID()).findAny();
-		
+			
 			if (!optGS.isPresent()) {
-				GuildSettings gs = optGS.get();
-				gs = new GuildSettings(event.getGuild());
+				GuildSettings gs = new GuildSettings(event.getGuild());
 				sendWelcomeMessage(event.getGuild());
 				DAOFactory.getGuildSettingsDAO().insert(gs); // Database insertion of the guild
 				allGuildSettings.add(gs);
-				AppTools.sendDebugPMToSuperadmin(":white_check_mark: New guild joined : " + event.getGuild().getName()
-						+ " (" + event.getGuild().getLongID() + ")");
+				String joinMsg = "New guild joined : " + event.getGuild().getName()
+						+ " (" + event.getGuild().getLongID() + ")";
+				AppTools.sendDebugPMToSuperadmin(":white_check_mark: " + joinMsg);
+				System.out.println(joinMsg);
 			}
-		});
+			
+			System.out.println("Receiving guild: " + event.getGuild().getName() + " (" + event.getGuild().getLongID() + ")");
+		}).start();
 	}
 	
 	/**
@@ -81,9 +91,11 @@ public class DiscordEvents {
 		GuildSettings gs = gsdao.find(event.getGuild().getLongID());
 		if (gs != null)
 			gsdao.delete(gs);
-
-		AppTools.sendDebugPMToSuperadmin(":negative_squared_cross_mark: Guild left : " + event.getGuild().getName()
-				+ " (" + event.getGuild().getLongID() + ")");
+		
+		String leaveMsg = "Guild left : " + event.getGuild().getName()
+				+ " (" + event.getGuild().getLongID() + ")";
+		AppTools.sendDebugPMToSuperadmin(":negative_squared_cross_mark: " + leaveMsg);
+		System.out.println(leaveMsg);
 	}
 
 	/**
