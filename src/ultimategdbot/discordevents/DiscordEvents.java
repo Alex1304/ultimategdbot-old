@@ -53,30 +53,28 @@ public class DiscordEvents {
 	 */
 	@EventSubscriber
 	public void onGuildCreated(GuildCreateEvent event) {
-		new Thread(() -> {
-			while (allGuildSettings == null) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
+		while (allGuildSettings == null) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
 			}
-			
-			Optional<GuildSettings> optGS = allGuildSettings.stream()
+		}
+
+		Optional<GuildSettings> optGS = allGuildSettings.stream()
 				.filter(gs -> event.getGuild().getLongID() == gs.getGuild().getLongID()).findAny();
-			
-			if (!optGS.isPresent()) {
-				GuildSettings gs = new GuildSettings(event.getGuild());
-				sendWelcomeMessage(event.getGuild());
-				DAOFactory.getGuildSettingsDAO().insert(gs); // Database insertion of the guild
-				allGuildSettings.add(gs);
-				String joinMsg = "New guild joined : " + event.getGuild().getName()
-						+ " (" + event.getGuild().getLongID() + ")";
-				AppTools.sendDebugPMToSuperadmin(":white_check_mark: " + joinMsg);
-				System.out.println(joinMsg);
-			}
-			
-			System.out.println("Receiving guild: " + event.getGuild().getName() + " (" + event.getGuild().getLongID() + ")");
-		}).start();
+
+		if (!optGS.isPresent()) {
+			GuildSettings gs = new GuildSettings(event.getGuild());
+			sendWelcomeMessage(event.getGuild());
+			DAOFactory.getGuildSettingsDAO().insert(gs); // Database insertion of the guild
+			allGuildSettings.add(gs);
+			String joinMsg = "New guild joined : " + event.getGuild().getName()
+					+ " (" + event.getGuild().getLongID() + ")";
+			AppTools.sendDebugPMToSuperadmin(":white_check_mark: " + joinMsg);
+			System.out.println(joinMsg);
+		}
+
+		System.out.println("Receiving guild: " + event.getGuild().getName() + " (" + event.getGuild().getLongID() + ")");
 	}
 	
 	/**
