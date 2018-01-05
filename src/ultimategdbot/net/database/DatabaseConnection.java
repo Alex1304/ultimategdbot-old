@@ -2,7 +2,7 @@ package ultimategdbot.net.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import ultimategdbot.app.AppParams;
 import ultimategdbot.app.Main;
@@ -44,7 +44,7 @@ public class DatabaseConnection {
 			if (conn != null) 
 				conn.close();
 			conn = DriverManager.getConnection((Main.isTestEnvironment() ? AppParams.LOCAL_DB_HOST
-					: AppParams.REMOTE_DB_HOST) + "?autoReconnect=true",
+					: AppParams.REMOTE_DB_HOST) + "?reconnect=true",
 					System.getenv().get("DB_USERNAME"), System.getenv().get("DB_PASSWORD"));
 			return conn;
 		} catch (Exception e) {
@@ -65,15 +65,11 @@ public class DatabaseConnection {
 	public static boolean isConnectionOK() {
 		if (conn == null)
 			return false;
-
+		
 		try {
-			conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT now()");
-		} catch (Exception e) {
-			AppTools.sendDebugPMToSuperadmin("Ping database failed: `" + e.getLocalizedMessage() + "`");
+			return conn.isValid(10);
+		} catch (SQLException e) {
 			return false;
 		}
-
-		return true;
 	}
 }

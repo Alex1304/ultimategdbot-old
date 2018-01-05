@@ -1,11 +1,15 @@
 package ultimategdbot.discordevents;
 
+import java.util.List;
+import java.util.Optional;
+
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildLeaveEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import ultimategdbot.app.Main;
+import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.util.AppTools;
@@ -17,6 +21,28 @@ import ultimategdbot.util.AppTools;
  *
  */
 public class DiscordEvents {
+	
+	private static List<GuildSettings> allGuildSettings = null;
+	
+	static {
+		loadAllGuildSettings();
+	}
+	
+	/**
+	 * Loads all guild settings at once to avoid making 1 query for every single server.
+	 * The whole bot is supposed to stop working if this method fails.
+	 */
+	private static void loadAllGuildSettings() {
+		if (allGuildSettings != null)
+			return;
+		
+		try {
+			allGuildSettings = DAOFactory.getGuildSettingsDAO().findAll();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(4);
+		}
+	}
 
 	/**
 	 * When the bot joins a new server, it inserts a new entry of guild settings
@@ -27,16 +53,20 @@ public class DiscordEvents {
 	 */
 	@EventSubscriber
 	public void onGuildCreated(GuildCreateEvent event) {
-		GuildSettingsDAO gsdao = new GuildSettingsDAO();
-		GuildSettings gs = gsdao.find(event.getGuild().getLongID());
-
-		if (gs == null) {
-			gs = new GuildSettings(event.getGuild());
-			sendWelcomeMessage(event.getGuild());
-			gsdao.insert(gs); // Database insertion of the guild
-			AppTools.sendDebugPMToSuperadmin(":white_check_mark: New guild joined : " + event.getGuild().getName()
-					+ " (" + event.getGuild().getLongID() + ")");
-		}
+		new Thread(() -> {
+			Optional<GuildSettings> optGS = allGuildSettings.stream()
+				.filter(gs -> event.getGuild().getLongID() == gs.getGuild().getLongID()).findAny();
+		
+			if (!optGS.isPresent()) {
+				GuildSettings gs = optGS.get();
+				gs = new GuildSettings(event.getGuild());
+				sendWelcomeMessage(event.getGuild());
+				DAOFactory.getGuildSettingsDAO().insert(gs); // Database insertion of the guild
+				allGuildSettings.add(gs);
+				AppTools.sendDebugPMToSuperadmin(":white_check_mark: New guild joined : " + event.getGuild().getName()
+						+ " (" + event.getGuild().getLongID() + ")");
+			}
+		});
 	}
 	
 	/**

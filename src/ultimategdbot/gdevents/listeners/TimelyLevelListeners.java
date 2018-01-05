@@ -18,7 +18,6 @@ import ultimategdbot.guildsettings.ChannelTimelyLevelsSetting;
 import ultimategdbot.guildsettings.RoleTimelyLevelsSetting;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
-import ultimategdbot.net.database.dao.impl.UserSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDLevel;

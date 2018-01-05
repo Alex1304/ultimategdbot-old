@@ -135,6 +135,10 @@ public class GuildSettingsDAO implements RelationalDAO<GuildSettings> {
 				RESULT_INSTANCE_BUILDER);
 	}
 	
+	public List<GuildSettings> findAll() {
+		return executeQuery("SELECT * FROM " + TABLE, RESULT_INSTANCE_BUILDER);
+	}
+	
 	/**
 	 * Attempts to find the guild settings for the given guild ID. If not found,
 	 * then a new entry is automatically created in database, and the
