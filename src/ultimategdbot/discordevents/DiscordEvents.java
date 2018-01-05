@@ -61,7 +61,7 @@ public class DiscordEvents {
 		}
 
 		Optional<GuildSettings> optGS = allGuildSettings.stream()
-				.filter(gs -> event.getGuild().getLongID() == gs.getGuild().getLongID()).findAny();
+				.filter(gs -> gs != null && gs.getGuild() != null && event.getGuild().getLongID() == gs.getGuild().getLongID()).findAny();
 
 		if (!optGS.isPresent()) {
 			GuildSettings gs = new GuildSettings(event.getGuild());
