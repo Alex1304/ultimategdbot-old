@@ -42,8 +42,11 @@ public interface SQLQueryExecutor<T> {
 			preparator.prepare(ps);
 			ResultSet rset = ps.executeQuery();
 			
-			while (rset.next())
-				results.add(resultInstanceBuilder.build(rset));
+			while (rset.next()) {
+				T resultInstance = resultInstanceBuilder.build(rset);
+				if (resultInstance != null)
+					results.add(resultInstance);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
