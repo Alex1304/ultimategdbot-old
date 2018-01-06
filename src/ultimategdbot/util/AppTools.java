@@ -224,6 +224,9 @@ public abstract class AppTools {
 	 *         will be returned.
 	 */
 	public static IChannel findDefaultBotChannelForGuild(IGuild guild) {
+		if (guild == null)
+			return null;
+		
 		// First channel which the bot can send messages in
 		IChannel firstChannel = null;
 		// Channel named "bot_commands" or "bot-commands"
