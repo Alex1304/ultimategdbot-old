@@ -35,6 +35,7 @@ import ultimategdbot.commands.impl.RestartCommand;
 import ultimategdbot.commands.impl.ServerCountCommand;
 import ultimategdbot.commands.impl.SetupCommand;
 import ultimategdbot.commands.impl.ShutdownCommand;
+import ultimategdbot.commands.impl.StatGrindEventCommand;
 import ultimategdbot.commands.impl.UpdateModListCommand;
 import ultimategdbot.commands.impl.WeeklyCommand;
 import ultimategdbot.util.BotRoles;
@@ -83,6 +84,7 @@ public class DiscordCommandHandler {
 		registerCommand(new ModListCommand(EnumSet.of(BotRoles.SERVER_ADMIN)));
 		
 		// Beta-testers commands
+		registerCommand(new StatGrindEventCommand(EnumSet.of(BotRoles.BETA_TESTER)));
 		
 		// Public commands
 		registerCommand(new PingCommand(EnumSet.of(BotRoles.USER)));

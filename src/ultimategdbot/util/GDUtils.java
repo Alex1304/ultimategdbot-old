@@ -20,7 +20,8 @@ import ultimategdbot.net.geometrydash.GDUser;
 
 /**
  * Utilitary class for Geometry Dash related stuff in general
- * @author alexandre
+ * 
+ * @author Alex1304
  *
  */
 public abstract class GDUtils {

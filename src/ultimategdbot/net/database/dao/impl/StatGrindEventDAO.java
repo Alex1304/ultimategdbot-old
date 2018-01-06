@@ -16,7 +16,7 @@ import ultimategdbot.net.geometrydash.Stat;
  * @author Alex1304
  *
  */
-class StatGrindEventDAO implements RelationalDAO<StatGrindEvent> {
+public class StatGrindEventDAO implements RelationalDAO<StatGrindEvent> {
 	
 	private static final String TABLE = "stat_grind_event";
 	private static final ResultInstanceBuilder<StatGrindEvent> RESULT_INSTANCE_BUILDER = rset -> {
@@ -36,7 +36,7 @@ class StatGrindEventDAO implements RelationalDAO<StatGrindEvent> {
 	@Override
 	public int insert(StatGrindEvent obj) {
 		return executeUpdate("INSERT INTO " + TABLE + " VALUES (NULL, ?, NULL, ?, ?)", ps -> {
-			ps.setLong(1, obj.getEventID());
+			ps.setLong(1, obj.getGuild().getLongID());
 			ps.setTimestamp(2, new Timestamp(obj.getDateEnd()));
 			ps.setString(3, obj.getStatType().toString());
 		});
@@ -60,6 +60,14 @@ class StatGrindEventDAO implements RelationalDAO<StatGrindEvent> {
 	@Override
 	public StatGrindEvent find(long id) {
 		List<StatGrindEvent> result = executeQuery("SELECT * FROM " + TABLE + " WHERE event_id = ?", ps -> {
+			ps.setLong(1, id);
+		}, RESULT_INSTANCE_BUILDER);
+		
+		return result.isEmpty() ? null : result.get(0);
+	}
+	
+	public StatGrindEvent findByGuild(long id) {
+		List<StatGrindEvent> result = executeQuery("SELECT * FROM " + TABLE + " WHERE guild_id = ?", ps -> {
 			ps.setLong(1, id);
 		}, RESULT_INSTANCE_BUILDER);
 		
