@@ -35,6 +35,11 @@ public class Main {
 	private static boolean testEnv = true;
 	
 	/**
+	 * Will permanently switch to true once the client is fully initlalized
+	 */
+	private static boolean clientInitialized = false;
+	
+	/**
 	 * Object containing Discord environment info (client, main guild, etc)
 	 */
 	public static final DiscordEnvironment DISCORD_ENV = new DiscordEnvironment();
@@ -136,13 +141,28 @@ public class Main {
 			RequestBuffer.request(() -> 
 				DISCORD_ENV.client.changePlayingText("Geometry Dash | " + CMD_PREFIX + "help")
 			);
+			clientInitialized = true;
 		});
 		
 		THREADS.startAllNew();
 	}
 	
+	/**
+	 * Tells whether the bot is running in test environment
+	 * 
+	 * @return boolean
+	 */
 	public static boolean isTestEnvironment() {
 		return testEnv;
+	}
+	
+	/**
+	 * Tells whether the client is ready to use
+	 * 
+	 * @return boolean
+	 */
+	public static boolean isReady() {
+		return DISCORD_ENV.client != null && DISCORD_ENV.client.isReady() && clientInitialized;
 	}
 	
 	public static class DiscordEnvironment {

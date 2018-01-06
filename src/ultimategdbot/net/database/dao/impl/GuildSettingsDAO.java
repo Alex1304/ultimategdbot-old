@@ -26,7 +26,7 @@ public class GuildSettingsDAO implements RelationalDAO<GuildSettings> {
 	
 	private static final String TABLE = "guild_settings";
 	private static final ResultInstanceBuilder<GuildSettings> RESULT_INSTANCE_BUILDER = rset -> {
-		while (!Main.DISCORD_ENV.getClient().isReady()) {
+		while (!Main.isReady()) {
 			System.out.println("Client not ready, cannot load guild settings. Retrying in 5 seconds...");
 			try {
 				Thread.sleep(5000);
@@ -36,9 +36,7 @@ public class GuildSettingsDAO implements RelationalDAO<GuildSettings> {
 		
 		GuildSettings gs = null;
 		IGuild guild = Main.DISCORD_ENV.getClient().getGuildByID(rset.getLong("guild_id"));
-		if (guild == null)
-			new GuildSettingsDAO().deleteByID(rset.getLong("guild_id"));
-		else
+		if (guild != null)
 			gs = new GuildSettings(guild,
 					guild.getChannelByID(rset.getLong("channel_awarded_levels")),
 					guild.getChannelByID(rset.getLong("channel_gd_moderators")),

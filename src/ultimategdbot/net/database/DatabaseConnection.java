@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import ultimategdbot.app.AppParams;
 import ultimategdbot.app.Main;
-import ultimategdbot.util.AppTools;
 
 /**
  * This class is used to get an instance of the connection to the database using
@@ -25,10 +24,8 @@ public class DatabaseConnection {
 	 * @return the current Connection instance to database.
 	 */
 	public static synchronized Connection getInstance() {
-		if (!isConnectionOK()) {
+		if (!isConnectionOK())
 			conn = createInstance();
-			AppTools.sendDebugPMToSuperadmin(":white_check_mark: A new database connection instance has been successfully created!");
-		}
 
 		return conn;
 	}
