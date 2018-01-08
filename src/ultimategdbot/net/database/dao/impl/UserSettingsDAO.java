@@ -1,10 +1,13 @@
 package ultimategdbot.net.database.dao.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import sx.blah.discord.handle.obj.IUser;
 import ultimategdbot.net.database.dao.RelationalDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.database.util.ResultInstanceBuilder;
+import ultimategdbot.net.geometrydash.Stat;
 
 /**
  * DAO that manages user settings
@@ -13,7 +16,7 @@ import ultimategdbot.net.database.util.ResultInstanceBuilder;
  *
  */
 public class UserSettingsDAO implements RelationalDAO<UserSettings> {
-	
+
 	private static final String TABLE = "user_settings";
 	private static final ResultInstanceBuilder<UserSettings> RESULT_INSTANCE_BUILDER = rset -> {
 		return new UserSettings(rset.getLong("user_id"),
@@ -96,5 +99,20 @@ public class UserSettingsDAO implements RelationalDAO<UserSettings> {
 		}
 		
 		return us;
+	}
+	
+	/**
+	 * Fetches and returns the user settings for all of the Discord users specified
+	 * if they have a linked account.
+	 * 
+	 * @param users - The list of Discord users to find settings
+	 * @return a List of UserSettings non-null instances
+	 */
+	public List<UserSettings> findForLinkedUsers(List<IUser> users, Stat sortOnStat) {
+		List<UserSettings> result = executeQuery("SELECT * FROM " + TABLE, RESULT_INSTANCE_BUILDER);
+		return result.stream()
+				.filter(us -> users.stream().map(IUser::getLongID).collect(Collectors.toList()).contains(us.getUserID()))
+				.filter(us -> us != null && us.isLinkActivated())
+				.collect(Collectors.toList());
 	}
 }
