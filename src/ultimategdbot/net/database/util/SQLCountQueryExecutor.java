@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ultimategdbot.net.database.DatabaseConnection;
+import ultimategdbot.util.AppTools;
 
 /**
  * Provides default methods to count SQL query results.
@@ -35,6 +36,8 @@ public interface SQLCountQueryExecutor {
 			return rset.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			AppTools.sendDebugPMToSuperadmin("Exception related to database thrown: `"
+					+ e.getLocalizedMessage() + "`");
 			return -1;
 		}
 	}

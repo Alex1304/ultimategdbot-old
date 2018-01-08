@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ultimategdbot.net.database.DatabaseConnection;
+import ultimategdbot.util.AppTools;
 
 /**
  * Provides default methods to execute a SQL query that is supposed to return a set of results.
@@ -49,6 +50,8 @@ public interface SQLQueryExecutor<T> {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			AppTools.sendDebugPMToSuperadmin("Exception related to database thrown: `"
+					+ e.getLocalizedMessage() + "`");
 			return null;
 		}
 		

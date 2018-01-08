@@ -18,7 +18,8 @@ import ultimategdbot.util.KillableThread;
 
 /**
  * Checks regularly if there are new Daily and Weekly levels
- * @author alexandre
+ * 
+ * @author Alex1304
  *
  */
 public class LoopRequestNewTimelyLevels implements KillableRunnable {

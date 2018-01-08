@@ -1,7 +1,6 @@
 package ultimategdbot.commands.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -25,6 +24,7 @@ import ultimategdbot.net.database.dao.impl.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.net.geometrydash.GDUserFactory;
+import ultimategdbot.net.geometrydash.Stat;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.Emoji;
@@ -37,7 +37,7 @@ import ultimategdbot.util.Emoji;
  *
  */
 public class LeaderboardCommand extends CoreCommand {
-	
+
 	private static Map<String, Comparator<GDUser>> userComparators = initComparators();
 	private static Map<String, Emoji> userStatEmojis = initEmojis();
 	private static Map<String, Function<GDUser, Integer>> userStatFunctions = initStatFunctions();
@@ -53,7 +53,7 @@ public class LeaderboardCommand extends CoreCommand {
 			throw new CommandFailedException(this);
 		
 		UserSettingsDAO usdao = DAOFactory.getUserSettingsDAO();
-		List<IUser> linkedUsers = event.getGuild().getUsers();
+		List<IUser> usersInGuild = event.getGuild().getUsers();
 		GDUser mentionnedUser = null;
 		UserSettings authorUserSettings = usdao.find(event.getAuthor().getLongID());
 		GDUser authorUser = authorUserSettings != null ? authorUserSettings.getGDUserInstance() : null;
@@ -68,12 +68,12 @@ public class LeaderboardCommand extends CoreCommand {
 						+ "moment. Please try again later.");
 			}
 		
-		List<UserSettings> usList = new ArrayList<>(linkedUsers.stream()
-				.map(u -> usdao.find(u.getLongID()))
-				.filter(us -> us != null && us.isLinkActivated() && us.getGDUserInstance() != null)
+		List<UserSettings> usList = usdao.findForLinkedUsers(usersInGuild, Stat.valueOf(args.get(0).toUpperCase()))
+				.stream()
+				.filter(us -> us.getGDUserInstance() != null)
 				.sorted((us1, us2) -> userComparators.get(args.get(0))
 						.compare(us1.getGDUserInstance(), us2.getGDUserInstance()))
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList());
 		Collections.reverse(usList);
 		
 		// To be used in lambda expressions to avoid the "variable must be final" error.
@@ -108,23 +108,6 @@ public class LeaderboardCommand extends CoreCommand {
 		AppTools.sendMessage(event.getChannel(), message);
 	}
 	
-	/**
-	 * Initializes the static map of comparators for GD users.
-	 * 
-	 * @return the initialized {@link Map}
-	 */
-	private static Map<String, Comparator<GDUser>> initComparators() {
-		Map<String, Comparator<GDUser>> map = new HashMap<>();
-		
-		map.put("stars", Comparator.comparing(GDUser::getStars));
-		map.put("diamonds", Comparator.comparing(GDUser::getDiamonds));
-		map.put("ucoins", Comparator.comparing(GDUser::getUserCoins));
-		map.put("scoins", Comparator.comparing(GDUser::getSecretCoins));
-		map.put("demons", Comparator.comparing(GDUser::getDemons));
-		map.put("cp", Comparator.comparing(GDUser::getCreatorPoints));
-		
-		return map;
-	}
 	
 	/**
 	 * Initializes the static map of emojis for GD user stats.
@@ -157,6 +140,24 @@ public class LeaderboardCommand extends CoreCommand {
 		map.put("scoins", u -> u.getSecretCoins());
 		map.put("demons", u -> u.getDemons());
 		map.put("cp", u -> u.getCreatorPoints());
+		
+		return map;
+	}
+	
+	/**
+	 * Initializes the static map of comparators for GD users.
+	 * 
+	 * @return the initialized {@link Map}
+	 */
+	private static Map<String, Comparator<GDUser>> initComparators() {
+		Map<String, Comparator<GDUser>> map = new HashMap<>();
+		
+		map.put("stars", Comparator.comparing(GDUser::getStars));
+		map.put("diamonds", Comparator.comparing(GDUser::getDiamonds));
+		map.put("ucoins", Comparator.comparing(GDUser::getUserCoins));
+		map.put("scoins", Comparator.comparing(GDUser::getSecretCoins));
+		map.put("demons", Comparator.comparing(GDUser::getDemons));
+		map.put("cp", Comparator.comparing(GDUser::getCreatorPoints));
 		
 		return map;
 	}
