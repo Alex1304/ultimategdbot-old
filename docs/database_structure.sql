@@ -1,45 +1,32 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.4.1deb2ubuntu2
--- http://www.phpmyadmin.net
+-- version 4.7.1
+-- https://www.phpmyadmin.net/
 --
--- Client :  localhost
--- Généré le :  Sam 16 Décembre 2017 à 14:33
--- Version du serveur :  5.7.20-0ubuntu0.16.04.1
+-- Hôte : us-cdbr-iron-east-05.cleardb.net
+-- Généré le :  mar. 09 jan. 2018 à 20:51
+-- Version du serveur :  5.6.36-log
 -- Version de PHP :  7.0.22-0ubuntu0.16.04.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
 --
--- Base de données :  `ultimategdbot`
+-- Base de données :  `heroku_1f8c3734368a235`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `gd_level`
+-- Structure de la table `awarded_level`
 --
 
-CREATE TABLE `gd_level` (
+CREATE TABLE `awarded_level` (
   `insert_date` datetime NOT NULL,
   `level_id` bigint(20) NOT NULL,
-  `featured` int(11) NOT NULL,
-  `is_epic` tinyint(1) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `creator` varchar(255) DEFAULT NULL,
-  `description` text,
-  `difficulty` smallint(6) NOT NULL,
-  `demon_difficulty` smallint(6) NOT NULL,
-  `stars` smallint(6) NOT NULL,
   `downloads` bigint(20) NOT NULL,
-  `likes` bigint(20) NOT NULL,
-  `length` smallint(6) NOT NULL
+  `likes` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -50,7 +37,7 @@ CREATE TABLE `gd_level` (
 
 CREATE TABLE `gd_mod_list` (
   `account_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -92,8 +79,8 @@ CREATE TABLE `join_sge` (
 CREATE TABLE `stat_grind_event` (
   `event_id` bigint(20) NOT NULL,
   `guild_id` bigint(20) NOT NULL,
-  `date_begin` datetime NOT NULL,
-  `date_end` datetime NOT NULL,
+  `date_begin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_end` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `stat_type` varchar(8) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -105,7 +92,7 @@ CREATE TABLE `stat_grind_event` (
 
 CREATE TABLE `timely_level` (
   `id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -121,13 +108,13 @@ CREATE TABLE `user_settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Index pour les tables exportées
+-- Index pour les tables déchargées
 --
 
 --
--- Index pour la table `gd_level`
+-- Index pour la table `awarded_level`
 --
-ALTER TABLE `gd_level`
+ALTER TABLE `awarded_level`
   ADD PRIMARY KEY (`level_id`);
 
 --
@@ -170,7 +157,16 @@ ALTER TABLE `user_settings`
   ADD PRIMARY KEY (`user_id`);
 
 --
--- Contraintes pour les tables exportées
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `stat_grind_event`
+--
+ALTER TABLE `stat_grind_event`
+  MODIFY `event_id` bigint(20) NOT NULL AUTO_INCREMENT;
+--
+-- Contraintes pour les tables déchargées
 --
 
 --
@@ -185,7 +181,4 @@ ALTER TABLE `join_sge`
 --
 ALTER TABLE `stat_grind_event`
   ADD CONSTRAINT `fk_guild_id` FOREIGN KEY (`guild_id`) REFERENCES `guild_settings` (`guild_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+COMMIT;
