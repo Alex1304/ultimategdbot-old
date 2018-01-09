@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import ultimategdbot.net.database.DatabaseConnection;
+import ultimategdbot.util.AppTools;
 
 /**
  * Provides a default method to execute a SQL statement meant to perform
@@ -29,6 +30,8 @@ public interface SQLUpdateExecutor {
 			return ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			AppTools.sendDebugPMToSuperadmin("Exception related to database thrown: `"
+					+ e.getLocalizedMessage() + "`");
 			return -1;
 		}
 	}
