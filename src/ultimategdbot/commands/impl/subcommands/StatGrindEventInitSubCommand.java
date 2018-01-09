@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.SubCommand;
 import ultimategdbot.commands.impl.StatGrindEventCommand;
@@ -51,7 +52,8 @@ public class StatGrindEventInitSubCommand extends SubCommand<StatGrindEventComma
 		DAOFactory.getStatGrindEventDAO().insert(sge);
 		
 		AppTools.sendMessage(event.getChannel(), ":white_check_mark: Event successfully initialized! It will begin "
-					+ "tomorrow and will end in " + duration + " days!");
+					+ "tomorrow and will end in " + duration + " days! Users can already join the event by using `"
+					+ Main.CMD_PREFIX + getParentCommand().getName() + " join`!");
 	}
 	
 	private static Stat statByName(String name) {

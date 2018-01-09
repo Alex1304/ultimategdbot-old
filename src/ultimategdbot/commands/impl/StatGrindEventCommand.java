@@ -51,14 +51,14 @@ public class StatGrindEventCommand extends CoreCommand {
 
 	@Override
 	public String[] getSyntax() {
-		String[] syn = { "init stars|diamonds|ucoins|scoins|demons|cp <duration_in_days>", "rank", "cancel", "join", "leave", 
+		String[] syn = { "init stars|diamonds|ucoins|scoins|demons|cp <duration_in_days>", "status", "rank", "cancel", "join", "leave", 
 				"kick <user>"};
 		return syn;
 	}
 
 	@Override
 	public String[] getExamples() {
-		String[] ex = { "init stars 7", "init demons 30", "rank", "cancel", "join", "leave", "kick Hacker123" };
+		String[] ex = { "init stars 7", "init demons 30", "status", "rank", "cancel", "join", "leave", "kick Hacker123" };
 		return ex;
 	}
 
