@@ -68,13 +68,17 @@ public class LeaderboardCommand extends CoreCommand {
 						+ "moment. Please try again later.");
 			}
 		
-		List<UserSettings> usList = usdao.findForLinkedUsers(usersInGuild, Stat.valueOf(args.get(0).toUpperCase()))
+		List<UserSettings> usList = usdao.findForLinkedUsers(usersInGuild, Stat.valueOf(args.get(0).toUpperCase()));
+		int usersFound = usList.size();
+		usList = usList
 				.stream()
 				.filter(us -> us.getGDUserInstance() != null)
 				.sorted((us1, us2) -> userComparators.get(args.get(0))
 						.compare(us1.getGDUserInstance(), us2.getGDUserInstance()))
 				.collect(Collectors.toList());
 		Collections.reverse(usList);
+		
+		int nbUnavailableUsers = usersFound - usList.size();
 		
 		// To be used in lambda expressions to avoid the "variable must be final" error.
 		final GDUser finalMentionnedUser = mentionnedUser;
@@ -89,6 +93,8 @@ public class LeaderboardCommand extends CoreCommand {
 		message += "Showing " + (mentionnedUser == null ? "Top " + MAX_ENTRY_COUNT
 				: "view for user " + mentionnedUser.getName())
 				+ ", " + userStatEmojis.get(args.get(0)) + " leaderboard\n\n";
+		if (nbUnavailableUsers > 0)
+			message += ":warning: **" + nbUnavailableUsers + "** users not displaying because failed to load their in-game profile";
 		
 		for (Entry<Integer, UserSettings> entry : leaderboard.entrySet()) {
 			GDUser user = entry.getValue().getGDUserInstance();
