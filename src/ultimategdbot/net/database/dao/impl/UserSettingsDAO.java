@@ -111,8 +111,7 @@ public class UserSettingsDAO implements RelationalDAO<UserSettings> {
 	public List<UserSettings> findForLinkedUsers(List<IUser> users, Stat sortOnStat) {
 		List<UserSettings> result = executeQuery("SELECT * FROM " + TABLE, RESULT_INSTANCE_BUILDER);
 		return result.stream()
-				.filter(us -> users.stream().map(IUser::getLongID).collect(Collectors.toList()).contains(us.getUserID()))
-				.filter(us -> us != null && us.isLinkActivated())
+				.filter(us -> us.isLinkActivated() && users.stream().anyMatch(user -> user.getLongID() == us.getUserID()))
 				.collect(Collectors.toList());
 	}
 }
