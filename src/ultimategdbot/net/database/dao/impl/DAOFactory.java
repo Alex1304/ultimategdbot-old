@@ -15,6 +15,7 @@ public abstract class DAOFactory {
 	private static final UserSettingsDAO USER_SETTINGS_DAO = new UserSettingsDAO();
 	private static final TimelyLevelDAO TIMELY_LEVEL_DAO = new TimelyLevelDAO();
 	private static final StatGrindEventDAO STAT_GRIND_EVENT_DAO = new StatGrindEventDAO();
+	private static final JoinSGEDAO JOIN_SGE_DAO = new JoinSGEDAO();
 	
 	/**
 	 * Gets the DAO instance for awarded levels
@@ -68,5 +69,14 @@ public abstract class DAOFactory {
 	 */
 	public static StatGrindEventDAO getStatGrindEventDAO() {
 		return STAT_GRIND_EVENT_DAO;
+	}
+	
+	/**
+	 * Gets the DAO instance for users joining stat grind events
+	 * 
+	 * @return a DAO instance
+	 */
+	public static JoinSGEDAO getJoinSGEDAO() {
+		return JOIN_SGE_DAO;
 	}
 }

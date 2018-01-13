@@ -9,6 +9,8 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.commands.impl.subcommands.StatGrindEventInitSubCommand;
+import ultimategdbot.commands.impl.subcommands.StatGrindEventJoinSubCommand;
+import ultimategdbot.commands.impl.subcommands.StatGrindEventLeaveSubCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.util.BotRoles;
 
@@ -67,6 +69,8 @@ public class StatGrindEventCommand extends CoreCommand {
 		Map<String, Command> map = new HashMap<>();
 		
 		map.put("init", new StatGrindEventInitSubCommand(this));
+		map.put("join", new StatGrindEventJoinSubCommand(this));
+		map.put("leave", new StatGrindEventLeaveSubCommand(this));
 		
 		return map;
 	}
