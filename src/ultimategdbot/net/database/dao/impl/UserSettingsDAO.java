@@ -7,7 +7,6 @@ import sx.blah.discord.handle.obj.IUser;
 import ultimategdbot.net.database.dao.RelationalDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.database.util.ResultInstanceBuilder;
-import ultimategdbot.net.geometrydash.Stat;
 
 /**
  * DAO that manages user settings
@@ -108,7 +107,7 @@ public class UserSettingsDAO implements RelationalDAO<UserSettings> {
 	 * @param users - The list of Discord users to find settings
 	 * @return a List of UserSettings non-null instances
 	 */
-	public List<UserSettings> findForLinkedUsers(List<IUser> users, Stat sortOnStat) {
+	public List<UserSettings> findForLinkedUsers(List<IUser> users) {
 		List<UserSettings> result = executeQuery("SELECT * FROM " + TABLE, RESULT_INSTANCE_BUILDER);
 		return result.stream()
 				.filter(us -> us.isLinkActivated() && users.stream().anyMatch(user -> user.getLongID() == us.getUserID()))

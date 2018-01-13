@@ -2,6 +2,8 @@ package ultimategdbot.net.geometrydash;
 
 import java.util.function.Function;
 
+import ultimategdbot.util.Emoji;
+
 /**
  * Enumerates the different game stats
  * 
@@ -9,21 +11,27 @@ import java.util.function.Function;
  *
  */
 public enum Stat {
-	STARS(GDUser::getStars),
-	DIAMONDS(GDUser::getDiamonds),
-	UCOINS(GDUser::getUserCoins),
-	SCOINS(GDUser::getSecretCoins),
-	DEMONS(GDUser::getDemons),
-	CP(GDUser::getCreatorPoints);
+	STARS(GDUser::getStars, Emoji.STAR),
+	DIAMONDS(GDUser::getDiamonds, Emoji.DIAMOND),
+	UCOINS(GDUser::getUserCoins, Emoji.USERCOIN),
+	SCOINS(GDUser::getSecretCoins, Emoji.SECRETCOIN),
+	DEMONS(GDUser::getDemons, Emoji.DEMON),
+	CP(GDUser::getCreatorPoints, Emoji.CREATOR_POINTS);
 	
 	/**
-	 * Function that associates a GD user with the stat represented by the
-	 * current object
+	 * Function that returns the value of the stat represented by the current
+	 * object for the GDUser given as input
 	 */
-	private Function<GDUser, Integer> userStat;
+	private Function<GDUser, Integer> function;
 	
-	private Stat(Function<GDUser, Integer> userStat) {
-		this.userStat = userStat;
+	/**
+	 * Emoji that represents the stat
+	 */
+	private Emoji emoji;
+	
+	private Stat(Function<GDUser, Integer> function, Emoji emoji) {
+		this.function = function;
+		this.emoji = emoji;
 	}
 	
 	/**
@@ -35,6 +43,19 @@ public enum Stat {
 	 * @return int
 	 */
 	public int forUser(GDUser user) {
-		return this.userStat.apply(user);
+		return this.function.apply(user);
+	}
+	
+	public Function<GDUser, Integer> getFunction() {
+		return function;
+	}
+
+	/**
+	 * Gets the emoji that represents the stat
+	 * 
+	 * @return Emoji
+	 */
+	public Emoji getEmoji() {
+		return emoji;
 	}
 }

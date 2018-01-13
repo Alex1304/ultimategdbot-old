@@ -59,7 +59,7 @@ public class StatGrindEventDAO implements RelationalDAO<StatGrindEvent> {
 
 	@Override
 	public StatGrindEvent find(long id) {
-		List<StatGrindEvent> result = executeQuery("SELECT * FROM " + TABLE + " WHERE event_id = ?", ps -> {
+		List<StatGrindEvent> result = executeQuery("SELECT * FROM " + TABLE + " WHERE event_id = ? AND date_end > now()", ps -> {
 			ps.setLong(1, id);
 		}, RESULT_INSTANCE_BUILDER);
 		
@@ -67,7 +67,7 @@ public class StatGrindEventDAO implements RelationalDAO<StatGrindEvent> {
 	}
 	
 	public StatGrindEvent findByGuild(long id) {
-		List<StatGrindEvent> result = executeQuery("SELECT * FROM " + TABLE + " WHERE guild_id = ?", ps -> {
+		List<StatGrindEvent> result = executeQuery("SELECT * FROM " + TABLE + " WHERE guild_id = ? AND date_end > now()", ps -> {
 			ps.setLong(1, id);
 		}, RESULT_INSTANCE_BUILDER);
 		

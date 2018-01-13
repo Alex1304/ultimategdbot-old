@@ -404,4 +404,19 @@ public abstract class AppTools {
 		return result;
 	}
 	
+	/**
+	 * Returns a String human-readable format for the given time in milliseconds
+	 * 
+	 * @param millis - time in milliseconds to format
+	 * @return the formatted String
+	 */
+	public static String formatMillis(long millis) {
+		long seconds = (millis / 1000) % 60;
+		long minutes = (millis / (1000 * 60)) % 60;
+		long hours = (millis / (1000 * 60 * 60)) % 24;
+		long days = (millis / (1000 * 60 * 60 * 24)) % 7;
+		
+		return days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+	}
+	
 }

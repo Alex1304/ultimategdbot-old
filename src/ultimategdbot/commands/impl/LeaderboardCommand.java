@@ -24,7 +24,6 @@ import ultimategdbot.net.database.dao.impl.UserSettingsDAO;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.net.geometrydash.GDUserFactory;
-import ultimategdbot.net.geometrydash.Stat;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.BotRoles;
 import ultimategdbot.util.Emoji;
@@ -68,7 +67,7 @@ public class LeaderboardCommand extends CoreCommand {
 						+ "moment. Please try again later.");
 			}
 		
-		List<UserSettings> usList = usdao.findForLinkedUsers(usersInGuild, Stat.valueOf(args.get(0).toUpperCase()));
+		List<UserSettings> usList = usdao.findForLinkedUsers(usersInGuild);
 		int usersFound = usList.size();
 		usList = usList
 				.stream()
