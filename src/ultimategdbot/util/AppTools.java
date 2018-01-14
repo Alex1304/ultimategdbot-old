@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -417,6 +418,33 @@ public abstract class AppTools {
 		long days = (millis / (1000 * 60 * 60 * 24)) % 7;
 		
 		return days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+	}
+	
+	/**
+	 * Attempts to parse a user from the given text. An exception is thrown if
+	 * failed.
+	 * 
+	 * @param text
+	 *            - the text to parse
+	 * @return a Discord user
+	 * @throws ParseException
+	 *             if the text cannot be parsed to a valid user.
+	 */
+	public static IUser parseUser(String text) throws ParseException {
+		IUser user = null;
+		
+		try {
+			user = Main.DISCORD_ENV.getClient().fetchUser(Long.parseLong(text));
+		} catch (NumberFormatException e) {
+			if (text.matches("<@!?[0-9]{1,20}>"))
+				user = Main.DISCORD_ENV.getClient().fetchUser(Long.parseLong(text.replaceFirst("<@!?", "")
+						.replaceFirst(">", "")));
+		}
+		
+		if (user == null)
+			throw new ParseException("Not a valid Discord user!", 0);
+		
+		return user;
 	}
 	
 }

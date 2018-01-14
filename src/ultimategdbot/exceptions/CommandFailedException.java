@@ -27,7 +27,7 @@ public class CommandFailedException extends Exception {
 		for (String s : cmd.getSyntax())
 			syntax += "`"+ Main.CMD_PREFIX + cmd.getName() + (s.isEmpty() ? "" : " ") + s + "`\n";
 		
-		this.failureReason = "Incorrect usage!\n" + syntax + "\n" + "Run `" + Main.CMD_PREFIX + "help "
+		this.failureReason = "Wrong syntax! Please try again.\n" + syntax + "\n" + "Run `" + Main.CMD_PREFIX + "help "
 			+ cmd.getName() + "` " + "if you have any trouble with this command.";
 	}
 	

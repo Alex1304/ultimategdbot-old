@@ -14,6 +14,7 @@ import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
 import ultimategdbot.commands.impl.subcommands.StatGrindEventInitSubCommand;
 import ultimategdbot.commands.impl.subcommands.StatGrindEventJoinSubCommand;
+import ultimategdbot.commands.impl.subcommands.StatGrindEventKickSubCommand;
 import ultimategdbot.commands.impl.subcommands.StatGrindEventLeaveSubCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
@@ -120,6 +121,7 @@ public class StatGrindEventCommand extends CoreCommand {
 		map.put("init", new StatGrindEventInitSubCommand(this));
 		map.put("join", new StatGrindEventJoinSubCommand(this));
 		map.put("leave", new StatGrindEventLeaveSubCommand(this));
+		map.put("kick", new StatGrindEventKickSubCommand(this));
 		
 		return map;
 	}

@@ -6,7 +6,7 @@ import java.util.Map;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
-import ultimategdbot.commands.SubCommand;
+import ultimategdbot.commands.ServerAdminOnlySubCommand;
 import ultimategdbot.commands.impl.StatGrindEventCommand;
 import ultimategdbot.exceptions.CommandFailedException;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
@@ -18,9 +18,8 @@ import ultimategdbot.util.AppTools;
  * Sub-command for stat grind event which initializes a new event.
  * 
  * @author Alex1304
- *
  */
-public class StatGrindEventInitSubCommand extends SubCommand<StatGrindEventCommand> {
+public class StatGrindEventInitSubCommand extends ServerAdminOnlySubCommand<StatGrindEventCommand> {
 	
 	private static final long MILLISECONDS_IN_ONE_DAY = 86_400_000;
 
@@ -29,7 +28,7 @@ public class StatGrindEventInitSubCommand extends SubCommand<StatGrindEventComma
 	}
 
 	@Override
-	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
+	public void runServAdminSubCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		Stat stat = null;
 		if (args.size() < 2 || (stat = statByName(args.get(0))) == null)
 			throw new CommandFailedException(this.getParentCommand());
