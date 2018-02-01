@@ -85,10 +85,40 @@ public class Main {
 		// Building client
 		DISCORD_ENV.client = AppTools.createClient(AppParams.BOT_TOKEN, false);
 		
-		registerThreads();
+		// Registering Discord events
+		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordEvents());
+		
+		// Registering Geometry Dash events
+		GD_EVENT_DISPATCHER.addAllListeners(AwardedLevelListeners.getListeners());
+		GD_EVENT_DISPATCHER.addAllListeners(GDModeratorsListeners.getListeners());
+		GD_EVENT_DISPATCHER.addAllListeners(TimelyLevelListeners.getListeners());
 		
 		// Let's start!
 		DISCORD_ENV.client.login();
+
+		System.out.println("Waiting for client to be ready, this can take a while...");
+		while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+			}
+		}
+		System.out.println("Client is now ready, we can fetch hierarchy info (dev server, mod/beta-testers role, etc)...");
+		
+		if (!DISCORD_ENV.init()) {
+			System.err.println("Unable to load users and roles necessary for the bot to work. "
+					+ "Please make sure you have provided the correct hierarchy info in AppParams.java");
+			System.exit(1);
+		}
+		
+		System.out.println("Hierarchy info successfully fetched!");
+		RequestBuffer.request(() -> 
+			DISCORD_ENV.client.changePlayingText("Geometry Dash | " + CMD_PREFIX + "help")
+		);
+		
+		// Adding the command handler is the last thing to do, for performance reasons.
+		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordCommandHandler());
+		registerThreads();
 	}
 	
 	/**
@@ -103,46 +133,6 @@ public class Main {
 		// Registering other threads
 		THREADS.addThread("loop_newawarded", new LoopRequestNewAwardedLevels());
 		THREADS.addThread("loop_timely", new LoopRequestNewTimelyLevels());
-		THREADS.addThread("init_app", (thread) -> {
-			while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
-			}
-			
-			int attempt = 1;
-			while (attempt <= 5 && !DISCORD_ENV.init()) {
-				System.out.println("Failed attempt " + attempt + " to fetch hierarchy info");
-				attempt++;
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			if (attempt >= 5) {
-				System.err.println("Unable to load users and roles necessary for the bot to work. "
-						+ "Please make sure you have provided the correct hierarchy info in AppParams.java");
-				System.exit(1);
-			}
-			
-			System.out.println("Hierarchy info successfully fetched!");
-			RequestBuffer.request(() -> 
-				DISCORD_ENV.client.changePlayingText("Geometry Dash | " + CMD_PREFIX + "help")
-			);
-			clientInitialized = true;
-			
-			// Registering Discord events
-			DISCORD_ENV.client.getDispatcher().registerListener(new DiscordEvents());
-			DISCORD_ENV.client.getDispatcher().registerListener(new DiscordCommandHandler());
-			
-			// Registering Geometry Dash events
-			GD_EVENT_DISPATCHER.addAllListeners(AwardedLevelListeners.getListeners());
-			GD_EVENT_DISPATCHER.addAllListeners(GDModeratorsListeners.getListeners());
-			GD_EVENT_DISPATCHER.addAllListeners(TimelyLevelListeners.getListeners());
-		});
 		
 		THREADS.startAllNew();
 	}
@@ -197,9 +187,6 @@ public class Main {
 		 * @return true if all fields are successfully initialized, false otherwise.
 		 */
 		public boolean init() {
-			if (client == null || !client.isReady())
-				return false;
-			
 			superadmin = client.fetchUser(AppParams.SUPERADMIN_ID);
 			officialDevGuild = client.getGuildByID(AppParams.OFFICIAL_DEV_GUILD_ID);
 			

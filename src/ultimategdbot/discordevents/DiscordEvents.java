@@ -1,10 +1,13 @@
 package ultimategdbot.discordevents;
 
+import java.util.List;
+
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildLeaveEvent;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.database.entities.GuildSettings;
+import ultimategdbot.net.database.util.SQLQueryExecutor;
 import ultimategdbot.util.AppTools;
 
 /**
@@ -13,7 +16,9 @@ import ultimategdbot.util.AppTools;
  * @author Alex1304
  *
  */
-public class DiscordEvents {
+public class DiscordEvents implements SQLQueryExecutor<Long> {
+	
+	public List<Long> guildIDs = null;
 
 	/**
 	 * When the bot joins a new server, it inserts a new entry of guild settings
@@ -24,16 +29,22 @@ public class DiscordEvents {
 	 */
 	@EventSubscriber
 	public void onGuildCreated(GuildCreateEvent event) {
-		GuildSettings gs = DAOFactory.getGuildSettingsDAO().find(event.getGuild().getLongID());
-		if (gs == null) {
-			gs = new GuildSettings(event.getGuild());
-			DAOFactory.getGuildSettingsDAO().insert(gs); // Database insertion of the guild
+		if (guildIDs == null) {
+			guildIDs = executeQuery("SELECT guild_id FROM guild_settings", r -> r.getLong(1));
 		}
 		
-		String joinMsg = "New guild joined : " + event.getGuild().getName()
-				+ " (" + event.getGuild().getLongID() + ")";
-		AppTools.sendDebugPMToSuperadmin(":white_check_mark: " + joinMsg);
-		System.out.println(joinMsg);
+		if (!guildIDs.contains(event.getGuild().getLongID())) {
+			GuildSettings gs = DAOFactory.getGuildSettingsDAO().find(event.getGuild().getLongID());
+			if (gs == null) {
+				gs = new GuildSettings(event.getGuild());
+				DAOFactory.getGuildSettingsDAO().insert(gs); // Database insertion of the guild
+			}
+			
+			String joinMsg = "New guild joined : " + event.getGuild().getName()
+					+ " (" + event.getGuild().getLongID() + ")";
+			AppTools.sendDebugPMToSuperadmin(":white_check_mark: " + joinMsg);
+			System.out.println(joinMsg);
+		}
 	}
 	
 	/**
