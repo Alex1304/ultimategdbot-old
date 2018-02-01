@@ -187,14 +187,35 @@ public class Main {
 		 * @return true if all fields are successfully initialized, false otherwise.
 		 */
 		public boolean init() {
+			int attempt = 1;
+			boolean res = false;
+			
+			while (attempt <= 10 && !(res = init0())) {
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+				}
+				attempt++;
+			}
+			
+			return res;
+		}
+		
+		private boolean init0() {
 			superadmin = client.fetchUser(AppParams.SUPERADMIN_ID);
+			System.out.println("Superadmin: " + (superadmin != null ? AppTools.formatDiscordUsername(superadmin) : null));
+			
 			officialDevGuild = client.getGuildByID(AppParams.OFFICIAL_DEV_GUILD_ID);
+			System.out.println("Official dev guild: " + (officialDevGuild != null ? officialDevGuild.getName() : null));
 			
 			if (officialDevGuild == null)
 				return false;
 			
 			betaTestersRole = officialDevGuild.getRoleByID(AppParams.BETA_TESTERS_ROLE_ID);
 			moderatorsRole = officialDevGuild.getRoleByID(AppParams.MODERATORS_ROLE_ID);
+
+			System.out.println("Beta-testers role: " + (betaTestersRole != null ? betaTestersRole.getName() : null));
+			System.out.println("Moderators role: " + (moderatorsRole != null ? moderatorsRole.getName() : null));
 			
 			if (superadmin == null || betaTestersRole == null || moderatorsRole == null) {
 				return false;
