@@ -42,7 +42,7 @@ public class DatabaseConnection {
 				conn.close();
 			conn = DriverManager.getConnection((Main.isTestEnvironment() ? AppParams.LOCAL_DB_HOST
 					: AppParams.REMOTE_DB_HOST) + "?reconnect=true",
-					System.getenv().get("DB_USERNAME"), System.getenv().get("DB_PASSWORD"));
+					AppParams.DB_USERNAME, AppParams.DB_PASSWORD);
 			return conn;
 		} catch (Exception e) {
 			e.printStackTrace();

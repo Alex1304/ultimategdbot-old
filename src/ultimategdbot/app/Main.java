@@ -87,15 +87,6 @@ public class Main {
 		
 		registerThreads();
 		
-		// Registering Discord events
-		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordCommandHandler());
-		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordEvents());
-		
-		// Registering Geometry Dash events
-		GD_EVENT_DISPATCHER.addAllListeners(AwardedLevelListeners.getListeners());
-		GD_EVENT_DISPATCHER.addAllListeners(GDModeratorsListeners.getListeners());
-		GD_EVENT_DISPATCHER.addAllListeners(TimelyLevelListeners.getListeners());
-		
 		// Let's start!
 		DISCORD_ENV.client.login();
 	}
@@ -125,7 +116,7 @@ public class Main {
 				System.out.println("Failed attempt " + attempt + " to fetch hierarchy info");
 				attempt++;
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -142,6 +133,23 @@ public class Main {
 				DISCORD_ENV.client.changePlayingText("Geometry Dash | " + CMD_PREFIX + "help")
 			);
 			clientInitialized = true;
+		});
+		THREADS.addThread("register_listeners", (thread) -> {
+			while (!isReady()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+				}
+			}
+			
+			// Registering Discord events
+			DISCORD_ENV.client.getDispatcher().registerListener(new DiscordEvents());
+			DISCORD_ENV.client.getDispatcher().registerListener(new DiscordCommandHandler());
+			
+			// Registering Geometry Dash events
+			GD_EVENT_DISPATCHER.addAllListeners(AwardedLevelListeners.getListeners());
+			GD_EVENT_DISPATCHER.addAllListeners(GDModeratorsListeners.getListeners());
+			GD_EVENT_DISPATCHER.addAllListeners(TimelyLevelListeners.getListeners());
 		});
 		
 		THREADS.startAllNew();
