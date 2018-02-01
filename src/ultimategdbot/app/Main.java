@@ -103,7 +103,7 @@ public class Main {
 		// Registering other threads
 		THREADS.addThread("loop_newawarded", new LoopRequestNewAwardedLevels());
 		THREADS.addThread("loop_timely", new LoopRequestNewTimelyLevels());
-		THREADS.addThread("fetch_hierarchy_info", (thread) -> {
+		THREADS.addThread("init_app", (thread) -> {
 			while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {
 				try {
 					Thread.sleep(1000);
@@ -133,14 +133,6 @@ public class Main {
 				DISCORD_ENV.client.changePlayingText("Geometry Dash | " + CMD_PREFIX + "help")
 			);
 			clientInitialized = true;
-		});
-		THREADS.addThread("register_listeners", (thread) -> {
-			while (!isReady()) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-				}
-			}
 			
 			// Registering Discord events
 			DISCORD_ENV.client.getDispatcher().registerListener(new DiscordEvents());
