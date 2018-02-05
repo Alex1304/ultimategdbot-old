@@ -92,7 +92,7 @@ public class Main {
 		long nbGuildsLoadedOld = 0;
 		do {
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(20000);
 			} catch (InterruptedException e) {
 			}
 			

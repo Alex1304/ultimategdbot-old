@@ -19,7 +19,11 @@ import ultimategdbot.util.AppTools;
  */
 public class DiscordEvents implements SQLQueryExecutor<Long>{
 
-	public List<Long> guildIDs = null;
+	public List<Long> guildIDs;
+	
+	public DiscordEvents() {
+		this.guildIDs = executeQuery("SELECT guild_id FROM guild_settings", r -> r.getLong(1));
+	}
 	
 	/**
 	 * When the bot joins a new server, it inserts a new entry of guild settings
@@ -30,9 +34,6 @@ public class DiscordEvents implements SQLQueryExecutor<Long>{
 	 */
 	@EventSubscriber
 	public void onGuildCreated(GuildCreateEvent event) {
-		if (guildIDs == null) {
-			guildIDs = executeQuery("SELECT guild_id FROM guild_settings", r -> r.getLong(1));
-		}
 		
 		if (Main.DISCORD_ENV.getSuperadmin() != null && !guildIDs.contains(event.getGuild().getLongID())) {
 			GuildSettings gs = DAOFactory.getGuildSettingsDAO().find(event.getGuild().getLongID());
