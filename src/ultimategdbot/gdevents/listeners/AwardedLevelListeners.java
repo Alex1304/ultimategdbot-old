@@ -19,7 +19,6 @@ import ultimategdbot.gdevents.levels.NewAwardedGDEvent;
 import ultimategdbot.guildsettings.ChannelAwardedLevelsSetting;
 import ultimategdbot.guildsettings.RoleAwardedLevelsSetting;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
-import ultimategdbot.net.database.dao.impl.GuildSettingsDAO;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDLevel;
@@ -87,7 +86,7 @@ public abstract class AwardedLevelListeners {
 	 *            - the embed containing level info
 	 */
 	private static void notifySubscribers(String message, GDLevel level, EmbedObject levelEmbed) {
-		List<GuildSettings> gsList = new GuildSettingsDAO().findAllWithChannelAwardedLevelsSetup();
+		List<GuildSettings> gsList = DAOFactory.getGuildSettingsDAO().findAllWithChannelAwardedLevelsSetup();
 		notifMessageOfLastAwardedForEachGuild.clear();
 
 		for (GuildSettings gs : gsList) {
@@ -111,7 +110,7 @@ public abstract class AwardedLevelListeners {
 								IUser discordUser = guild.getUserByID(us.getUserID());
 								if (discordUser != null) {
 									AppTools.sendMessage(channelAwardedLevels, "Congratulations " + discordUser.mention()
-											+ "for getting your level rated !");
+											+ " for getting your level rated !");
 								}
 							}
 						}

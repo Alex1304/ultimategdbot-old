@@ -35,11 +35,6 @@ public class Main {
 	private static boolean testEnv = true;
 	
 	/**
-	 * Will permanently switch to true once the client is fully initlalized
-	 */
-	private static boolean clientInitialized = false;
-	
-	/**
 	 * Object containing Discord environment info (client, main guild, etc)
 	 */
 	public static final DiscordEnvironment DISCORD_ENV = new DiscordEnvironment();
@@ -88,25 +83,35 @@ public class Main {
 		// Registering Discord events
 		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordEvents());
 		
-		// Registering Geometry Dash events
-		GD_EVENT_DISPATCHER.addAllListeners(AwardedLevelListeners.getListeners());
-		GD_EVENT_DISPATCHER.addAllListeners(GDModeratorsListeners.getListeners());
-		GD_EVENT_DISPATCHER.addAllListeners(TimelyLevelListeners.getListeners());
-		
 		// Let's start!
 		DISCORD_ENV.client.login();
 
-		System.out.println("Waiting for client to be ready, this can take a while...");
-		while (DISCORD_ENV.client == null || !DISCORD_ENV.client.isReady()) {
+		System.out.println("Waiting for all guilds to be available, this can take a while...");
+		
+		boolean loadingFinished = false;
+		long nbGuildsLoadedOld = 0;
+		do {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 			}
+			
+			long nbGuildsLoadedNew = DISCORD_ENV.client.getGuilds().size();
+			loadingFinished = nbGuildsLoadedNew == nbGuildsLoadedOld;
+			nbGuildsLoadedOld = nbGuildsLoadedNew;
+			
+			System.out.println("Loaded " + nbGuildsLoadedNew + " guilds...");
+		} while (!loadingFinished);
+		
+		System.out.println("All guilds are loaded, we can now fetch hierarchy info (dev server, mod/beta-testers role, etc)...");
+
+		if (!DISCORD_ENV.fetchSuperadmin()) {
+			System.err.println("Unable to fetch Superadmin which ID is declared in AppParams.java");
+			System.exit(1);
 		}
-		System.out.println("Client is now ready, we can fetch hierarchy info (dev server, mod/beta-testers role, etc)...");
 		
 		if (!DISCORD_ENV.init()) {
-			System.err.println("Unable to load users and roles necessary for the bot to work. "
+			System.err.println("Unable to load roles necessary for the bot to work. "
 					+ "Please make sure you have provided the correct hierarchy info in AppParams.java");
 			System.exit(1);
 		}
@@ -118,6 +123,11 @@ public class Main {
 		
 		// Adding the command handler is the last thing to do, for performance reasons.
 		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordCommandHandler());
+		
+		// Registering Geometry Dash events
+		GD_EVENT_DISPATCHER.addAllListeners(AwardedLevelListeners.getListeners());
+		GD_EVENT_DISPATCHER.addAllListeners(GDModeratorsListeners.getListeners());
+		GD_EVENT_DISPATCHER.addAllListeners(TimelyLevelListeners.getListeners());
 		registerThreads();
 	}
 	
@@ -152,7 +162,7 @@ public class Main {
 	 * @return boolean
 	 */
 	public static boolean isReady() {
-		return DISCORD_ENV.client != null && DISCORD_ENV.client.isReady() && clientInitialized;
+		return DISCORD_ENV.client != null && DISCORD_ENV.client.isReady();
 	}
 	
 	public static class DiscordEnvironment {
@@ -182,6 +192,12 @@ public class Main {
 			return moderatorsRole;
 		}
 		
+		public boolean fetchSuperadmin() {
+			superadmin = client.fetchUser(AppParams.SUPERADMIN_ID);
+			System.out.println("Superadmin: " + (superadmin != null ? AppTools.formatDiscordUsername(superadmin) : null));
+			return superadmin != null;
+		}
+		
 		/**
 		 * Initializes the Discord environment using the values provided in AppParams.
 		 * @return true if all fields are successfully initialized, false otherwise.
@@ -202,9 +218,6 @@ public class Main {
 		}
 		
 		private boolean init0() {
-			superadmin = client.fetchUser(AppParams.SUPERADMIN_ID);
-			System.out.println("Superadmin: " + (superadmin != null ? AppTools.formatDiscordUsername(superadmin) : null));
-			
 			officialDevGuild = client.getGuildByID(AppParams.OFFICIAL_DEV_GUILD_ID);
 			System.out.println("Official dev guild: " + (officialDevGuild != null ? officialDevGuild.getName() : null));
 			

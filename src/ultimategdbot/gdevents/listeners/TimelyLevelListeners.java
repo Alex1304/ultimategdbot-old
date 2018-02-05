@@ -89,7 +89,7 @@ public abstract class TimelyLevelListeners {
 								IUser discordUser = guild.getUserByID(us.getUserID());
 								if (discordUser != null) {
 									AppTools.sendMessage(channelTimelyLevels, "Congratulations " + discordUser.mention()
-											+ "for getting a " + (daily ? "Daily level" : "Weekly demon") + " !");
+											+ " for getting a " + (daily ? "Daily level" : "Weekly demon") + " !");
 								}
 							}
 						}
