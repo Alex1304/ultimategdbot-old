@@ -87,6 +87,11 @@ public class Main {
 		DISCORD_ENV.client.login();
 
 		System.out.println("Waiting for all guilds to be available, this can take a while...");
+
+		RequestBuffer.request(() -> {
+			DISCORD_ENV.client.idle();
+			DISCORD_ENV.client.changePlayingText("Starting...");
+		});
 		
 		boolean loadingFinished = false;
 		long nbGuildsLoadedOld = 0;
@@ -117,8 +122,8 @@ public class Main {
 		}
 		
 		System.out.println("Hierarchy info successfully fetched!");
-		RequestBuffer.request(() -> 
-			DISCORD_ENV.client.changePlayingText("Geometry Dash | " + CMD_PREFIX + "help")
+		RequestBuffer.request(() ->
+			DISCORD_ENV.client.online("Geometry Dash | " + CMD_PREFIX + "help")
 		);
 		
 		// Adding the command handler is the last thing to do, for performance reasons.
