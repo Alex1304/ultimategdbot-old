@@ -1,5 +1,7 @@
 package ultimategdbot.app;
 
+import java.util.Base64;
+
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
@@ -85,7 +87,7 @@ public class Main {
 					args[7],
 					args[8],
 					Long.parseLong(args[9]),
-					RobTopsWeakCrypto.getAccountGJPXORCipher().cipher(args[10])
+					Base64.getUrlEncoder().encodeToString(RobTopsWeakCrypto.getAccountGJPXORCipher().cipher(args[10]).getBytes())
 			);
 		} catch (NumberFormatException e) {
 			throw excpt;
