@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.util.Base64;
 
 import ultimategdbot.app.AppParams;
+import ultimategdbot.app.Main;
 import ultimategdbot.exceptions.InvalidCharacterException;
 import ultimategdbot.util.GDMessageBodyCipher;
 
@@ -123,8 +124,8 @@ public abstract class GDServer {
 	 */
 	public static String sendMessageFromBotToGDUser(long recipientAccountID, String subject, String body) throws IOException, InvalidCharacterException {
 		return sendRequest("uploadGJMessage20.php",
-				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp="
-				+ AppParams.GD_ACCOUNT_GJP + "&toAccountID=" + recipientAccountID + "&subject="
+				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + Main.getParams().getGdAccountID() + "&gjp="
+				+ Main.getParams().getGdAccountPassword() + "&toAccountID=" + recipientAccountID + "&subject="
 				+ new String(Base64.getUrlEncoder().encode(subject.getBytes())) + "&body="
 				+ GDMessageBodyCipher.encode(body) + "&secret=" + SECRET);
 	}
@@ -155,7 +156,7 @@ public abstract class GDServer {
 	 */
 	public static String fetchUserProfile(long accountID) throws IOException {
 		return sendRequest("getGJUserInfo20.php",
-				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID + "&gjp=" + AppParams.GD_ACCOUNT_GJP
+				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + Main.getParams().getGdAccountID() + "&gjp=" + Main.getParams().getGdAccountPassword()
 				+ "&targetAccountID=" + accountID + "&secret=" + SECRET);
 	}
 	
@@ -191,13 +192,13 @@ public abstract class GDServer {
 	
 	public static String fetchBotPrivateMessages() throws IOException {
 		return sendRequest("getGJMessages20.php",
-				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID
-				+ "&gjp=" + AppParams.GD_ACCOUNT_GJP + "&page=0&total=0&secret=" + SECRET);
+				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + Main.getParams().getGdAccountID()
+				+ "&gjp=" + Main.getParams().getGdAccountPassword() + "&page=0&total=0&secret=" + SECRET);
 	}
 	
 	public static String downloadBotPrivateMessageByID(long messageID) throws IOException {
 		return sendRequest("downloadGJMessage20.php",
-				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + AppParams.GD_ACCOUNT_ID
-				+ "&gjp=" + AppParams.GD_ACCOUNT_GJP + "&messageID=" + messageID + "&secret=" + SECRET);
+				"gameVersion=21&binaryVersion=34&gdw=0&accountID=" + Main.getParams().getGdAccountID()
+				+ "&gjp=" + Main.getParams().getGdAccountPassword() + "&messageID=" + messageID + "&secret=" + SECRET);
 	}
 }

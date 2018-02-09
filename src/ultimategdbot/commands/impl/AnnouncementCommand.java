@@ -1,10 +1,12 @@
 package ultimategdbot.commands.impl;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IChannel;
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
@@ -33,16 +35,22 @@ public class AnnouncementCommand extends CoreCommand {
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		final GuildSettingsDAO gsdao = DAOFactory.getGuildSettingsDAO();
+		final List<IChannel> channelsWithEveryone = new ArrayList<>();
+		final List<IChannel> channelsWithoutEveryone = new ArrayList<>();
 		
 		Main.DISCORD_ENV.getClient().getGuilds().forEach(g -> {
 			GuildSettings settings = gsdao.findOrCreate(g.getLongID());
 			boolean tagEveryone = settings.getSetting(TagEveryoneOnBotAnnouncementSetting.class).getValue();
 			
-			AppTools.sendMessage(settings.getSetting(ChannelBotAnnouncementsSetting.class).getValue(),
-					"[Announcement by the bot developer] " + AppTools.concatCommandArgs(args)
-					+ (tagEveryone ? "\n\n@everyone" : ""));
+			if (tagEveryone)
+				channelsWithEveryone.add(settings.getSetting(ChannelBotAnnouncementsSetting.class).getValue());
+			else 
+				channelsWithoutEveryone.add(settings.getSetting(ChannelBotAnnouncementsSetting.class).getValue());
 		});
 		
+		AppTools.sendMessageToAllParellel(channelsWithEveryone, "[Announcement by the bot developer] " + AppTools.concatCommandArgs(args)
+					+ "\n\n@everyone", 8);
+		AppTools.sendMessageToAllParellel(channelsWithoutEveryone, "[Announcement by the bot developer] " + AppTools.concatCommandArgs(args), 8);
 		AppTools.sendMessage(event.getChannel(), ":white_check_mark: Announcement sent to all guilds!");
 	}
 

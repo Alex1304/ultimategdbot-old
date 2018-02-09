@@ -15,6 +15,7 @@ import ultimategdbot.loops.LoopRequestNewAwardedLevels;
 import ultimategdbot.loops.LoopRequestNewTimelyLevels;
 import ultimategdbot.util.AppTools;
 import ultimategdbot.util.KillableThreadManager;
+import ultimategdbot.util.robtopsweakcrypto.RobTopsWeakCrypto;
 
 /**
  * Main class of the program. Contains everything required for the bot to work
@@ -28,11 +29,6 @@ public class Main {
 	 * Prefix for all bot commands
 	 */
 	public static final String CMD_PREFIX = "u!";
-	
-	/**
-	 * Whether the bot is running in a test environment
-	 */
-	private static boolean testEnv = true;
 	
 	/**
 	 * Object containing Discord environment info (client, main guild, etc)
@@ -49,13 +45,51 @@ public class Main {
 	 */
 	public static final GDEventDispatcher GD_EVENT_DISPATCHER = new GDEventDispatcher();
 	
-	/**
-	 * Permanent Discord invite link to the official bot development server.
-	 */
-	public static final String BETA_TESTERS_GUILD_INVITE_LINK = "https://discord.gg/VpVdKvg";
+	private static AppParams params;
 
 	public static void main(String[] args) {
-		launch(false);
+		try {
+			params = checkArgs(args);
+			launch();
+		} catch (IllegalArgumentException e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	public static AppParams checkArgs(String[] args) throws IllegalArgumentException {
+		IllegalArgumentException excpt = new IllegalArgumentException("The arguments provided are invalid."
+				+ " You need to provide the following arguments in this order, separated by spaces:\n"
+				+ "-> Discord Client ID\n"
+				+ "-> Discord Bot Token\n"
+				+ "-> Bot owner's Discord account ID\n"
+				+ "-> The official dev Discord server's ID\n"
+				+ "-> The ID of the Beta-testers role in the dev server\n"
+				+ "-> The ID of the moderators role in the dev server\n"
+				+ "-> The database hostname or IP\n"
+				+ "-> The database username\n"
+				+ "-> The database password\n"
+				+ "-> The bot's Geometry Dash account ID\n"
+				+ "-> The bot's Geometry Dash account password\n");
+		
+		if (args.length < 11)
+			throw excpt;
+		
+		try {
+			return new AppParams(Long.parseLong(args[0]),
+					args[1],
+					Long.parseLong(args[2]),
+					Long.parseLong(args[3]),
+					Long.parseLong(args[4]),
+					Long.parseLong(args[5]),
+					args[6],
+					args[7],
+					args[8],
+					Long.parseLong(args[9]),
+					RobTopsWeakCrypto.getAccountGJPXORCipher().cipher(args[10])
+			);
+		} catch (NumberFormatException e) {
+			throw excpt;
+		}
 	}
 
 	/**
@@ -64,21 +98,9 @@ public class Main {
 	 * 
 	 * @param test - Tells whether the bot should be running in test environment
 	 */
-	public static void launch(boolean test) {
-		testEnv = test;
-		System.out.println("Test environment? " + isTestEnvironment());
-		
-		if (!AppParams.checkEnvVariables()) {
-			System.err.println("You need to define all of the following system environnement variables for this "
-					+ "program to work:\n"
-					+ "BOT_TOKEN - Authentication token of the bot's Discord account\n"
-					+ "DB_USERNAME and DB_PASSWORD - Credentials to connect to database.\n"
-					+ "GD_ACCOUNT_GJP - The GJP of the Geometry Dash bot account.");
-			System.err.println("Defined environment variables: " + System.getenv().keySet());
-			return;
-		}
+	public static void launch() {
 		// Building client
-		DISCORD_ENV.client = AppTools.createClient(AppParams.BOT_TOKEN, false);
+		DISCORD_ENV.client = AppTools.createClient(params.getBotToken(), false);
 		
 		// Registering Discord events
 		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordEvents());
@@ -87,17 +109,12 @@ public class Main {
 		DISCORD_ENV.client.login();
 
 		System.out.println("Waiting for all guilds to be available, this can take a while...");
-
-		RequestBuffer.request(() -> {
-			DISCORD_ENV.client.idle();
-			DISCORD_ENV.client.changePlayingText("Starting...");
-		});
 		
 		boolean loadingFinished = false;
 		long nbGuildsLoadedOld = 0;
 		do {
 			try {
-				Thread.sleep(20000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 			}
 			
@@ -140,25 +157,10 @@ public class Main {
 	 * Loads and starts the main threads of the bot
 	 */
 	private static void registerThreads() {
-		// Registering threads that are ONLY supposed to run in test environment
-		if (isTestEnvironment()) {
-			
-		}
-		
-		// Registering other threads
 		THREADS.addThread("loop_newawarded", new LoopRequestNewAwardedLevels());
 		THREADS.addThread("loop_timely", new LoopRequestNewTimelyLevels());
 		
 		THREADS.startAllNew();
-	}
-	
-	/**
-	 * Tells whether the bot is running in test environment
-	 * 
-	 * @return boolean
-	 */
-	public static boolean isTestEnvironment() {
-		return testEnv;
 	}
 	
 	/**
@@ -198,7 +200,7 @@ public class Main {
 		}
 		
 		public boolean fetchSuperadmin() {
-			superadmin = client.fetchUser(AppParams.SUPERADMIN_ID);
+			superadmin = client.fetchUser(params.getSuperadminID());
 			System.out.println("Superadmin: " + (superadmin != null ? AppTools.formatDiscordUsername(superadmin) : null));
 			return superadmin != null;
 		}
@@ -223,14 +225,14 @@ public class Main {
 		}
 		
 		private boolean init0() {
-			officialDevGuild = client.getGuildByID(AppParams.OFFICIAL_DEV_GUILD_ID);
+			officialDevGuild = client.getGuildByID(params.getOfficialDevGuildID());
 			System.out.println("Official dev guild: " + (officialDevGuild != null ? officialDevGuild.getName() : null));
 			
 			if (officialDevGuild == null)
 				return false;
 			
-			betaTestersRole = officialDevGuild.getRoleByID(AppParams.BETA_TESTERS_ROLE_ID);
-			moderatorsRole = officialDevGuild.getRoleByID(AppParams.MODERATORS_ROLE_ID);
+			betaTestersRole = officialDevGuild.getRoleByID(params.getBetaTestersRoleID());
+			moderatorsRole = officialDevGuild.getRoleByID(params.getModeratorsRoleID());
 
 			System.out.println("Beta-testers role: " + (betaTestersRole != null ? betaTestersRole.getName() : null));
 			System.out.println("Moderators role: " + (moderatorsRole != null ? moderatorsRole.getName() : null));
@@ -241,5 +243,12 @@ public class Main {
 			
 			return true;
 		}
+	}
+
+	/**
+	 * @return the app params
+	 */
+	public static AppParams getParams() {
+		return params;
 	}
 }

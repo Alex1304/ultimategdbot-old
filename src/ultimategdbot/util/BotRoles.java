@@ -6,7 +6,6 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.PermissionUtils;
-import ultimategdbot.app.AppParams;
 import ultimategdbot.app.Main;
 
 /**
@@ -17,7 +16,7 @@ import ultimategdbot.app.Main;
  *
  */
 public enum BotRoles {
-	SUPERADMIN((user, channel) -> user.getLongID() == AppParams.SUPERADMIN_ID),
+	SUPERADMIN((user, channel) -> user.getLongID() == Main.getParams().getSuperadminID()),
 	MODERATOR((user, channel) -> user.getRolesForGuild(Main.DISCORD_ENV.getOfficialDevGuild())
 			.contains(Main.DISCORD_ENV.getModeratorsRole())),
 	SERVER_ADMIN((user, channel) -> PermissionUtils.hasPermissions(channel, user, Permissions.ADMINISTRATOR)),

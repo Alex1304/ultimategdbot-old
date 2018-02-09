@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import ultimategdbot.app.AppParams;
+import ultimategdbot.app.Main;
 import ultimategdbot.exceptions.RawDataMalformedException;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.database.entities.UserSettings;
@@ -34,7 +35,7 @@ public abstract class GDUserFactory {
 	 */
 	private static GDUser initBotUser() {
 		try {
-			return buildGDUserFromProfileRawData(GDServer.fetchUserProfile(AppParams.GD_ACCOUNT_ID));
+			return buildGDUserFromProfileRawData(GDServer.fetchUserProfile(Main.getParams().getGdAccountID()));
 		} catch (RawDataMalformedException | IOException e) {
 			return null;
 		}

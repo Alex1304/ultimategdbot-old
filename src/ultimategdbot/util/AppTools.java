@@ -152,7 +152,7 @@ public abstract class AppTools {
 	 * @param embed - embed to attach to the message.
 	 * @return a List containing all of the messages successfully sent.
 	 */
-	public static List<IMessage> sendMessageToAll(Collection<IChannel> channels, String message, EmbedObject embed) {
+	public static List<IMessage> sendMessageToAll(List<IChannel> channels, String message, EmbedObject embed) {
 		List<IMessage> sentMessages = new ArrayList<>();
 		
 		for (IChannel channel : channels) {
@@ -163,7 +163,65 @@ public abstract class AppTools {
 		
 		return sentMessages;
 	}
+
 	
+	/**
+	 * Is equivalent to {@link AppTools#sendMessageToAll(Collection, String, EmbedObject)},
+	 * but this one is using multiple threads to optimize the message sending time. Recommended
+	 * if there are a lot of channels in the list and if the system has several CPU cores.
+	 * This method supports embeds.
+	 * 
+	 * @param channels - Collection of channels to send the message in
+	 * @param message - text content of message
+	 * @param embed - embed to attach to the message.
+	 * @param nbThreads - the number of threads to use for multi-tasking
+	 * @return a List containing all of the messages successfully sent.
+	 */
+	public static List<IMessage> sendMessageToAllParallel(List<IChannel> channels, String message, EmbedObject embed, int nbThreads) {
+		if (nbThreads <= 0)
+			throw new IllegalArgumentException("Negative number of threads provided.");
+		
+		final List<IMessage> sentMessages = new ArrayList<>();
+		final List<Thread> threads = new ArrayList<>();
+		
+		for (int n = 0 ; n < nbThreads ; n++) {
+			final int min = n * channels.size() / nbThreads;
+			final int max = (n+1) * channels.size() / nbThreads;
+			
+			threads.add(0, new Thread(() -> {
+				for (IChannel channel : channels.subList(min, max)) {
+					IMessage m = sendMessage(channel, message, embed);
+					if (m != null)
+						sentMessages.add(m);
+				}
+			}));
+			
+			threads.get(0).start();
+		}
+		
+		for (Thread t : threads)
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+			}
+		
+		return sentMessages;
+	}
+	
+	/**
+	 * Is equivalent to {@link AppTools#sendMessageToAll(Collection, String, EmbedObject)},
+	 * but this one is using multiple threads to optimize the message sending time. Recommended
+	 * if there are a lot of channels in the list and if the system has several CPU cores.
+	 * 
+	 * @param channels - Collection of channels to send the message in
+	 * @param message - text content of message
+	 * @param nbThreads - the number of threads to use for multi-tasking
+	 * @return a List containing all of the messages successfully sent.
+	 */
+	public static List<IMessage> sendMessageToAllParellel(List<IChannel> channels, String message, int nbThreads) {
+		return sendMessageToAllParallel(channels, message, null, nbThreads);
+	}
+
 	/**
 	 * Applies the sendMessage method to a collection of channels. The same message will be sent
 	 * in all of the channels in this collection.
@@ -172,7 +230,7 @@ public abstract class AppTools {
 	 * @param message - text content of message
 	 * @return a List containing all of the messages successfully sent.
 	 */
-	public static List<IMessage> sendMessageToAll(Collection<IChannel> channels, String message) {
+	public static List<IMessage> sendMessageToAll(List<IChannel> channels, String message) {
 		return sendMessageToAll(channels, message, null);
 	}
 	

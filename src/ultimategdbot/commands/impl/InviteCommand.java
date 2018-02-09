@@ -7,7 +7,6 @@ import java.util.Map;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.BotInviteBuilder;
-import ultimategdbot.app.AppParams;
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
 import ultimategdbot.commands.CoreCommand;
@@ -30,8 +29,7 @@ public class InviteCommand extends CoreCommand {
 	@Override
 	public void runCommand(MessageReceivedEvent event, List<String> args) throws CommandFailedException {
 		BotInviteBuilder bib = new BotInviteBuilder(Main.DISCORD_ENV.getClient());
-		bib.withClientID("" + 
-				(Main.isTestEnvironment() ? AppParams.CLIENT_TEST_ID : AppParams.CLIENT_ID));
+		bib.withClientID("" + Main.getParams().getClientID());
 		
 		bib.withPermissions(EnumSet.of(
 				Permissions.SEND_MESSAGES,

@@ -37,9 +37,7 @@ public class LoopRequestNewAwardedLevels implements KillableRunnable {
 			if (Main.DISCORD_ENV.getClient().isReady()) {
 				try {
 					// First, fetch awarded levels from GD servers
-					String awardedLevelsRD = Main.isTestEnvironment() ?
-							GDServer.fetchMostRecentLevels() :
-							GDServer.fetchNewAwardedLevels();
+					String awardedLevelsRD = GDServer.fetchNewAwardedLevels();
 							
 					AwardedLevelDAO gdldao = DAOFactory.getAwardedLevelDAO();
 

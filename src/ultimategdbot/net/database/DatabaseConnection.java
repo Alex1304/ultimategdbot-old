@@ -21,6 +21,7 @@ public class DatabaseConnection {
 	/**
 	 * Returns the current connection instance. It first checks if the connection is still operational.
 	 * If not, then the connection is reset before returning a new instance.
+	 * 
 	 * @return the current Connection instance to database.
 	 */
 	public static synchronized Connection getInstance() {
@@ -31,18 +32,18 @@ public class DatabaseConnection {
 	}
 
 	/**
-	 * Returns a unique instance of the database connection. Credentials are
-	 * read from the system environment variables for security reasons
+	 * Returns a unique instance of the database connection, using the credentials 
+	 * provided in {@link AppParams}
 	 * 
-	 * @return the Connection instance created, or null if instance failed.
+	 * @return the Connection instance created. If the instance failed, the program is killed.
 	 */
 	private static Connection createInstance() {
 		try {
 			if (conn != null) 
 				conn.close();
-			conn = DriverManager.getConnection((Main.isTestEnvironment() ? AppParams.LOCAL_DB_HOST
-					: AppParams.REMOTE_DB_HOST) + "?reconnect=true",
-					AppParams.DB_USERNAME, AppParams.DB_PASSWORD);
+			conn = DriverManager.getConnection(Main.getParams().getDbHost() + "?autoReconnect=true",
+					Main.getParams().getDbUsername(),
+					Main.getParams().getDbPassword());
 			return conn;
 		} catch (Exception e) {
 			e.printStackTrace();
