@@ -1,11 +1,19 @@
 package ultimategdbot.discordevents;
 
+import static ultimategdbot.app.Main.CMD_PREFIX;
+import static ultimategdbot.app.Main.DISCORD_ENV;
+import static ultimategdbot.app.Main.GD_EVENT_DISPATCHER;
+import static ultimategdbot.app.Main.registerThreads;
+
 import java.util.List;
 
 import sx.blah.discord.api.events.EventSubscriber;
+import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildLeaveEvent;
-import ultimategdbot.app.Main;
+import sx.blah.discord.util.RequestBuffer;
+import ultimategdbot.commands.DiscordCommandHandler;
+import ultimategdbot.gdevents.listeners.GDEventListeners;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.database.util.SQLQueryExecutor;
@@ -26,6 +34,39 @@ public class DiscordEvents implements SQLQueryExecutor<Long>{
 	}
 	
 	/**
+	 * Executes when the client is ready
+	 * 
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onClientReady(ReadyEvent event) {
+		System.out.println("All guilds are loaded, we can now fetch hierarchy info (dev server, mod/beta-testers role, etc)...");
+
+		if (!DISCORD_ENV.fetchSuperadmin()) {
+			System.err.println("Unable to fetch Superadmin with given ID");
+			System.exit(1);
+		}
+		
+		if (!DISCORD_ENV.init()) {
+			System.err.println("Unable to load roles necessary for the bot to work. "
+					+ "Please make sure you have provided the correct hierarchy info through application args");
+			System.exit(1);
+		}
+		
+		System.out.println("Hierarchy info successfully fetched!");
+		RequestBuffer.request(() ->
+			DISCORD_ENV.getClient().online("Geometry Dash | " + CMD_PREFIX + "help")
+		);
+		
+		// Adding the command handler is the last thing to do, for performance reasons.
+		DISCORD_ENV.getClient().getDispatcher().registerListener(new DiscordCommandHandler());
+		
+		// Registering Geometry Dash events
+		GD_EVENT_DISPATCHER.addAllListeners(GDEventListeners.getListeners());
+		registerThreads();
+	}
+	
+	/**
 	 * When the bot joins a new server, it inserts a new entry of guild settings
 	 * in database if it doesn't exist already. If the server is new, it will also
 	 * send a welcome message in the bot announcements default channel
@@ -34,8 +75,7 @@ public class DiscordEvents implements SQLQueryExecutor<Long>{
 	 */
 	@EventSubscriber
 	public void onGuildCreated(GuildCreateEvent event) {
-		
-		if (Main.DISCORD_ENV.getSuperadmin() != null && !guildIDs.contains(event.getGuild().getLongID())) {
+		if (DISCORD_ENV.getSuperadmin() != null && !guildIDs.contains(event.getGuild().getLongID())) {
 			GuildSettings gs = DAOFactory.getGuildSettingsDAO().find(event.getGuild().getLongID());
 			if (gs == null) {
 				gs = new GuildSettings(event.getGuild());
@@ -57,7 +97,6 @@ public class DiscordEvents implements SQLQueryExecutor<Long>{
 	 */
 	@EventSubscriber
 	public void onGuildLeft(GuildLeaveEvent event) {
-		
 		GuildSettings gs = DAOFactory.getGuildSettingsDAO().find(event.getGuild().getLongID());
 		if (gs != null)
 			DAOFactory.getGuildSettingsDAO().delete(gs);

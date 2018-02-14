@@ -6,13 +6,8 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.RequestBuffer;
-import ultimategdbot.commands.DiscordCommandHandler;
 import ultimategdbot.discordevents.DiscordEvents;
 import ultimategdbot.gdevents.dispatcher.GDEventDispatcher;
-import ultimategdbot.gdevents.listeners.AwardedLevelListeners;
-import ultimategdbot.gdevents.listeners.GDModeratorsListeners;
-import ultimategdbot.gdevents.listeners.TimelyLevelListeners;
 import ultimategdbot.loops.LoopRequestNewAwardedLevels;
 import ultimategdbot.loops.LoopRequestNewTimelyLevels;
 import ultimategdbot.util.AppTools;
@@ -109,56 +104,15 @@ public class Main {
 		
 		// Let's start!
 		DISCORD_ENV.client.login();
-
+		
+		// The program will continue when the Ready event will be dispatched.
 		System.out.println("Waiting for all guilds to be available, this can take a while...");
-		
-		boolean loadingFinished = false;
-		long nbGuildsLoadedOld = 0;
-		do {
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-			}
-			
-			long nbGuildsLoadedNew = DISCORD_ENV.client.getGuilds().size();
-			loadingFinished = nbGuildsLoadedNew == nbGuildsLoadedOld;
-			nbGuildsLoadedOld = nbGuildsLoadedNew;
-			
-			System.out.println("Loaded " + nbGuildsLoadedNew + " guilds...");
-		} while (!loadingFinished);
-		
-		System.out.println("All guilds are loaded, we can now fetch hierarchy info (dev server, mod/beta-testers role, etc)...");
-
-		if (!DISCORD_ENV.fetchSuperadmin()) {
-			System.err.println("Unable to fetch Superadmin which ID is declared in AppParams.java");
-			System.exit(1);
-		}
-		
-		if (!DISCORD_ENV.init()) {
-			System.err.println("Unable to load roles necessary for the bot to work. "
-					+ "Please make sure you have provided the correct hierarchy info in AppParams.java");
-			System.exit(1);
-		}
-		
-		System.out.println("Hierarchy info successfully fetched!");
-		RequestBuffer.request(() ->
-			DISCORD_ENV.client.online("Geometry Dash | " + CMD_PREFIX + "help")
-		);
-		
-		// Adding the command handler is the last thing to do, for performance reasons.
-		DISCORD_ENV.client.getDispatcher().registerListener(new DiscordCommandHandler());
-		
-		// Registering Geometry Dash events
-		GD_EVENT_DISPATCHER.addAllListeners(AwardedLevelListeners.getListeners());
-		GD_EVENT_DISPATCHER.addAllListeners(GDModeratorsListeners.getListeners());
-		GD_EVENT_DISPATCHER.addAllListeners(TimelyLevelListeners.getListeners());
-		registerThreads();
 	}
 	
 	/**
 	 * Loads and starts the main threads of the bot
 	 */
-	private static void registerThreads() {
+	public static void registerThreads() {
 		THREADS.addThread("loop_newawarded", new LoopRequestNewAwardedLevels());
 		THREADS.addThread("loop_timely", new LoopRequestNewTimelyLevels());
 		
