@@ -9,6 +9,8 @@ import ultimategdbot.guildsettings.RoleAwardedLevelsSetting;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDUserFactory;
+import ultimategdbot.util.AppTools;
+import ultimategdbot.util.Emoji;
 import ultimategdbot.util.GDUtils;
 
 /**
@@ -54,8 +56,11 @@ public class AwardedLevelNotifier extends GDEventNotifier {
 					newRate ? "Congratulations for getting your level rated!"
 							: "Oh snap! Your level has just been unrated...");
 		} catch (RawDataMalformedException | IOException e) {
-			return;
 		}
+
+		AppTools.sendDebugPMToSuperadmin(Emoji.SUCCESS + " Awarded level event dispatched in "
+				+ AppTools.formatMillis(System.currentTimeMillis() - startTimestamp)
+				+ "\n" + (newRate ? "+" : "-") + " " + Emoji.PLAY + " " + level.toString());
 	}
 
 }

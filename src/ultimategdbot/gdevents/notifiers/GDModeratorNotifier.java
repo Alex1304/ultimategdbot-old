@@ -5,6 +5,8 @@ import ultimategdbot.guildsettings.ChannelGdModeratorsSetting;
 import ultimategdbot.guildsettings.RoleGdModeratorsSetting;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.geometrydash.GDUser;
+import ultimategdbot.util.AppTools;
+import ultimategdbot.util.Emoji;
 import ultimategdbot.util.GDUtils;
 
 /**
@@ -46,6 +48,11 @@ public class GDModeratorNotifier extends GDEventNotifier {
 		notifyConcernedUserIfLinked(user,
 				newMod ? "Congratulations for getting the status of Geometry Dash moderator!"
 						: "Oh snap! You lost your status of Geometry Dash moderator...");
+
+
+		AppTools.sendDebugPMToSuperadmin(Emoji.SUCCESS + " GD Moderator event dispatched in "
+				+ AppTools.formatMillis(System.currentTimeMillis() - startTimestamp)
+				+ "\n" + (newMod ? "+" : "-") + " " + Emoji.MODERATOR + " " + user.getName());
 	}
 
 }

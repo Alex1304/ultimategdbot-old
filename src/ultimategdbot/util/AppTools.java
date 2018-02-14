@@ -445,7 +445,7 @@ public abstract class AppTools {
 	
 	/**
 	 * Builds a String representing an integer value with a specific amount of digits,
-	 * mising digits are filled with the specified char. For example, {@code normalizeNumber(12, 6)}
+	 * mising digits are filled with the specified char. For example, {@code normalizeNumber(12, 6, '0')}
 	 * will return the String "000012", with string length equal to 6. The value is directly returned
 	 * as String if the number of digits of the value is greater than n.
 	 * 
@@ -470,12 +470,23 @@ public abstract class AppTools {
 	 * @return the formatted String
 	 */
 	public static String formatMillis(long millis) {
+		long restMillis = millis % 1000;
 		long seconds = (millis / 1000) % 60;
 		long minutes = (millis / (1000 * 60)) % 60;
 		long hours = (millis / (1000 * 60 * 60)) % 24;
 		long days = (millis / (1000 * 60 * 60 * 24)) % 7;
 		
-		return days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+		StringBuffer sb = new StringBuffer();
+		if (days > 0)
+			sb.append(days + "d ");
+		if (hours > 0)
+			sb.append(hours + "h ");
+		if (minutes > 0)
+			sb.append(minutes + "m ");
+		
+		sb.append(seconds + "." + normalizeNumber((int) restMillis, 3, '0') + "s");
+		
+		return sb.toString();
 	}
 	
 	/**

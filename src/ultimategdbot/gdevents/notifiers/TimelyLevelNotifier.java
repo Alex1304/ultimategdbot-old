@@ -9,6 +9,8 @@ import ultimategdbot.guildsettings.RoleTimelyLevelsSetting;
 import ultimategdbot.net.database.dao.impl.DAOFactory;
 import ultimategdbot.net.geometrydash.GDLevel;
 import ultimategdbot.net.geometrydash.GDUserFactory;
+import ultimategdbot.util.AppTools;
+import ultimategdbot.util.Emoji;
 import ultimategdbot.util.GDUtils;
 
 /**
@@ -59,8 +61,11 @@ public class TimelyLevelNotifier extends GDEventNotifier {
 					daily ? "Congratulations for getting a Daily Level!"
 							: "Congratulations for getting a Weekly Demon!");
 		} catch (RawDataMalformedException | IOException e) {
-			return;
 		}
+
+		AppTools.sendDebugPMToSuperadmin(Emoji.SUCCESS + " Timely level event dispatched in "
+				+ AppTools.formatMillis(System.currentTimeMillis() - startTimestamp)
+				+ "\n" + (daily ? "Daily Level" : "Weekly Demon") + ": " + Emoji.PLAY + " " + level.toString());
 	}
 
 }

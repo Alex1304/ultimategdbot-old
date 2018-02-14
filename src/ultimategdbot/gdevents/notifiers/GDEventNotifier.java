@@ -14,6 +14,7 @@ import ultimategdbot.net.database.entities.GuildSettings;
 import ultimategdbot.net.database.entities.UserSettings;
 import ultimategdbot.net.geometrydash.GDUser;
 import ultimategdbot.util.AppTools;
+import ultimategdbot.util.Emoji;
 import ultimategdbot.util.GuildMessageBroadcaster;
 
 /**
@@ -29,6 +30,7 @@ public abstract class GDEventNotifier {
 	private List<GuildSettings> gsList;
 	protected String message;
 	protected EmbedObject embed;
+	protected long startTimestamp;
 	
 	/**
 	 * Constructor initializing all fields.
@@ -44,6 +46,7 @@ public abstract class GDEventNotifier {
 		this.gsList = gsList;
 		this.message = null;
 		this.embed = null;
+		this.startTimestamp = 0;
 	}
 	
 	/**
@@ -63,6 +66,7 @@ public abstract class GDEventNotifier {
 				gs -> embed
 		);
 		
+		this.startTimestamp = System.currentTimeMillis();
 		gmb.broadcast();
 		
 		onNotifyDone();
@@ -113,6 +117,7 @@ public abstract class GDEventNotifier {
 	 * Implementing this is optional, does nothing by default.
 	 */
 	public void onNotifyDone() {
-		return;
+		AppTools.sendDebugPMToSuperadmin(Emoji.SUCCESS + " Event dispatched in "
+				+ AppTools.formatMillis(System.currentTimeMillis() - startTimestamp));
 	}
 }
