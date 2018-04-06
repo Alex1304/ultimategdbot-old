@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.ActivityType;
+import sx.blah.discord.handle.obj.StatusType;
 import sx.blah.discord.util.RequestBuffer;
 import ultimategdbot.app.Main;
 import ultimategdbot.commands.Command;
@@ -34,9 +36,9 @@ public class PlayingCommand extends CoreCommand {
 		
 		RequestBuffer.request(() -> {
 			if (reset)
-				Main.DISCORD_ENV.getClient().changePlayingText(null);
+				Main.DISCORD_ENV.getClient().changePresence(StatusType.ONLINE);
 			else
-				Main.DISCORD_ENV.getClient().changePlayingText(text);
+				Main.DISCORD_ENV.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, text);
 		});
 		
 		if (reset)

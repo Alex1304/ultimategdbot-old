@@ -11,6 +11,8 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildLeaveEvent;
+import sx.blah.discord.handle.obj.ActivityType;
+import sx.blah.discord.handle.obj.StatusType;
 import sx.blah.discord.util.RequestBuffer;
 import ultimategdbot.commands.DiscordCommandHandler;
 import ultimategdbot.gdevents.listeners.GDEventListeners;
@@ -55,7 +57,7 @@ public class DiscordEvents implements SQLQueryExecutor<Long>{
 		
 		System.out.println("Hierarchy info successfully fetched!");
 		RequestBuffer.request(() ->
-			DISCORD_ENV.getClient().online("Geometry Dash | " + CMD_PREFIX + "help")
+			DISCORD_ENV.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "Geometry Dash | " + CMD_PREFIX + "help")
 		);
 		
 		// Adding the command handler is the last thing to do, for performance reasons.
